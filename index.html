@@ -258,7 +258,14 @@ label.chk input { width: 22px; height: 22px; accent-color: var(--grape); }
   nav.abas button { font-size: .95rem; padding: 8px 12px 7px; }
 }
 /* ---------- diagramação em uma janela só (27/10/2026) ---------- */
-.col-mesa > .conteudo { position: relative; }
+.col-mesa > .conteudo, .col-frases > .conteudo { position: relative; }
+.aviso-frases {
+  position: absolute; inset: 6px; z-index: 5; display: none; overflow: auto; background: #EAF6FE; border: 3px solid var(--sky);
+  border-radius: 16px; padding: 12px 36px 10px 14px; font-size: 1.05rem; line-height: 1.4; box-shadow: var(--shadow-soft);
+}
+.aviso-frases.aberto { display: block; animation: aparecer .25s ease-out; }
+.aviso-frases p { margin: 4px 0 8px; }
+.aviso-frases .fechar { position: absolute; right: 8px; top: 6px; border: 0; background: none; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--ink-soft); }
 .aviso-mesa {
   position: relative; flex: none; margin: 0 0 8px; background: #EAF6FE; border: 2px solid var(--sky); border-radius: 14px;
   padding: 6px 34px 6px 12px; font-size: 1rem; line-height: 1.35; display: none; text-align: center;
@@ -270,14 +277,20 @@ label.chk input { width: 22px; height: 22px; accent-color: var(--grape); }
 .topo nav.abas { margin-left: auto; padding: 4px 0 9px; max-width: none; justify-content: flex-end; }
 .topo nav.abas button { font-size: 1rem; padding: 8px 14px 7px; }
 main { max-width: 1440px; }
-@media (max-width: 999px) { .topo nav.abas { margin: 0 auto; justify-content: center; } }
-@media (min-width: 1000px) {
+@media (max-width: 899px) { .topo nav.abas { margin: 0 auto; justify-content: center; } }
+/* abas com nome curto em telas estreitas (celular e tablet em pé) */
+.curto { display: none; }
+@media (max-width: 899px) { .longo { display: none; } .curto { display: inline; } }
+/* personagens (27/10/2026) */
+.avatar { display: inline-block; line-height: 0; flex: none; }
+.cartao .avatar svg { filter: drop-shadow(0 2px 0 rgba(0,0,0,.18)); }
+.cartao select { width: 100%; text-align: center; font-family: var(--font-display); font-weight: 800; border: 0; background: rgba(255,255,255,.94); }
+.rot-linha { display: inline-flex; align-items: center; gap: 4px; }
+.rot-linha .avatar svg { display: block; }
+/* painel numa tela só: tablet em pé (600 a 899 px) e tablet deitado/computador (900 px ou mais) */
+@media (min-width: 600px) {
   main { padding-bottom: 12px; }
-  /* torres: controles | mesa | frases, na altura da janela */
-  #tela-torres.ativa {
-    display: grid; grid-template-columns: minmax(250px, 290px) 1fr minmax(270px, 340px); gap: 14px;
-    height: calc(100vh - var(--topo-h, 76px) - 22px); min-height: 500px; padding-top: 12px;
-  }
+  #tela-torres.ativa { display: grid; gap: 12px; height: calc(100vh - var(--topo-h, 76px) - 22px); padding-top: 10px; }
   #tela-torres .janela { margin: 0; display: flex; flex-direction: column; min-height: 0; }
   #tela-torres .janela > .barra { padding: 8px 12px; font-size: 1.1rem; }
   #tela-torres .janela > .conteudo { flex: 1; min-height: 0; overflow: auto; padding: 12px; }
@@ -285,14 +298,15 @@ main { max-width: 1440px; }
   #tela-torres .col-mesa .palco { flex: 1; min-height: 0; overflow: hidden; }
   #tela-torres .col-mesa .linha-botoes { flex: none; }
   #tela-torres .col-controles .linha-botoes { justify-content: flex-start; }
-  #tela-torres .cartoes { grid-template-columns: 1fr; gap: 12px; margin-top: 4px; }
+  #tela-torres .cartoes { grid-template-columns: 1fr; gap: 10px; margin-top: 4px; }
   #tela-torres .cartao {
-    display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "num nome botoes"; align-items: center; gap: 8px; padding: 8px 10px;
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: "av nome num botoes"; align-items: center; gap: 6px; padding: 6px 8px;
   }
-  #tela-torres .cartao input[type=text] { grid-area: nome; padding: 5px 8px; min-width: 0; font-size: 1rem; }
-  #tela-torres .cartao .numero { grid-area: num; font-size: 2.2rem; margin: 0; min-width: 42px; }
+  #tela-torres .cartao .avatar { grid-area: av; }
+  #tela-torres .cartao select { grid-area: nome; padding: 5px 4px; min-width: 0; font-size: 1rem; }
+  #tela-torres .cartao .numero { grid-area: num; font-size: 2rem; margin: 0; min-width: 34px; }
   #tela-torres .cartao > div:last-child { grid-area: botoes; white-space: nowrap; }
-  #tela-torres .cartao .btn { min-width: 40px; font-size: 1.3rem; padding: 2px 8px 0; margin: 2px 1px 6px; }
+  #tela-torres .cartao .btn { min-width: 38px; font-size: 1.3rem; padding: 2px 6px 0; margin: 2px 1px 6px; }
   #tela-torres .col-frases .barra { font-size: 1.05rem; }
   #tela-torres .col-frases .barra .btn { font-size: .95rem; padding: 6px 10px 5px; margin: 0 0 4px; }
   #tela-torres .frases { font-size: 1.02rem; line-height: 1.38; }
@@ -300,12 +314,99 @@ main { max-width: 1440px; }
   #tela-torres .frases .resposta { padding: 8px 10px; margin-top: 6px; }
   #tela-torres .frases .conta { font-size: 1.45rem; margin: 4px 0; }
   #tela-torres label.chk { font-size: .95rem; margin: 0; }
+}
+/* celular: topo fino e cartões de uma linha (a página ainda rola, mas bem menos) */
+@media (max-width: 599px) {
+  .topo .dentro { padding: 6px 10px; gap: 8px; }
+  .topo .marca { font-size: 1.15rem; }
+  .topo .marca small { display: none; }
+  .topo nav.abas { gap: 6px; padding: 2px 0 6px; }
+  .topo nav.abas button { font-size: .88rem; padding: 6px 9px 5px; }
+  main { padding: 0 8px 30px; }
+  .janela { margin: 10px 0; }
+  .janela > .conteudo { padding: 10px; }
+  #tela-torres .cartoes { grid-template-columns: 1fr; gap: 8px; }
+  #tela-torres .cartao {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: "av nome num botoes"; align-items: center; gap: 6px; padding: 6px 8px;
+  }
+  #tela-torres .cartao .avatar { grid-area: av; }
+  #tela-torres .cartao select { grid-area: nome; padding: 5px 4px; min-width: 0; font-size: 1rem; }
+  #tela-torres .cartao .numero { grid-area: num; font-size: 1.9rem; margin: 0; min-width: 30px; }
+  #tela-torres .cartao > div:last-child { grid-area: botoes; white-space: nowrap; }
+  #tela-torres .cartao .btn { min-width: 38px; font-size: 1.3rem; padding: 2px 6px 0; margin: 2px 1px 6px; }
+}
+/* tablet em pé: controles e frases em cima, a mesa grande embaixo */
+@media (min-width: 600px) and (max-width: 899px) {
+  #tela-torres.ativa {
+    grid-template-columns: 1fr 1fr; grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: "controles frases" "mesa mesa"; min-height: 600px;
+  }
+  #tela-torres .col-controles { grid-area: controles; }
+  #tela-torres .col-frases { grid-area: frases; }
+  #tela-torres .col-mesa { grid-area: mesa; }
+  #tela-torres .janela > .conteudo { padding: 8px 10px; }
+  .topo .marca small { display: none; }
+  .topo .dentro { padding: 6px 12px; }
+  .topo nav.abas { padding: 2px 0 6px; gap: 8px; }
+  .topo nav.abas button { font-size: .9rem; padding: 6px 10px 5px; }
+  #tela-torres .cartao { gap: 4px; padding: 5px 6px; }
+  #tela-torres .cartao .avatar svg { width: 34px; height: 34px; }
+  #tela-torres .cartao select { font-size: .95rem; padding: 4px 0; }
+  #tela-torres .cartao .numero { font-size: 1.8rem; min-width: 28px; }
+  #tela-torres .cartao .btn { min-width: 32px; font-size: 1.2rem; padding: 1px 4px 0; margin: 1px 1px 5px; }
+  #tela-torres .cartoes { gap: 8px; }
+  /* os cartões já mostram quantos cada um tem: no tablet em pé, o quadro de frases vai direto à comparação */
+  #tela-torres .frases .linha-tem { display: none; }
+}
+/* painel compacto (tablet em pé e telas baixas): botões e faixas menores para sobrar altura para a mesa */
+@media (min-width: 600px) and (max-width: 899px), (min-width: 600px) and (max-height: 700px) {
+  #tela-torres .janela > .barra { padding: 6px 10px; font-size: 1rem; }
+  #tela-torres .selo { width: 32px; height: 32px; border-radius: 10px; font-size: 1rem; }
+  #tela-torres .linha-botoes { gap: 2px; }
+  #tela-torres .linha-botoes > span { font-size: .92rem; }
+  #tela-torres .btn, #tela-torres .btn.grande { font-size: .92rem; padding: 6px 10px 5px; margin: 2px 2px 6px; }
+  #tela-torres select { font-size: .92rem; padding: 5px 6px; }
+  #tela-torres .col-controles .linha-botoes { margin-bottom: 4px !important; }
+  #tela-torres .col-mesa .linha-botoes { margin: 0 !important; }
+  #tela-torres .palco { padding: 8px 6px 4px; }
+  /* nome e número na mesma linha embaixo da torre: sobra altura para os blocos */
+  #tela-torres .rotulo-torre { display: flex; align-items: center; gap: 4px; margin-top: 5px; }
+  #tela-torres .rotulo-torre .qtd { font-size: 1.35rem; display: inline; }
+  #tela-torres .frases { font-size: .95rem; line-height: 1.32; }
+  #tela-torres .frases .conta { font-size: 1.3rem; }
+  #tela-torres .col-frases .barra .btn { font-size: .85rem; padding: 4px 8px 3px; }
+}
+/* tablet deitado e computador: controles | mesa | frases */
+@media (min-width: 900px) {
+  #tela-torres.ativa { grid-template-columns: minmax(250px, 290px) 1fr minmax(260px, 330px); min-height: 380px; }
   /* ganhar, falta e troco: figura e frases lado a lado */
   #tela-ganhar.ativa, #tela-falta.ativa, #tela-troco.ativa {
     display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; padding-top: 12px;
   }
   #tela-ganhar .janela, #tela-falta .janela, #tela-troco .janela { margin: 0; }
   #tela-quiz { max-width: 960px; margin: 0 auto; }
+}
+/* tablet deitado (900 a 1199 px de largura e até 700 de altura): topo numa linha, mesa mais larga, cartões em duas linhas */
+@media (min-width: 900px) and (max-width: 1199px) and (max-height: 700px) {
+  .longo { display: none; } .curto { display: inline; }
+  .topo .dentro { flex-wrap: nowrap; }
+  .topo nav.abas { flex-wrap: nowrap; }
+  #tela-torres.ativa { grid-template-columns: 244px 1fr 250px; gap: 10px; }
+  #tela-torres .col-controles .janela > .conteudo, #tela-torres .col-controles > .conteudo { padding: 8px; }
+  #tela-torres .cartao { gap: 3px; padding: 5px 5px; }
+  #tela-torres .cartao .avatar svg { width: 30px; height: 30px; }
+  #tela-torres .cartao select { font-size: .88rem; padding: 3px 0; }
+  #tela-torres .cartao .numero { font-size: 1.5rem; min-width: 24px; }
+  #tela-torres .cartao .btn { min-width: 30px; font-size: 1.15rem; padding: 1px 3px 0; margin: 1px 1px 5px; }
+  #tela-torres .cartoes { gap: 8px; }
+  #tela-torres .frases .linha-tem { display: none; }
+}
+/* telas baixas (tablet deitado): faixa do topo mais fina */
+@media (min-width: 600px) and (max-height: 700px) {
+  .topo .marca small { display: none; }
+  .topo .dentro { padding: 6px 16px; }
+  .topo nav.abas { padding: 2px 0 7px; }
+  .topo nav.abas button { font-size: .92rem; padding: 6px 11px 5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -317,9 +418,9 @@ main { max-width: 1440px; }
   <span class="fagulha" data-fagulha="idle" data-tam="44"></span>
   <div class="marca">Mesa do <span class="mais-cor">Mais</span> e do <span class="menos-cor">Menos</span><small>Vamos descobrir o mais e o menos! Toque em 🔊 para ouvir. ✨</small></div>
   <nav class="abas" id="abas">
-    <button data-tela="torres" class="ativa">🧱 Comparar torres</button>
-    <button data-tela="ganhar">💎 Ganhar e gastar</button>
-    <button data-tela="falta">🔑 Quanto falta</button>
+    <button data-tela="torres" class="ativa">🧱 <span class="longo">Comparar torres</span><span class="curto">Torres</span></button>
+    <button data-tela="ganhar">💎 <span class="longo">Ganhar e gastar</span><span class="curto">Ganhar</span></button>
+    <button data-tela="falta">🔑 <span class="longo">Quanto falta</span><span class="curto">Falta</span></button>
     <button data-tela="troco">💵 Troco</button>
     <button data-tela="quiz">⭐ Revisão</button>
   </nav>
@@ -331,11 +432,12 @@ main { max-width: 1440px; }
   <div class="janela azul col-controles">
     <div class="barra"><span class="selo s-grape">🧱</span>Monte as torres</div>
     <div class="conteudo">
-      <div class="linha-botoes" style="margin-bottom:10px">
-        <span style="font-weight:800">Quantas torres?</span>
+      <div class="linha-botoes">
+        <span style="font-weight:800"><span class="longo">Quantas torres?</span><span class="curto">Torres:</span></span>
         <button class="btn" data-qtd="2">2 torres</button>
         <button class="btn" data-qtd="3">3 torres</button>
-        <span style="width:14px"></span>
+      </div>
+      <div class="linha-botoes" style="margin-bottom:10px">
         <span style="font-weight:800">Desenho:</span>
         <select id="tema">
           <option value="blocos">🧱 blocos</option>
@@ -382,6 +484,7 @@ main { max-width: 1440px; }
         <button class="btn ouro" id="mostrarResp" style="display:none">👀 Mostrar resposta</button>
       </div>
       <div class="frases" id="frasesTorres"></div>
+      <div class="aviso-frases" id="avisoFrases" role="status"></div>
     </div>
   </div>
 </section>
@@ -392,7 +495,7 @@ main { max-width: 1440px; }
     <div class="barra"><span class="selo s-grape">💎</span>Ganhar é juntar. Gastar é tirar.</div>
     <div class="conteudo">
       <div class="linha-botoes">
-        <span style="font-weight:800">Nome:</span> <input type="text" id="gNome" value="Bia" style="width:120px">
+        <span style="font-weight:800">Quem:</span> <select id="gNome" aria-label="personagem"><option>Madu</option><option>Felipe</option><option>Clara</option><option selected>Laura</option></select>
         <span style="font-weight:800">Começa com</span>
         <button class="btn" id="gIniMenos">−</button>
         <span id="gIni" style="font-size:1.6rem;font-weight:900;min-width:36px;text-align:center">5</span>
@@ -500,6 +603,43 @@ const $$ = (s) => Array.from(document.querySelectorAll(s));
 const CORES = ["#7A4FE0", "#FF7A3D", "#46B6F6"];   /* uva, tangerina, céu (paleta do Silabário Mágico) */
 const FUNDO = { "#7A4FE0": "#5B34B8", "#FF7A3D": "#D95A22", "#46B6F6": "#2A8FCB" };
 const sombraDe = (cor) => FUNDO[cor] || "rgba(0,0,0,.22)";
+
+/* personagens: rostinhos desenhados em SVG (estilo redondo do Silabário) */
+const PERSONAGENS = {
+  Madu: { pele: "#C68642", cabelo: "#2B1B12", estilo: "cachos", enfeite: "#FF5C8A", fundo: "#FFE3EC", roupa: "#FF7A3D" },
+  Felipe: { pele: "#F1C27D", cabelo: "#6B4226", estilo: "curto", enfeite: null, fundo: "#DDF1FF", roupa: "#46B6F6" },
+  Clara: { pele: "#FFDBAC", cabelo: "#B07A3B", estilo: "liso", enfeite: "#7A4FE0", fundo: "#EFE6FF", roupa: "#7A4FE0" },
+  Laura: { pele: "#E8B98A", cabelo: "#4A2C1A", estilo: "marias", enfeite: "#1FBE97", fundo: "#DDF7EE", roupa: "#1FBE97" },
+};
+const NOMES = Object.keys(PERSONAGENS);
+function avatarSVG(nome, tam = 40) {
+  const p = PERSONAGENS[nome];
+  if (!p) return "";
+  const c = p.cabelo;
+  let atras = "", frente = "", enfeite = "";
+  if (p.estilo === "cachos") {
+    atras = [[18, 24], [24, 17], [32, 14], [40, 17], [46, 24], [16, 32], [48, 32], [17, 40], [47, 40]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7" fill="${c}"/>`).join("");
+    enfeite = `<path d="M44 14l7-4v9zM44 14l-1 8 7-2z" fill="${p.enfeite}"/><circle cx="45" cy="15" r="2.4" fill="${p.enfeite}"/>`;
+  } else if (p.estilo === "curto") {
+    frente = `<path d="M16 33Q15 15 32 15Q49 15 48 33Q45 23 38 22Q33 26 24 23Q18 26 16 33Z" fill="${c}"/>`;
+  } else if (p.estilo === "liso") {
+    atras = `<path d="M14 34Q13 13 32 13Q51 13 50 34L51 54Q46 57 42 52L42 34ZM22 34L22 52Q18 57 13 54Z" fill="${c}"/>`;
+    frente = `<path d="M16 32Q17 16 32 16Q47 16 48 32Q40 22 32 22Q24 22 16 32Z" fill="${c}"/>`;
+    enfeite = `<path d="M17 25Q32 12 47 25" stroke="${p.enfeite}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+  } else if (p.estilo === "marias") {
+    atras = `<circle cx="13" cy="30" r="7.5" fill="${c}"/><circle cx="51" cy="30" r="7.5" fill="${c}"/>`;
+    frente = `<path d="M16 32Q16 15 32 15Q48 15 48 32Q42 21 32 21Q22 21 16 32Z" fill="${c}"/>`;
+    enfeite = `<circle cx="18" cy="25" r="3" fill="${p.enfeite}"/><circle cx="46" cy="25" r="3" fill="${p.enfeite}"/>`;
+  }
+  return `<svg width="${tam}" height="${tam}" viewBox="0 0 64 64" role="img" aria-label="${nome}">
+    <circle cx="32" cy="32" r="31" fill="${p.fundo}"/>
+    <path d="M12 64Q14 47 32 47Q50 47 52 64Z" fill="${p.roupa}"/>
+    ${atras}<circle cx="32" cy="34" r="16" fill="${p.pele}"/>${frente}${enfeite}
+    <circle cx="26" cy="35" r="2.3" fill="#3A2E14"/><circle cx="38" cy="35" r="2.3" fill="#3A2E14"/>
+    <ellipse cx="22.5" cy="40" rx="3" ry="2" fill="#FF5C8A" opacity=".3"/><ellipse cx="41.5" cy="40" rx="3" ry="2" fill="#FF5C8A" opacity=".3"/>
+    <path d="M27 41.5Q32 46 37 41.5" stroke="#8A4B2A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`;
+}
+const avatar = (nome, tam) => (PERSONAGENS[nome] ? `<span class="avatar">${avatarSVG(nome, tam)}</span>` : "");
 
 /* Fagulha, o vaga-lume do Silabário Mágico: idle (flutua), celebrate (comemora), encourage (incentiva) */
 let fagN = 0;
@@ -659,7 +799,7 @@ function desenharTorres(alvo, torres, op) {
     const rot = document.createElement("div");
     rot.className = "rotulo-torre";
     rot.style.color = t.cor;
-    rot.innerHTML = `${esc(t.nome)}<span class="qtd">${t.escondida || t.rotuloOculto ? "?" : t.n}</span>`;
+    rot.innerHTML = `<span class="rot-linha">${avatar(t.nome, op.tamAvatar || 26)}${esc(t.nome)}</span><span class="qtd">${t.escondida || t.rotuloOculto ? "?" : t.n}</span>`;
     col.appendChild(pilha);
     col.appendChild(rot);
     alvo.appendChild(col);
@@ -681,6 +821,7 @@ function desenharTorres(alvo, torres, op) {
         ln.setAttribute("stroke-dasharray", "2 7");
         svg.appendChild(ln);
       }
+      alvo.querySelectorAll("svg.fios").forEach((s) => s.remove());   /* sem fios repetidos quando a mesa é redesenhada em seguida */
       alvo.appendChild(svg);
     });
   }
@@ -707,7 +848,7 @@ const mesa = {
   torres: [
     { nome: "Madu", n: 5, cor: CORES[0] },
     { nome: "Felipe", n: 2, cor: CORES[1] },
-    { nome: "Lia", n: 4, cor: CORES[2] },
+    { nome: "Clara", n: 4, cor: CORES[2] },
   ],
   par: [0, 1], de: 0, para: 1,
 };
@@ -723,11 +864,19 @@ function desenharCartoes() {
     c.className = "cartao";
     c.style.setProperty("--c", t.cor);
     c.style.setProperty("--cd", sombraDe(t.cor));
-    c.innerHTML = `<input type="text" maxlength="12" value="${esc(t.nome)}" aria-label="nome da torre ${i + 1}">
+    const lista = NOMES.includes(t.nome) ? NOMES : [t.nome, ...NOMES];
+    c.innerHTML = `${avatar(t.nome, 40) || '<span class="avatar"></span>'}
+      <select aria-label="personagem da torre ${i + 1}">${lista.map((n) => `<option${n === t.nome ? " selected" : ""}>${esc(n)}</option>`).join("")}</select>
       <div class="numero">${t.n}</div>
       <div><button class="btn" data-i="${i}" data-d="-1" aria-label="tirar 1">−</button>
       <button class="btn" data-i="${i}" data-d="1" aria-label="pôr 1">＋</button></div>`;
-    c.querySelector("input").oninput = (e) => { t.nome = e.target.value || `Torre ${i + 1}`; atualizarSelects(); desenharMesa(false); };
+    /* trocar de personagem: se outra torre já usa esse nome, as duas trocam entre si */
+    c.querySelector("select").onchange = (e) => {
+      const outra = ativas().find((o) => o !== t && o.nome === e.target.value);
+      if (outra) outra.nome = t.nome;
+      t.nome = e.target.value;
+      desenharCartoes(); atualizarSelects(); desenharMesa(false);
+    };
     box.appendChild(c);
   });
   box.querySelectorAll("button[data-d]").forEach((b) => (b.onclick = () => {
@@ -736,6 +885,7 @@ function desenharCartoes() {
     mesa.revelado = false; mesa.ultimo = "";
     clearTimeout(avisoTimer);
     $("#avisoMesa").classList.remove("aberto");
+    $("#avisoFrases").classList.remove("aberto");
     desenharCartoes(); desenharMesa();
   }));
   $$("[data-qtd]").forEach((b) => b.classList.toggle("ligado", +b.dataset.qtd === mesa.qtd));
@@ -761,9 +911,18 @@ function desenharMesa(redesenharTudo = true) {
   if (redesenharTudo) atualizarSelects();
   /* no painel de uma janela só, os blocos se ajustam à altura livre da mesa */
   const palco = $("#palco");
-  const painel = window.innerWidth >= 1000 && palco.clientHeight > 160;
-  const altura = painel ? palco.clientHeight - 32 - 62 : 330;
-  desenharTorres(palco, ativas(), { tema: mesa.tema, par: mesa.par, ligar: mesa.ligar, prefixo: "m", altura, maxLado: painel ? 60 : 44 });
+  const painel = getComputedStyle($("#tela-torres")).display === "grid" && palco.clientHeight > 120;
+  const opcoes = { tema: mesa.tema, par: mesa.par, ligar: mesa.ligar, prefixo: "m", maxLado: painel ? 60 : 44, tamAvatar: 30 };
+  if (!painel) {
+    desenharTorres(palco, ativas(), { ...opcoes, altura: 330 });
+  } else {
+    /* altura livre = mesa − espaçamento − rótulo (nome e número), medido de verdade depois de desenhar */
+    const est = getComputedStyle(palco);
+    const livre = palco.clientHeight - parseFloat(est.paddingTop) - parseFloat(est.paddingBottom) - 6;
+    desenharTorres(palco, ativas(), { ...opcoes, altura: livre - 70 });
+    const rot = Math.max(...[...palco.querySelectorAll(".rotulo-torre")].map((r) => r.offsetHeight + parseFloat(getComputedStyle(r).marginTop)), 0);
+    desenharTorres(palco, ativas(), { ...opcoes, altura: livre - rot });
+  }
   $("#btnLigar").classList.toggle("ligado", mesa.ligar);
   $("#btnLigar").textContent = mesa.ligar ? "🔗 Desligar" : "🔗 Ligar um a um";
   escreverFrasesTorres();
@@ -773,7 +932,7 @@ function escreverFrasesTorres() {
   const ts = ativas();
   const tema = mesa.tema;
   const NENHUM = { blocos: "nenhum bloco", bolas: "nenhuma bola", gemas: "nenhum diamante" };
-  let h = ts.map((t) => `<p><b style="color:${t.cor}">${esc(t.nome)}</b> ${t.n === 0 && NENHUM[tema] ? `não tem <b>${NENHUM[tema]}</b>` : `tem <b>${t.n}</b> ${un(t.n, tema)}`}.</p>`).join("");
+  let h = ts.map((t) => `<p class="linha-tem"><b style="color:${t.cor}">${esc(t.nome)}</b> ${t.n === 0 && NENHUM[tema] ? `não tem <b>${NENHUM[tema]}</b>` : `tem <b>${t.n}</b> ${un(t.n, tema)}`}.</p>`).join("");
   const A = ts[mesa.par[0]], B = ts[mesa.par[1]];
   const f = fraseComparar(A, B, tema);
   let resp = `<div class="resposta">${f.resp}${f.como ? `<br><span style="font-weight:600">${f.como}</span>` : ""}<div class="conta">${f.conta}</div>`;
@@ -812,6 +971,7 @@ $("#btnPassar").onclick = () => {
   const finalizar = () => {
     A.n -= 1; B.n += 1;
     desenharCartoes();
+    desenharMesa(false);
     mostrarAviso(
       `<p><b style="color:${A.cor}">${esc(A.nome)}</b> deu 1: <span class="menos-cor"><b>${A.n + 1} − 1 = ${A.n}</b>, agora tem 1 a menos do que tinha antes</span>.</p>` +
       `<p><b style="color:${B.cor}">${esc(B.nome)}</b> recebeu 1: <span class="mais-cor"><b>${B.n - 1} + 1 = ${B.n}</b>, agora tem 1 a mais do que tinha antes</span>.</p>` +
@@ -834,18 +994,22 @@ $("#btnPassar").onclick = () => {
   setTimeout(() => { clone.remove(); finalizar(); }, 750);
 };
 
-/* balão por cima da mesa: não empurra nada, some sozinho */
+/* explicação do "passar 1": no painel (tablet e computador) aparece por cima do quadro de frases, para a mesa não encolher;
+   no celular, numa faixa acima da mesa. Some sozinha em 8 segundos ou no ×. */
 let avisoTimer = null;
 function esconderAviso() {
+  const naMesa = $("#avisoMesa").classList.contains("aberto");
   $("#avisoMesa").classList.remove("aberto");
-  if ($("#tela-torres").classList.contains("ativa")) desenharMesa(false);
+  $("#avisoFrases").classList.remove("aberto");
+  if (naMesa && $("#tela-torres").classList.contains("ativa")) desenharMesa(false);
 }
 function mostrarAviso(html) {
-  const a = $("#avisoMesa");
+  const painel = getComputedStyle($("#tela-torres")).display === "grid";
+  const a = painel ? $("#avisoFrases") : $("#avisoMesa");
   a.innerHTML = `<button class="fechar" aria-label="fechar">×</button>${html}`;
   a.classList.add("aberto");
   a.querySelector(".fechar").onclick = esconderAviso;
-  desenharMesa(false);   /* a faixa ocupa espaço: as torres se ajustam */
+  if (!painel) desenharMesa(false);   /* a faixa ocupa espaço: as torres se ajustam */
   clearTimeout(avisoTimer);
   avisoTimer = setTimeout(esconderAviso, 8000);
 }
@@ -865,14 +1029,14 @@ const gp = { inicio: 5, blocos: [], saiu: [], ganhou: 0, gastou: 0 };
 function gpZerar() { gp.blocos = Array(gp.inicio).fill("base"); gp.saiu = []; gp.ganhou = 0; gp.gastou = 0; gpDesenhar(); }
 function gpDesenhar() {
   $("#gIni").textContent = gp.inicio;
-  const nome = $("#gNome").value || "Bia";
+  const nome = $("#gNome").value || "Laura";
   const palco = $("#gPalco");
   const n = gp.blocos.length;
   const alt = Math.max(1, n, gp.saiu.length);
   const lado = Math.max(16, Math.min(44, Math.floor(320 / alt) - 4));
   const pilha = (lista, tipo) => lista.map((t, k) => `<div class="bloco ${tipo === "saiu" ? "saiu" : t === "novo" ? "novo" : ""}" id="${tipo}-${k}" style="width:${lado}px;height:${lado}px;background:${CORES[0]};--sombra:${sombraDe(CORES[0])};font-size:${lado * .55}px">${tipo === "saiu" ? "" : '<span class="emo">💎</span>'}</div>`).join("");
   palco.innerHTML =
-    `<div class="torre"><div class="pilha" id="gPilha">${pilha(gp.blocos, "tem")}</div><div class="rotulo-torre" style="color:${CORES[0]}">${esc(nome)} tem<span class="qtd">${n}</span></div></div>` +
+    `<div class="torre"><div class="pilha" id="gPilha">${pilha(gp.blocos, "tem")}</div><div class="rotulo-torre" style="color:${CORES[0]}"><span class="rot-linha">${avatar(nome, 34)}${esc(nome)} tem</span><span class="qtd">${n}</span></div></div>` +
     `<div class="torre"><div class="pilha" id="gSaiu">${pilha(gp.saiu, "saiu")}</div><div class="rotulo-torre" style="color:var(--vermelho)">gastou<span class="qtd">${gp.saiu.length}</span></div></div>`;
   let partes = [`${gp.inicio}`];
   if (gp.ganhou) partes.push(`<span class="mais-cor">+ ${gp.ganhou}</span>`);
@@ -908,7 +1072,7 @@ $("#gGastar").onclick = () => {
 $("#gIniMais").onclick = () => { gp.inicio = Math.min(15, gp.inicio + 1); gpZerar(); };
 $("#gIniMenos").onclick = () => { gp.inicio = Math.max(0, gp.inicio - 1); gpZerar(); };
 $("#gZerar").onclick = gpZerar;
-$("#gNome").oninput = gpDesenhar;
+$("#gNome").onchange = gpDesenhar;
 $("#falarGanhar").onclick = () => falar(textoDe($("#frasesGanhar")));
 
 /* ================= QUANTO FALTA ================= */
