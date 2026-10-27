@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesa do Mais e do Menos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* Identidade visual do Silabário Mágico ("Ateliê de Feitiços"): creme quente, tinta ameixa, Baloo 2 + Nunito, botões tijolinho, Fagulha */
+:root {
+  --cream: #FFF7EC; --cream-2: #FFEEDA; --ink: #3B2E58; --ink-soft: #6E6091; --line: #EADFCB; --card-soft: #FFFFFF;
+  --grape: #7A4FE0; --grape-deep: #5B34B8; --tangerine: #FF7A3D; --tangerine-deep: #D95A22; --sunny: #FFC53D; --sunny-deep: #D9A21A;
+  --mint: #1FBE97; --mint-deep: #14926F; --sky: #46B6F6; --sky-deep: #2A8FCB; --berry: #FF5C8A; --berry-deep: #D83E6C;
+  --shadow-soft: 0 14px 30px -12px rgba(59, 46, 88, .35);
+  --radius: 1.1rem;
+  --font-display: "Baloo 2", "Fredoka", ui-rounded, "Segoe UI Rounded", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --font-body: "Nunito", "Quicksand", "Segoe UI", system-ui, sans-serif;
+  /* nomes antigos usados no código da página */
+  --azul: var(--grape); --laranja: var(--tangerine); --roxo: var(--sky); --ouro: var(--sunny);
+  --verde: var(--mint); --verde-claro: #D4F5EA; --vermelho: var(--berry); --tinta: var(--ink); --suave: var(--ink-soft);
+  --papel: var(--card-soft); --linha: var(--line); --loja: #B5835A;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-body); font-weight: 600; color: var(--ink); font-size: 18px; min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(1100px 460px at 10% -10%, rgba(70, 182, 246, .18), transparent 60%),
+    radial-gradient(950px 420px at 92% 2%, rgba(255, 92, 138, .14), transparent 60%),
+    linear-gradient(180deg, var(--cream), var(--cream-2));
+  background-attachment: fixed;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 800; line-height: 1.08; letter-spacing: -.01em; }
+button, select, input { font-family: var(--font-display); }
+
+/* faixa do topo */
+.topo { background: var(--card-soft); border-bottom: 2px solid var(--line); box-shadow: 0 2px 6px rgba(59,46,88,.06); }
+.topo .dentro { max-width: 1040px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+.topo .marca { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--grape); line-height: 1; }
+.topo .marca small { display: block; font-family: var(--font-body); font-weight: 700; font-size: .78rem; color: var(--ink-soft); margin-top: 3px; }
+
+/* boas-vindas */
+.heroi {
+  position: relative; overflow: hidden; max-width: 1040px; margin: 16px auto 4px; padding: 18px 22px; border-radius: 26px;
+  display: flex; align-items: center; gap: 18px; border: 2px solid var(--line);
+  background: linear-gradient(120deg, color-mix(in srgb, var(--grape) 16%, var(--card-soft)), color-mix(in srgb, var(--sky) 18%, var(--card-soft)));
+}
+.heroi h2 { margin: 0 0 4px; font-size: 1.9rem; color: var(--grape); }
+.heroi h2 .mais { color: var(--mint-deep); } .heroi h2 .menos { color: var(--berry-deep); }
+.heroi p { margin: 0; color: var(--ink-soft); font-weight: 700; font-size: 1.05rem; max-width: 560px; }
+.heroi .bolha { position: absolute; border-radius: 50%; pointer-events: none; }
+.heroi .b1 { right: -24px; top: -24px; width: 110px; height: 110px; background: var(--sunny); opacity: .4; }
+.heroi .b2 { right: 70px; bottom: 6px; width: 38px; height: 38px; background: var(--berry); opacity: .3; }
+.heroi .b3 { right: 150px; top: 10px; width: 20px; height: 20px; background: var(--mint); opacity: .35; }
+
+/* abas = botões tijolinho coloridos */
+nav.abas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 14px 12px 6px; max-width: 1040px; margin: 0 auto; }
+nav.abas button {
+  border: 0; border-radius: 18px; padding: 10px 16px 9px; font-size: 1.05rem; font-weight: 800; cursor: pointer; color: #fff;
+  transition: transform .08s ease, box-shadow .08s ease; box-shadow: 0 6px 0 var(--cd), var(--shadow-soft); background: var(--c);
+}
+nav.abas button:nth-child(1) { --c: var(--grape); --cd: var(--grape-deep); }
+nav.abas button:nth-child(2) { --c: var(--sky); --cd: var(--sky-deep); }
+nav.abas button:nth-child(3) { --c: var(--tangerine); --cd: var(--tangerine-deep); }
+nav.abas button:nth-child(4) { --c: var(--mint); --cd: var(--mint-deep); }
+nav.abas button:nth-child(5) { --c: var(--berry); --cd: var(--berry-deep); }
+nav.abas button.ativa { transform: translateY(5px); box-shadow: 0 1px 0 var(--cd), 0 0 0 4px color-mix(in srgb, var(--c) 30%, transparent); }
+
+main { max-width: 1040px; margin: 0 auto; padding: 0 12px 48px; }
+section.tela { display: none; }
+section.tela.ativa { display: block; animation: aparecer .35s ease-out; }
+@keyframes aparecer { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* cartões (janelinhas) */
+.janela { background: var(--card-soft); border: 2px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-soft); margin: 16px 0; overflow: hidden; }
+.janela > .barra {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-family: var(--font-display); font-weight: 800; font-size: 1.2rem;
+  color: var(--ink); border-bottom: 2px solid var(--line); background: var(--cream);
+}
+.selo {
+  width: 40px; height: 40px; border-radius: 13px; display: inline-grid; place-items: center; font-size: 1.25rem; flex: none;
+  background: linear-gradient(135deg, var(--c), var(--cd)); box-shadow: 0 3px 0 var(--cd);
+}
+.s-grape { --c: var(--grape); --cd: var(--grape-deep); } .s-sky { --c: var(--sky); --cd: var(--sky-deep); }
+.s-tangerine { --c: var(--tangerine); --cd: var(--tangerine-deep); } .s-mint { --c: var(--mint); --cd: var(--mint-deep); }
+.s-berry { --c: var(--berry); --cd: var(--berry-deep); } .s-sunny { --c: var(--sunny); --cd: var(--sunny-deep); }
+.janela > .conteudo { padding: 16px; }
+
+/* botões tijolinho */
+.btn {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; border: 0; border-radius: 16px; padding: 9px 16px 8px; margin: 4px 3px 8px;
+  cursor: pointer; color: var(--grape); background: var(--card-soft); box-shadow: 0 5px 0 var(--line), var(--shadow-soft);
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--line), var(--shadow-soft); }
+.btn:focus-visible, .opcao:focus-visible, nav.abas button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.btn.grande { font-size: 1.2rem; padding: 12px 22px 11px; }
+.btn.verde { color: #fff; background: var(--mint); box-shadow: 0 5px 0 var(--mint-deep), var(--shadow-soft); }
+.btn.verde:active { box-shadow: 0 1px 0 var(--mint-deep), var(--shadow-soft); }
+.btn.vermelho { color: #fff; background: var(--berry); box-shadow: 0 5px 0 var(--berry-deep), var(--shadow-soft); }
+.btn.vermelho:active { box-shadow: 0 1px 0 var(--berry-deep), var(--shadow-soft); }
+.btn.escuro { color: #fff; background: var(--grape); box-shadow: 0 5px 0 var(--grape-deep), var(--shadow-soft); }
+.btn.escuro:active { box-shadow: 0 1px 0 var(--grape-deep), var(--shadow-soft); }
+.btn.ouro, .btn.ligado { color: var(--ink); background: var(--sunny); box-shadow: 0 5px 0 var(--sunny-deep), var(--shadow-soft); }
+.btn.ouro:active, .btn.ligado:active { box-shadow: 0 1px 0 var(--sunny-deep), var(--shadow-soft); }
+.btn:disabled { opacity: .45; cursor: default; }
+.linha-botoes { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; justify-content: center; }
+.linha-botoes > span { font-family: var(--font-display); }
+select, input[type=text] {
+  font-size: 1.05rem; font-weight: 700; padding: 8px 12px; border-radius: 14px; border: 2px solid var(--line); background: var(--card-soft); color: var(--ink);
+}
+label.chk { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; margin: 0 6px; cursor: pointer; }
+label.chk input { width: 22px; height: 22px; accent-color: var(--grape); }
+
+/* cartões das torres */
+.cartoes { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.cartao { border-radius: 22px; padding: 12px; text-align: center; color: #fff; background: linear-gradient(135deg, var(--c), var(--cd)); box-shadow: 0 6px 0 var(--cd), var(--shadow-soft); }
+.cartao input[type=text] { width: 100%; text-align: center; font-family: var(--font-display); font-weight: 800; border: 0; background: rgba(255,255,255,.92); }
+.cartao .numero { font-family: var(--font-display); font-size: 3rem; font-weight: 800; line-height: 1.05; margin: 6px 0 2px; }
+.cartao .btn { min-width: 70px; font-size: 1.6rem; padding: 4px 14px 2px; color: var(--cd); }
+
+/* palco das torres */
+.palco {
+  position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 46px;
+  padding: 16px 10px 8px; min-height: 120px; border-radius: 18px; background: var(--cream);
+  background-image: repeating-linear-gradient(0deg, transparent 0 29px, rgba(122,79,224,.07) 29px 31px);
+}
+.palco svg.fios { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.torre { display: flex; flex-direction: column; align-items: center; transition: opacity .3s; }
+.torre.apagada { opacity: .25; }
+.pilha { display: flex; flex-direction: column-reverse; gap: 6px; align-items: center; }
+.bloco {
+  border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; color: #fff;
+  box-shadow: 0 4px 0 var(--sombra, rgba(0,0,0,.22)); position: relative; user-select: none; animation: cair .28s ease-out;
+}
+@keyframes cair { from { transform: translateY(-10px); opacity: 0; } to { transform: none; opacity: 1; } }
+.bloco.extra { background: var(--sunny) !important; --sombra: var(--sunny-deep); color: var(--ink); animation: brilho 1.2s ease-in-out infinite; }
+.bloco.fantasma { background: transparent !important; border: 3px dashed var(--ink-soft); box-shadow: none; color: var(--ink-soft); animation: none; }
+.bloco.novo { background: var(--mint) !important; --sombra: var(--mint-deep); }
+.bloco.saiu { background: #FFE3EC !important; color: var(--berry); box-shadow: none; border: 2px solid var(--berry); }
+.bloco.saiu::after {
+  content: ""; position: absolute; inset: 3px;
+  background: linear-gradient(45deg, transparent 45%, var(--berry) 45% 55%, transparent 55%),
+              linear-gradient(-45deg, transparent 45%, var(--berry) 45% 55%, transparent 55%);
+}
+.bloco .emo { pointer-events: none; }
+.bloco .num { position: absolute; font-size: .8em; }
+@keyframes brilho { 50% { box-shadow: 0 4px 0 var(--sunny-deep), 0 0 0 5px rgba(255,197,61,.45); } }
+.rotulo-torre { margin-top: 8px; font-family: var(--font-display); font-weight: 800; text-align: center; line-height: 1.05; }
+.rotulo-torre .qtd { font-size: 1.7rem; display: block; }
+.torre.escondida .pilha { width: 72px; height: 120px; border: 3px dashed var(--ink-soft); border-radius: 14px; align-items: center; justify-content: center; font-size: 3rem; color: var(--ink-soft); font-family: var(--font-display); }
+
+/* frases */
+.frases { font-size: 1.15rem; line-height: 1.5; }
+.frases p { margin: 4px 0; }
+.frases .resposta { background: #FFF4D6; border: 2px solid #FFE3A3; border-radius: 16px; padding: 10px 14px; margin-top: 8px; font-weight: 700; }
+.conta { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; text-align: center; margin: 6px 0; letter-spacing: 1px; }
+.mais-cor { color: var(--mint-deep); } .menos-cor { color: var(--berry-deep); }
+
+/* ganhar e perder */
+.duas-colunas { display: flex; justify-content: center; align-items: flex-end; gap: 60px; flex-wrap: wrap; padding: 12px; border-radius: 18px; background: var(--cream); }
+
+/* quanto falta */
+.casas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 12px 0; }
+.casa {
+  width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; position: relative;
+}
+.casa.cheia { background: var(--grape); color: #fff; box-shadow: 0 5px 0 var(--grape-deep); }
+.casa.vazia { border: 3px dashed var(--ink-soft); color: #B9AFD3; }
+.casa.contada { background: var(--mint); color: #fff; border: 0; box-shadow: 0 5px 0 var(--mint-deep); animation: pulo .4s; }
+@keyframes pulo { 40% { transform: translateY(-10px) scale(1.08); } }
+.casa .emo { position: absolute; top: -12px; right: -8px; font-size: 1rem; }
+
+/* troco */
+.notas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.nota {
+  width: 120px; height: 60px; border-radius: 12px; border: 3px solid transparent; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; color: #fff;
+  text-shadow: 0 1px 0 rgba(0,0,0,.3); box-shadow: 0 5px 0 rgba(0,0,0,.18); font-size: 1.05rem; transition: transform .1s;
+}
+.nota small { font-family: var(--font-body); font-weight: 800; font-size: .7rem; }
+.nota.escolhida { border-color: var(--ink); transform: translateY(-4px) rotate(-2deg); }
+.n2 { background: linear-gradient(135deg, #6c8fb3, #9fb8d1); } .n5 { background: linear-gradient(135deg, #8e6bb8, #b9a2d6); }
+.n10 { background: linear-gradient(135deg, #d9534f, #f08f7c); } .n20 { background: linear-gradient(135deg, #e0a800, #f5cf5a); }
+.n50 { background: linear-gradient(135deg, #b5651d, #e09b5a); } .n100 { background: linear-gradient(135deg, #2f8fc7, #79c0e6); }
+.barra-dinheiro { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; padding: 12px 0; }
+.dinheiro {
+  min-width: 48px; height: 48px; padding: 0 4px; border-radius: 12px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: .9rem; position: relative;
+}
+.dinheiro.loja { background: var(--loja); color: #fff; box-shadow: 0 4px 0 #8a5d38; }
+.dinheiro.troco { background: var(--verde-claro); color: var(--mint-deep); border: 3px dashed var(--mint); }
+.dinheiro.troco.contada { background: var(--mint); color: #fff; border: 0; box-shadow: 0 4px 0 var(--mint-deep); animation: pulo .4s; }
+.legenda { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; font-weight: 800; font-size: .95rem; }
+.legenda span::before { content: ""; display: inline-block; width: 16px; height: 16px; border-radius: 5px; vertical-align: -2px; margin-right: 6px; }
+.legenda .l-loja::before { background: var(--loja); } .legenda .l-troco::before { background: var(--mint); }
+
+/* revisão */
+.progresso { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
+.progresso i { width: 18px; height: 18px; border-radius: 6px; background: var(--line); display: inline-block; }
+.progresso i.atual { background: var(--grape); transform: scale(1.15); }
+.progresso i.ok { background: var(--mint); } .progresso i.erro { background: var(--berry); }
+.pergunta { font-family: var(--font-display); font-size: 1.55rem; font-weight: 800; line-height: 1.3; text-align: center; margin: 6px 0 12px; }
+.opcoes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+.opcao {
+  border: 2px solid var(--line); border-radius: 20px; background: var(--card-soft); padding: 14px 10px; font-size: 1.6rem; font-weight: 800;
+  cursor: pointer; font-family: var(--font-display); color: var(--ink); box-shadow: 0 6px 0 var(--line); transition: transform .08s, box-shadow .08s;
+}
+.opcao:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--line); }
+.opcao .letra { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; background: var(--grape); color: #fff; font-size: 1.05rem; margin-right: 10px; vertical-align: 4px; }
+.opcao.certa { border-color: var(--mint); background: #E3F9F1; box-shadow: 0 6px 0 var(--mint-deep); }
+.opcao.certa .letra { background: var(--mint); }
+.opcao.errada { border-color: var(--berry); background: #FFE6EE; box-shadow: 0 6px 0 var(--berry-deep); animation: balanco .4s; }
+.opcao.errada .letra { background: var(--berry); }
+.opcao:disabled { cursor: default; }
+@keyframes balanco { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.feedback { margin-top: 14px; border-radius: 20px; padding: 14px 16px; font-size: 1.12rem; line-height: 1.45; display: none; }
+.feedback.ok { display: block; background: #E3F9F1; border: 2px solid var(--mint); }
+.feedback.erro { display: block; background: #FFF1E4; border: 2px solid var(--tangerine); }
+.feedback h3 { margin: 0 0 6px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+.mini { margin: 10px 0; }
+.estrelas { font-size: 2.8rem; text-align: center; letter-spacing: 6px; }
+.voltar-quiz { position: fixed; right: 14px; bottom: 14px; z-index: 50; display: none; }
+
+/* mascote e comemoração */
+.fagulha { display: inline-block; flex: none; }
+.fag-float { animation: flutuar 3.2s ease-in-out infinite; }
+.fag-festa { animation: festa 1.5s ease-in-out infinite; }
+.fag-balanco { animation: balancar 2s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes festa { 0% { transform: scale(1); } 14% { transform: scale(1.18); } 28% { transform: scale(1); } 42% { transform: scale(1.18); } 70% { transform: scale(1); } }
+@keyframes balancar { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+.festa { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; pointer-events: none; }
+.festa.aberta { display: flex; animation: aparecer .25s ease-out; }
+.festa .cartao-festa { background: var(--card-soft); border: 2px solid var(--line); border-radius: 26px; box-shadow: var(--shadow-soft); padding: 18px 32px; text-align: center; }
+.festa .cartao-festa h2 { margin: 4px 0 0; font-size: 2rem; color: var(--mint-deep); }
+.confete { position: absolute; top: -20px; width: 10px; height: 14px; border-radius: 3px; animation: confete 1.8s linear forwards; }
+@keyframes confete { to { transform: translateY(105vh) rotate(540deg); opacity: .2; } }
+
+/* modal */
+.fundo-modal { position: fixed; inset: 0; background: rgba(59,46,88,.45); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+.fundo-modal.aberto { display: flex; }
+.fundo-modal .janela { max-width: 560px; width: 100%; }
+
+.voando { position: fixed; z-index: 200; transition: transform .7s cubic-bezier(.4,1.4,.6,1), opacity .7s; pointer-events: none; }
+
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .palco { gap: 22px; }
+  .opcoes { grid-template-columns: 1fr; }
+  .cartao .numero { font-size: 2.2rem; }
+  .heroi { margin: 12px; padding: 14px; } .heroi h2 { font-size: 1.45rem; }
+  .topo .marca { font-size: 1.2rem; }
+  nav.abas button { font-size: .95rem; padding: 8px 12px 7px; }
+}
+/* ---------- diagramação em uma janela só (27/10/2026) ---------- */
+.col-mesa > .conteudo { position: relative; }
+.aviso-mesa {
+  position: relative; flex: none; margin: 0 0 8px; background: #EAF6FE; border: 2px solid var(--sky); border-radius: 14px;
+  padding: 6px 34px 6px 12px; font-size: 1rem; line-height: 1.35; display: none; text-align: center;
+}
+.aviso-mesa.aberto { display: block; animation: aparecer .25s ease-out; }
+.aviso-mesa p { margin: 1px 0; }
+.aviso-mesa .fechar { position: absolute; right: 8px; top: 6px; border: 0; background: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--ink-soft); }
+.topo .dentro { max-width: 1440px; flex-wrap: wrap; row-gap: 4px; }
+.topo nav.abas { margin-left: auto; padding: 4px 0 9px; max-width: none; justify-content: flex-end; }
+.topo nav.abas button { font-size: 1rem; padding: 8px 14px 7px; }
+main { max-width: 1440px; }
+@media (max-width: 999px) { .topo nav.abas { margin: 0 auto; justify-content: center; } }
+@media (min-width: 1000px) {
+  main { padding-bottom: 12px; }
+  /* torres: controles | mesa | frases, na altura da janela */
+  #tela-torres.ativa {
+    display: grid; grid-template-columns: minmax(250px, 290px) 1fr minmax(270px, 340px); gap: 14px;
+    height: calc(100vh - var(--topo-h, 76px) - 22px); min-height: 500px; padding-top: 12px;
+  }
+  #tela-torres .janela { margin: 0; display: flex; flex-direction: column; min-height: 0; }
+  #tela-torres .janela > .barra { padding: 8px 12px; font-size: 1.1rem; }
+  #tela-torres .janela > .conteudo { flex: 1; min-height: 0; overflow: auto; padding: 12px; }
+  #tela-torres .col-mesa > .conteudo { display: flex; flex-direction: column; overflow: hidden; }
+  #tela-torres .col-mesa .palco { flex: 1; min-height: 0; overflow: hidden; }
+  #tela-torres .col-mesa .linha-botoes { flex: none; }
+  #tela-torres .col-controles .linha-botoes { justify-content: flex-start; }
+  #tela-torres .cartoes { grid-template-columns: 1fr; gap: 12px; margin-top: 4px; }
+  #tela-torres .cartao {
+    display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "num nome botoes"; align-items: center; gap: 8px; padding: 8px 10px;
+  }
+  #tela-torres .cartao input[type=text] { grid-area: nome; padding: 5px 8px; min-width: 0; font-size: 1rem; }
+  #tela-torres .cartao .numero { grid-area: num; font-size: 2.2rem; margin: 0; min-width: 42px; }
+  #tela-torres .cartao > div:last-child { grid-area: botoes; white-space: nowrap; }
+  #tela-torres .cartao .btn { min-width: 40px; font-size: 1.3rem; padding: 2px 8px 0; margin: 2px 1px 6px; }
+  #tela-torres .col-frases .barra { font-size: 1.05rem; }
+  #tela-torres .col-frases .barra .btn { font-size: .95rem; padding: 6px 10px 5px; margin: 0 0 4px; }
+  #tela-torres .frases { font-size: 1.02rem; line-height: 1.38; }
+  #tela-torres .frases p { margin: 2px 0; }
+  #tela-torres .frases .resposta { padding: 8px 10px; margin-top: 6px; }
+  #tela-torres .frases .conta { font-size: 1.45rem; margin: 4px 0; }
+  #tela-torres label.chk { font-size: .95rem; margin: 0; }
+  /* ganhar, falta e troco: figura e frases lado a lado */
+  #tela-ganhar.ativa, #tela-falta.ativa, #tela-troco.ativa {
+    display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; padding-top: 12px;
+  }
+  #tela-ganhar .janela, #tela-falta .janela, #tela-troco .janela { margin: 0; }
+  #tela-quiz { max-width: 960px; margin: 0 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="topo"><div class="dentro">
+  <span class="fagulha" data-fagulha="idle" data-tam="44"></span>
+  <div class="marca">Mesa do <span class="mais-cor">Mais</span> e do <span class="menos-cor">Menos</span><small>Vamos descobrir o mais e o menos! Toque em 🔊 para ouvir. ✨</small></div>
+  <nav class="abas" id="abas">
+    <button data-tela="torres" class="ativa">🧱 Comparar torres</button>
+    <button data-tela="ganhar">💎 Ganhar e gastar</button>
+    <button data-tela="falta">🔑 Quanto falta</button>
+    <button data-tela="troco">💵 Troco</button>
+    <button data-tela="quiz">⭐ Revisão</button>
+  </nav>
+</div></header>
+
+<main>
+<!-- ================= TORRES ================= -->
+<section class="tela ativa" id="tela-torres">
+  <div class="janela azul col-controles">
+    <div class="barra"><span class="selo s-grape">🧱</span>Monte as torres</div>
+    <div class="conteudo">
+      <div class="linha-botoes" style="margin-bottom:10px">
+        <span style="font-weight:800">Quantas torres?</span>
+        <button class="btn" data-qtd="2">2 torres</button>
+        <button class="btn" data-qtd="3">3 torres</button>
+        <span style="width:14px"></span>
+        <span style="font-weight:800">Desenho:</span>
+        <select id="tema">
+          <option value="blocos">🧱 blocos</option>
+          <option value="bolas">⚽ bolas</option>
+          <option value="anos">🕯️ anos (idade)</option>
+          <option value="gemas">💎 diamantes</option>
+        </select>
+      </div>
+      <div class="cartoes" id="cartoes"></div>
+    </div>
+  </div>
+
+  <div class="janela col-mesa">
+    <div class="barra"><span class="selo s-sky">🔗</span>A mesa</div>
+    <div class="conteudo">
+      <div class="linha-botoes" style="margin-bottom:8px">
+        <span style="font-weight:800">Comparar</span>
+        <select id="parA"></select>
+        <span style="font-weight:800">com</span>
+        <select id="parB"></select>
+        <button class="btn ouro grande" id="btnLigar">🔗 Ligar um a um</button>
+      </div>
+      <div class="aviso-mesa" id="avisoMesa" role="status"></div>
+      <div class="palco" id="palco"></div>
+      <div class="linha-botoes" style="margin-top:10px">
+        <span style="font-weight:800">Passar 1 de</span>
+        <select id="de"></select>
+        <span style="font-weight:800">para</span>
+        <select id="para"></select>
+        <button class="btn escuro" id="btnPassar">➡️ Passar 1</button>
+        <button class="btn verde" id="btnJuntar">🧺 Juntar todas</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="janela verde col-frases">
+    <div class="barra"><span class="selo s-mint">💬</span>O que a mesa mostra
+      <span style="flex:1"></span>
+      <button class="btn" id="falarTorres">🔊 Ouvir</button>
+    </div>
+    <div class="conteudo">
+      <div class="linha-botoes" style="justify-content:flex-start">
+        <label class="chk" title="O adulto pergunta antes; a resposta só aparece quando tocar em Mostrar resposta"><input type="checkbox" id="esconder"> Esconder a resposta</label>
+        <button class="btn ouro" id="mostrarResp" style="display:none">👀 Mostrar resposta</button>
+      </div>
+      <div class="frases" id="frasesTorres"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GANHAR E PERDER ================= -->
+<section class="tela" id="tela-ganhar">
+  <div class="janela azul">
+    <div class="barra"><span class="selo s-grape">💎</span>Ganhar é juntar. Gastar é tirar.</div>
+    <div class="conteudo">
+      <div class="linha-botoes">
+        <span style="font-weight:800">Nome:</span> <input type="text" id="gNome" value="Bia" style="width:120px">
+        <span style="font-weight:800">Começa com</span>
+        <button class="btn" id="gIniMenos">−</button>
+        <span id="gIni" style="font-size:1.6rem;font-weight:900;min-width:36px;text-align:center">5</span>
+        <button class="btn" id="gIniMais">＋</button>
+        <button class="btn" id="gZerar">🔄 Começar de novo</button>
+      </div>
+      <div class="linha-botoes" style="margin-top:8px">
+        <button class="btn verde grande" id="gGanhar">➕ Ganhou 1</button>
+        <button class="btn vermelho grande" id="gGastar">➖ Gastou 1</button>
+      </div>
+      <div class="duas-colunas" id="gPalco" style="margin-top:14px"></div>
+    </div>
+  </div>
+  <div class="janela verde">
+    <div class="barra"><span class="selo s-mint">💬</span>O que aconteceu<span style="flex:1"></span><button class="btn" id="falarGanhar">🔊 Ouvir</button></div>
+    <div class="conteudo"><div class="frases" id="frasesGanhar"></div></div>
+  </div>
+</section>
+
+<!-- ================= QUANTO FALTA ================= -->
+<section class="tela" id="tela-falta">
+  <div class="janela azul">
+    <div class="barra"><span class="selo s-tangerine">🔑</span>Quanto falta? Conte até chegar.</div>
+    <div class="conteudo">
+      <div class="linha-botoes">
+        <select id="fTema">
+          <option value="chaves">🔑 chaves para abrir o baú</option>
+          <option value="estrelas">⭐ estrelas para passar de fase</option>
+          <option value="figurinhas">🃏 figurinhas para a página do álbum</option>
+        </select>
+      </div>
+      <div class="linha-botoes" style="margin-top:8px">
+        <span style="font-weight:800">Tenho</span>
+        <button class="btn" id="fTMenos">−</button><span id="fT" style="font-size:1.6rem;font-weight:900;min-width:36px;text-align:center">2</span><button class="btn" id="fTMais">＋</button>
+        <span style="width:16px"></span>
+        <span style="font-weight:800">Preciso de</span>
+        <button class="btn" id="fPMenos">−</button><span id="fP" style="font-size:1.6rem;font-weight:900;min-width:36px;text-align:center">5</span><button class="btn" id="fPMais">＋</button>
+      </div>
+      <div class="casas" id="casas"></div>
+      <div class="linha-botoes"><button class="btn ouro grande" id="fContar">👆 Contar até chegar</button></div>
+    </div>
+  </div>
+  <div class="janela verde">
+    <div class="barra"><span class="selo s-mint">💬</span>O que a conta diz<span style="flex:1"></span><button class="btn" id="falarFalta">🔊 Ouvir</button></div>
+    <div class="conteudo"><div class="frases" id="frasesFalta"></div></div>
+  </div>
+</section>
+
+<!-- ================= TROCO ================= -->
+<section class="tela" id="tela-troco">
+  <div class="janela azul">
+    <div class="barra"><span class="selo s-tangerine">💵</span>Na loja: o troco é o que você deu a mais</div>
+    <div class="conteudo">
+      <div class="linha-botoes">
+        <span style="font-weight:800">Comprar:</span>
+        <select id="tProduto">
+          <option value="chocolate|🍫">🍫 chocolate</option>
+          <option value="sorvete|🍦">🍦 sorvete</option>
+          <option value="brinquedo|🧸">🧸 brinquedo</option>
+          <option value="livro|📕">📕 livro</option>
+        </select>
+        <span style="font-weight:800">custa R$</span>
+        <button class="btn" id="tPMenos">−</button><span id="tPreco" style="font-size:1.6rem;font-weight:900;min-width:44px;text-align:center">20</span><button class="btn" id="tPMais">＋</button>
+      </div>
+      <p style="text-align:center;font-weight:800;margin:10px 0 6px">Pagou com a nota de:</p>
+      <div class="notas" id="notas"></div>
+      <div class="barra-dinheiro" id="barraDinheiro"></div>
+      <div class="legenda"><span class="l-loja">fica na loja (o preço)</span><span class="l-troco">volta para você (o troco)</span></div>
+      <div class="linha-botoes" style="margin-top:8px"><button class="btn ouro grande" id="tContar">👆 Contar o troco</button></div>
+    </div>
+  </div>
+  <div class="janela verde">
+    <div class="barra"><span class="selo s-mint">💬</span>O que aconteceu na loja<span style="flex:1"></span><button class="btn" id="falarTroco">🔊 Ouvir</button></div>
+    <div class="conteudo"><div class="frases" id="frasesTroco"></div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="tela" id="tela-quiz">
+  <div class="janela">
+    <div class="barra"><span class="selo s-berry">⭐</span><span id="quizTitulo">Revisão</span><span style="flex:1"></span><button class="btn" id="falarQuiz">🔊 Ouvir</button></div>
+    <div class="conteudo" id="quiz"></div>
+  </div>
+</section>
+</main>
+
+<button class="btn escuro grande voltar-quiz" id="voltarQuiz">⭐ Voltar para a pergunta</button>
+
+<div class="festa" id="festa"><div class="cartao-festa"><span class="fagulha" data-fagulha="celebrate" data-tam="110"></span><h2 id="festaTexto">Muito bem!</h2></div></div>
+
+<div class="fundo-modal" id="modal">
+  <div class="janela">
+    <div class="barra"><span class="selo s-sunny">✨</span><span id="modalTitulo"></span></div>
+    <div class="conteudo"><div class="frases" id="modalCorpo"></div>
+      <div class="linha-botoes" style="margin-top:10px"><button class="btn escuro" id="modalFechar">Entendi</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ---------- utilidades ---------- */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const CORES = ["#7A4FE0", "#FF7A3D", "#46B6F6"];   /* uva, tangerina, céu (paleta do Silabário Mágico) */
+const FUNDO = { "#7A4FE0": "#5B34B8", "#FF7A3D": "#D95A22", "#46B6F6": "#2A8FCB" };
+const sombraDe = (cor) => FUNDO[cor] || "rgba(0,0,0,.22)";
+
+/* Fagulha, o vaga-lume do Silabário Mágico: idle (flutua), celebrate (comemora), encourage (incentiva) */
+let fagN = 0;
+function fagulhaSVG(estado = "idle", tam = 80) {
+  const id = "fg" + fagN++;
+  const alt = Math.round((tam * 140) / 120);
+  const anim = estado === "celebrate" ? "fag-festa" : estado === "encourage" ? "fag-balanco" : "fag-float";
+  const olhos = estado === "celebrate"
+    ? '<path d="M43 66c3-6 11-6 14 0" stroke="#3A2E14" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M63 66c3-6 11-6 14 0" stroke="#3A2E14" stroke-width="4" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="52" cy="67" r="5.5" fill="#3A2E14"/><circle cx="68" cy="67" r="5.5" fill="#3A2E14"/><circle cx="54" cy="65" r="1.8" fill="#fff"/><circle cx="70" cy="65" r="1.8" fill="#fff"/>';
+  const boca = estado === "encourage"
+    ? '<path d="M54 81c4 3 8 3 12 0" stroke="#B8860B" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    : '<path d="M52 80c4 5 12 5 16 0" stroke="#B8860B" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  const faiscas = estado === "celebrate"
+    ? '<path d="M100 54l2 5 5 1-4 4 1 5-4-3-4 3 1-5-4-4 5-1z" fill="#FF5C8A"/><path d="M14 60l1.5 4 4 .6-3 3 .8 4-3.3-2-3.3 2 .8-4-3-3 4-.6z" fill="#7A4FE0"/>' : "";
+  return `<svg class="${anim}" width="${tam}" height="${alt}" viewBox="0 0 120 140" role="img" aria-label="Fagulha">
+    <defs><radialGradient id="${id}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFE9A8"/><stop offset="100%" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient></defs>
+    <ellipse cx="60" cy="132" rx="24" ry="5" fill="rgba(0,0,0,.10)"/>
+    <circle cx="60" cy="112" r="${estado === "celebrate" ? 32 : 26}" fill="url(#${id})"/>
+    <ellipse cx="30" cy="70" rx="14" ry="20" fill="#EAF3B0" opacity=".85"/><ellipse cx="90" cy="70" rx="14" ry="20" fill="#EAF3B0" opacity=".85"/>
+    <ellipse cx="60" cy="78" rx="30" ry="34" fill="#FFD972"/><path d="M32 88a28 28 0 0 0 56 0z" fill="#F4B740"/>
+    <circle cx="60" cy="106" r="12" fill="#FFE08A"/>
+    <circle cx="50" cy="66" r="12" fill="#fff"/><circle cx="70" cy="66" r="12" fill="#fff"/>${olhos}${boca}
+    <path d="M48 46c-6-8-10-12-16-12" stroke="#C79A2E" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M72 46c6-8 10-12 16-12" stroke="#C79A2E" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="31" cy="33" r="4" fill="#FFC53D"/><circle cx="89" cy="33" r="4" fill="#FFC53D"/>${faiscas}</svg>`;
+}
+function acenderFagulhas(raiz = document) {
+  raiz.querySelectorAll("[data-fagulha]").forEach((el) => { el.innerHTML = fagulhaSVG(el.dataset.fagulha, +el.dataset.tam || 80); el.removeAttribute("data-fagulha"); });
+}
+const CONFETE = ["#7A4FE0", "#FF7A3D", "#FFC53D", "#1FBE97", "#46B6F6", "#FF5C8A"];
+let festaTimer = null;
+function celebrar(texto = "Muito bem!", duracao = 1300) {
+  const f = $("#festa");
+  $("#festaTexto").textContent = texto;
+  f.querySelectorAll(".confete").forEach((c) => c.remove());
+  for (let k = 0; k < 28; k++) {
+    const c = document.createElement("span");
+    c.className = "confete";
+    c.style.left = ((k * 37) % 100) + "%";
+    c.style.background = CONFETE[k % CONFETE.length];
+    c.style.animationDelay = (k % 6) * 0.08 + "s";
+    f.appendChild(c);
+  }
+  f.classList.add("aberta");
+  clearTimeout(festaTimer);
+  festaTimer = setTimeout(() => f.classList.remove("aberta"), duracao);
+}
+const TEMAS = {
+  blocos: { emo: "", um: "bloco", varios: "blocos" },
+  bolas: { emo: "⚽", um: "bola", varios: "bolas" },
+  anos: { emo: "🕯️", um: "ano", varios: "anos" },
+  gemas: { emo: "💎", um: "diamante", varios: "diamantes" },
+};
+const un = (n, t) => (n === 1 ? TEMAS[t].um : TEMAS[t].varios);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+let vozPt = null;
+function carregarVoz() {
+  if (!("speechSynthesis" in window)) return;
+  const vs = speechSynthesis.getVoices();
+  vozPt = vs.find((v) => /pt[-_]BR/i.test(v.lang)) || vs.find((v) => /^pt/i.test(v.lang)) || null;
+}
+if ("speechSynthesis" in window) { carregarVoz(); speechSynthesis.onvoiceschanged = carregarVoz; }
+function falar(texto) {
+  if (!("speechSynthesis" in window)) { alert("Este navegador não tem voz. Um adulto pode ler a frase."); return; }
+  speechSynthesis.cancel();
+  const limpo = texto.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, "").replace(/−/g, " menos ").replace(/\+/g, " mais ").replace(/=/g, " é igual a ").replace(/R\$\s?(\d+)/g, (_, n) => (n === "1" ? "1 real" : n + " reais"));
+  const u = new SpeechSynthesisUtterance(limpo);
+  u.lang = "pt-BR"; u.rate = 0.9;
+  if (vozPt) u.voice = vozPt;
+  speechSynthesis.speak(u);
+}
+const textoDe = (el) => el.innerText.replace(/\s+/g, " ").trim();
+
+function abrirModal(titulo, html) {
+  $("#modalTitulo").textContent = titulo;
+  $("#modalCorpo").innerHTML = html;
+  $("#modal").classList.add("aberto");
+}
+$("#modalFechar").onclick = () => $("#modal").classList.remove("aberto");
+
+/* ---------- abas ---------- */
+function irPara(tela) {
+  $$("#abas button").forEach((b) => b.classList.toggle("ativa", b.dataset.tela === tela));
+  $$("section.tela").forEach((s) => s.classList.toggle("ativa", s.id === "tela-" + tela));
+  if (tela === "torres") desenharMesa();
+  if (tela !== "quiz" && quiz.veioDoQuiz) $("#voltarQuiz").style.display = "block";
+  if (tela === "quiz") { $("#voltarQuiz").style.display = "none"; quiz.veioDoQuiz = false; }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+$$("#abas button").forEach((b) => (b.onclick = () => irPara(b.dataset.tela)));
+$("#voltarQuiz").onclick = () => irPara("quiz");
+
+/* ---------- desenho de torres (usado na mesa e no quiz) ---------- */
+/* torres: [{nome, n, cor, escondida}], op: {tema, par:[i,j]|null, ligar, altura, prefixo, novos:[...], fantasmasExtra} */
+function desenharTorres(alvo, torres, op) {
+  const tema = op.tema || "blocos";
+  const par = op.par && op.par[0] !== op.par[1] ? op.par : null;
+  const ligar = !!(op.ligar && par);
+  const alturaMax = Math.max(1, ...torres.map((t) => (t.escondida ? 1 : t.n)));
+  const H = op.altura || 330;
+  /* torres altas: blocos e espaços menores, para a torre nunca passar do teto da mesa */
+  const porBloco = Math.floor((H - 10) / alturaMax);
+  const vao = porBloco >= 30 ? 6 : porBloco >= 12 ? 3 : 2;
+  const lado = Math.max(5, Math.min(op.maxLado || 44, porBloco - vao));
+  const pref = op.prefixo || "m";
+  let menor = null, maior = null, minN = 0;
+  if (par) {
+    const [i, j] = par;
+    minN = Math.min(torres[i].n, torres[j].n);
+    if (torres[i].n !== torres[j].n) { maior = torres[i].n > torres[j].n ? i : j; menor = maior === i ? j : i; }
+  }
+  alvo.innerHTML = "";
+  alvo.style.gap = (op.gap || (lado > 30 ? 46 : 28)) + "px";
+  torres.forEach((t, ti) => {
+    const col = document.createElement("div");
+    col.className = "torre" + (ligar && !par.includes(ti) ? " apagada" : "") + (t.escondida ? " escondida" : "");
+    const pilha = document.createElement("div");
+    pilha.className = "pilha";
+    pilha.style.gap = vao + "px";
+    if (t.escondida) {
+      pilha.textContent = "?";
+    } else {
+      const total = ligar && ti === menor ? torres[maior].n : t.n;
+      for (let k = 0; k < total; k++) {
+        const b = document.createElement("div");
+        b.id = `${pref}-${ti}-${k}`;
+        b.className = "bloco";
+        b.style.width = b.style.height = lado + "px";
+        b.style.fontSize = Math.max(10, lado * 0.55) + "px";
+        b.style.background = t.cor;
+        b.style.setProperty("--sombra", sombraDe(t.cor));
+        if (k >= t.n) {
+          b.classList.add("fantasma");
+          b.innerHTML = op.semNumeroExtra ? "" : `<span class="num">${k - minN + 1}</span>`;
+        } else {
+          if (t.novos && k >= t.n - t.novos) b.classList.add("novo");
+          if (ligar && ti === maior && k >= minN) {
+            b.classList.add("extra");
+            b.innerHTML = op.semNumeroExtra ? "" : `<span class="num">${k - minN + 1}</span>`;
+          } else if (TEMAS[tema].emo) {
+            b.innerHTML = `<span class="emo">${TEMAS[tema].emo}</span>`;
+          }
+        }
+        pilha.appendChild(b);
+      }
+      if (t.saiu) {
+        for (let k = 0; k < t.saiu; k++) {
+          const b = document.createElement("div");
+          b.className = "bloco saiu";
+          b.style.width = b.style.height = lado + "px";
+          pilha.appendChild(b);
+        }
+      }
+    }
+    const rot = document.createElement("div");
+    rot.className = "rotulo-torre";
+    rot.style.color = t.cor;
+    rot.innerHTML = `${esc(t.nome)}<span class="qtd">${t.escondida || t.rotuloOculto ? "?" : t.n}</span>`;
+    col.appendChild(pilha);
+    col.appendChild(rot);
+    alvo.appendChild(col);
+  });
+  if (ligar && minN > 0) {
+    requestAnimationFrame(() => {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "fios");
+      const base = alvo.getBoundingClientRect();
+      for (let k = 0; k < minN; k++) {
+        const a = document.getElementById(`${pref}-${par[0]}-${k}`), c = document.getElementById(`${pref}-${par[1]}-${k}`);
+        if (!a || !c) continue;
+        const ra = a.getBoundingClientRect(), rc = c.getBoundingClientRect();
+        const [esq, dir] = ra.left < rc.left ? [ra, rc] : [rc, ra];
+        const ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        ln.setAttribute("x1", esq.right - base.left); ln.setAttribute("y1", esq.top + esq.height / 2 - base.top);
+        ln.setAttribute("x2", dir.left - base.left); ln.setAttribute("y2", dir.top + dir.height / 2 - base.top);
+        ln.setAttribute("stroke", "#22b573"); ln.setAttribute("stroke-width", "4"); ln.setAttribute("stroke-linecap", "round");
+        ln.setAttribute("stroke-dasharray", "2 7");
+        svg.appendChild(ln);
+      }
+      alvo.appendChild(svg);
+    });
+  }
+}
+
+/* frase de comparação entre duas torres */
+function fraseComparar(A, B, tema) {
+  const d = Math.abs(A.n - B.n);
+  if (d === 0) return { resp: `${esc(A.nome)} e ${esc(B.nome)} têm a mesma quantidade: entre os dois, ninguém tem a mais nem a menos.`, conta: `${A.n} − ${B.n} = 0` };
+  const [M, m] = A.n > B.n ? [A, B] : [B, A];
+  return {
+    resp: `${esc(M.nome)} tem <b class="mais-cor">${d} ${un(d, tema)} a mais</b> do que ${esc(m.nome)}.<br>` +
+          `${esc(m.nome)} tem <b class="menos-cor">${d} ${un(d, tema)} a menos</b> do que ${esc(M.nome)}.`,
+    conta: `${M.n} − ${m.n} = ${d}`,
+    como: tema === "anos"
+      ? `Contando do ${m.n} até o ${M.n}: ${d === 1 ? "foi 1 ano" : "foram " + d + " anos"}. Comparar idades não é juntar as idades.`
+      : `Ligando um a um, ${d === 1 ? "sobra 1" : "sobram " + d} sem par. Comparar não é juntar: ninguém ganhou nada.`,
+  };
+}
+
+/* ================= TELA TORRES ================= */
+const mesa = {
+  qtd: 2, tema: "blocos", ligar: false, revelado: false,
+  torres: [
+    { nome: "Madu", n: 5, cor: CORES[0] },
+    { nome: "Felipe", n: 2, cor: CORES[1] },
+    { nome: "Lia", n: 4, cor: CORES[2] },
+  ],
+  par: [0, 1], de: 0, para: 1,
+};
+const LIMITE = 20;
+
+function ativas() { return mesa.torres.slice(0, mesa.qtd); }
+
+function desenharCartoes() {
+  const box = $("#cartoes");
+  box.innerHTML = "";
+  ativas().forEach((t, i) => {
+    const c = document.createElement("div");
+    c.className = "cartao";
+    c.style.setProperty("--c", t.cor);
+    c.style.setProperty("--cd", sombraDe(t.cor));
+    c.innerHTML = `<input type="text" maxlength="12" value="${esc(t.nome)}" aria-label="nome da torre ${i + 1}">
+      <div class="numero">${t.n}</div>
+      <div><button class="btn" data-i="${i}" data-d="-1" aria-label="tirar 1">−</button>
+      <button class="btn" data-i="${i}" data-d="1" aria-label="pôr 1">＋</button></div>`;
+    c.querySelector("input").oninput = (e) => { t.nome = e.target.value || `Torre ${i + 1}`; atualizarSelects(); desenharMesa(false); };
+    box.appendChild(c);
+  });
+  box.querySelectorAll("button[data-d]").forEach((b) => (b.onclick = () => {
+    const t = mesa.torres[+b.dataset.i];
+    t.n = Math.max(0, Math.min(LIMITE, t.n + +b.dataset.d));
+    mesa.revelado = false; mesa.ultimo = "";
+    clearTimeout(avisoTimer);
+    $("#avisoMesa").classList.remove("aberto");
+    desenharCartoes(); desenharMesa();
+  }));
+  $$("[data-qtd]").forEach((b) => b.classList.toggle("ligado", +b.dataset.qtd === mesa.qtd));
+}
+
+function atualizarSelects() {
+  const opts = ativas().map((t, i) => `<option value="${i}">${esc(t.nome)}</option>`).join("");
+  for (const [id, chave] of [["#parA", 0], ["#parB", 1]]) { $(id).innerHTML = opts; $(id).value = mesa.par[chave]; }
+  $("#de").innerHTML = opts; $("#para").innerHTML = opts;
+  $("#de").value = mesa.de; $("#para").value = mesa.para;
+}
+
+function corrigirIndices() {
+  const n = mesa.qtd;
+  mesa.par = mesa.par.map((x) => Math.min(x, n - 1));
+  if (mesa.par[0] === mesa.par[1]) mesa.par = [0, 1];
+  if (mesa.de >= n) mesa.de = 0;
+  if (mesa.para >= n || mesa.para === mesa.de) mesa.para = mesa.de === 0 ? 1 : 0;
+}
+
+function desenharMesa(redesenharTudo = true) {
+  corrigirIndices();
+  if (redesenharTudo) atualizarSelects();
+  /* no painel de uma janela só, os blocos se ajustam à altura livre da mesa */
+  const palco = $("#palco");
+  const painel = window.innerWidth >= 1000 && palco.clientHeight > 160;
+  const altura = painel ? palco.clientHeight - 32 - 62 : 330;
+  desenharTorres(palco, ativas(), { tema: mesa.tema, par: mesa.par, ligar: mesa.ligar, prefixo: "m", altura, maxLado: painel ? 60 : 44 });
+  $("#btnLigar").classList.toggle("ligado", mesa.ligar);
+  $("#btnLigar").textContent = mesa.ligar ? "🔗 Desligar" : "🔗 Ligar um a um";
+  escreverFrasesTorres();
+}
+
+function escreverFrasesTorres() {
+  const ts = ativas();
+  const tema = mesa.tema;
+  const NENHUM = { blocos: "nenhum bloco", bolas: "nenhuma bola", gemas: "nenhum diamante" };
+  let h = ts.map((t) => `<p><b style="color:${t.cor}">${esc(t.nome)}</b> ${t.n === 0 && NENHUM[tema] ? `não tem <b>${NENHUM[tema]}</b>` : `tem <b>${t.n}</b> ${un(t.n, tema)}`}.</p>`).join("");
+  const A = ts[mesa.par[0]], B = ts[mesa.par[1]];
+  const f = fraseComparar(A, B, tema);
+  let resp = `<div class="resposta">${f.resp}${f.como ? `<br><span style="font-weight:600">${f.como}</span>` : ""}<div class="conta">${f.conta}</div>`;
+  if (ts.length === 3) {
+    const max = Math.max(...ts.map((t) => t.n)), min = Math.min(...ts.map((t) => t.n));
+    const nomes = (v) => { const l = ts.filter((t) => t.n === v).map((t) => esc(t.nome)); return l.length > 1 ? `${l.join(" e ")} (empate)` : l[0]; };
+    if (max === min) resp += `<p>As três torres têm a mesma quantidade.</p>`;
+    else resp += `<p>Quem tem mais: <b>${nomes(max)}</b>.</p><p>Quem tem menos: <b>${nomes(min)}</b>.</p>`;
+  }
+  resp += "</div>";
+  const esconder = $("#esconder").checked && !mesa.revelado;
+  $("#mostrarResp").style.display = esconder ? "inline-block" : "none";
+  if (mesa.ultimo) h = `<div class="resposta" style="background:#e8f1ff;margin:0 0 8px">${mesa.ultimo}</div>` + h;
+  h += esconder ? `<p style="color:var(--suave)">Pergunte: quem tem mais, ${esc(A.nome)} ou ${esc(B.nome)}? Quantos a mais? E quantos a menos tem o outro? Depois toque em “Mostrar resposta”.</p>` : resp;
+  $("#frasesTorres").innerHTML = h;
+}
+
+$$("[data-qtd]").forEach((b) => (b.onclick = () => { mesa.qtd = +b.dataset.qtd; mesa.revelado = false; mesa.ultimo = ""; desenharCartoes(); desenharMesa(); }));
+$("#tema").onchange = (e) => { mesa.tema = e.target.value; desenharMesa(false); };
+$("#parA").onchange = (e) => { mesa.par[0] = +e.target.value; if (mesa.par[0] === mesa.par[1]) mesa.par[1] = mesa.par[0] === 0 ? 1 : 0; desenharMesa(); };
+$("#parB").onchange = (e) => { mesa.par[1] = +e.target.value; if (mesa.par[0] === mesa.par[1]) mesa.par[0] = mesa.par[1] === 0 ? 1 : 0; desenharMesa(); };
+$("#de").onchange = (e) => { mesa.de = +e.target.value; if (mesa.de === mesa.para) mesa.para = mesa.de === 0 ? 1 : 0; atualizarSelects(); };
+$("#para").onchange = (e) => { mesa.para = +e.target.value; if (mesa.de === mesa.para) mesa.de = mesa.para === 0 ? 1 : 0; atualizarSelects(); };
+$("#btnLigar").onclick = () => { mesa.ligar = !mesa.ligar; desenharMesa(false); };
+$("#esconder").onchange = () => { mesa.revelado = false; escreverFrasesTorres(); };
+$("#mostrarResp").onclick = () => { mesa.revelado = true; mesa.ligar = true; desenharMesa(false); };
+$("#falarTorres").onclick = () => falar(textoDe($("#frasesTorres")));
+
+$("#btnPassar").onclick = () => {
+  const de = mesa.de, para = mesa.para;
+  const A = mesa.torres[de], B = mesa.torres[para];
+  if (A.n === 0) { abrirModal("Não dá para passar", `${esc(A.nome)} não tem nada para dar.`); return; }
+  if (B.n >= LIMITE) { abrirModal("Torre cheia", `${esc(B.nome)} já tem ${LIMITE}.`); return; }
+  const blocoEl = document.getElementById(`m-${de}-${A.n - 1}`);
+  const alvoTorre = $("#palco").children[para];
+  const finalizar = () => {
+    A.n -= 1; B.n += 1;
+    desenharCartoes();
+    mostrarAviso(
+      `<p><b style="color:${A.cor}">${esc(A.nome)}</b> deu 1: <span class="menos-cor"><b>${A.n + 1} − 1 = ${A.n}</b>, agora tem 1 a menos do que tinha antes</span>.</p>` +
+      `<p><b style="color:${B.cor}">${esc(B.nome)}</b> recebeu 1: <span class="mais-cor"><b>${B.n - 1} + 1 = ${B.n}</b>, agora tem 1 a mais do que tinha antes</span>.</p>` +
+      `<p>O total continua ${A.n + B.n}: nada sumiu, só mudou de lugar.</p>`);
+  };
+  if (!blocoEl || !alvoTorre) { finalizar(); return; }
+  const r = blocoEl.getBoundingClientRect();
+  const pilhaAlvo = alvoTorre.querySelector(".pilha");
+  const ra = pilhaAlvo.getBoundingClientRect();
+  const clone = blocoEl.cloneNode(true);
+  clone.classList.add("voando"); clone.classList.remove("extra");
+  clone.style.left = r.left + "px"; clone.style.top = r.top + "px"; clone.style.width = r.width + "px"; clone.style.height = r.height + "px";
+  document.body.appendChild(clone);
+  blocoEl.style.visibility = "hidden";
+  requestAnimationFrame(() => {
+    const dx = ra.left + ra.width / 2 - (r.left + r.width / 2);
+    const dy = ra.top - r.height - 8 - r.top;
+    clone.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+  setTimeout(() => { clone.remove(); finalizar(); }, 750);
+};
+
+/* balão por cima da mesa: não empurra nada, some sozinho */
+let avisoTimer = null;
+function esconderAviso() {
+  $("#avisoMesa").classList.remove("aberto");
+  if ($("#tela-torres").classList.contains("ativa")) desenharMesa(false);
+}
+function mostrarAviso(html) {
+  const a = $("#avisoMesa");
+  a.innerHTML = `<button class="fechar" aria-label="fechar">×</button>${html}`;
+  a.classList.add("aberto");
+  a.querySelector(".fechar").onclick = esconderAviso;
+  desenharMesa(false);   /* a faixa ocupa espaço: as torres se ajustam */
+  clearTimeout(avisoTimer);
+  avisoTimer = setTimeout(esconderAviso, 8000);
+}
+
+$("#btnJuntar").onclick = () => {
+  const ts = ativas();
+  const total = ts.reduce((s, t) => s + t.n, 0);
+  abrirModal("Juntando todas as torres",
+    `<p>${ts.map((t) => `<b style="color:${t.cor}">${esc(t.nome)}</b> ${t.n}`).join(" + ")}</p>` +
+    `<div class="conta mais-cor">${ts.map((t) => t.n).join(" + ")} = ${total}</div>` +
+    `<p>Juntar responde <b>“quantos ao todo?”</b>.</p>` +
+    `<p>Para <b>“quantos a mais”</b> ou <b>“quantos a menos”</b>, a gente <b>não junta</b>: liga um a um e conta os que ficam sem par.</p>`);
+};
+
+/* ================= GANHAR E PERDER ================= */
+const gp = { inicio: 5, blocos: [], saiu: [], ganhou: 0, gastou: 0 };
+function gpZerar() { gp.blocos = Array(gp.inicio).fill("base"); gp.saiu = []; gp.ganhou = 0; gp.gastou = 0; gpDesenhar(); }
+function gpDesenhar() {
+  $("#gIni").textContent = gp.inicio;
+  const nome = $("#gNome").value || "Bia";
+  const palco = $("#gPalco");
+  const n = gp.blocos.length;
+  const alt = Math.max(1, n, gp.saiu.length);
+  const lado = Math.max(16, Math.min(44, Math.floor(320 / alt) - 4));
+  const pilha = (lista, tipo) => lista.map((t, k) => `<div class="bloco ${tipo === "saiu" ? "saiu" : t === "novo" ? "novo" : ""}" id="${tipo}-${k}" style="width:${lado}px;height:${lado}px;background:${CORES[0]};--sombra:${sombraDe(CORES[0])};font-size:${lado * .55}px">${tipo === "saiu" ? "" : '<span class="emo">💎</span>'}</div>`).join("");
+  palco.innerHTML =
+    `<div class="torre"><div class="pilha" id="gPilha">${pilha(gp.blocos, "tem")}</div><div class="rotulo-torre" style="color:${CORES[0]}">${esc(nome)} tem<span class="qtd">${n}</span></div></div>` +
+    `<div class="torre"><div class="pilha" id="gSaiu">${pilha(gp.saiu, "saiu")}</div><div class="rotulo-torre" style="color:var(--vermelho)">gastou<span class="qtd">${gp.saiu.length}</span></div></div>`;
+  let partes = [`${gp.inicio}`];
+  if (gp.ganhou) partes.push(`<span class="mais-cor">+ ${gp.ganhou}</span>`);
+  if (gp.gastou) partes.push(`<span class="menos-cor">− ${gp.gastou}</span>`);
+  const diam = (k) => (k === 1 ? "diamante" : "diamantes");
+  let h = `<p>${esc(nome)} ${gp.inicio === 0 ? "começou sem nenhum diamante" : `começou com <b>${gp.inicio}</b> ${diam(gp.inicio)}`}.</p>`;
+  if (gp.ganhou) h += `<p class="mais-cor">Ganhou ${gp.ganhou}: ganhar é <b>juntar</b> (+). A torre sobe.</p>`;
+  if (gp.gastou) h += `<p class="menos-cor">Gastou ${gp.gastou}: gastar é <b>tirar</b> (−). ${gp.gastou === 1 ? "O diamante sai da torre e vai" : "Os diamantes saem da torre e vão"} para o lado.</p>`;
+  h += `<p>${n === 0 ? "Agora não tem <b>nenhum</b>." : `Agora tem <b>${n}</b>.`}</p><div class="conta">${partes.join(" ")} = ${n}</div>`;
+  if (gp.gastou && !gp.ganhou) {
+    const saiu = gp.gastou === 1 ? "Saiu 1" : `Saíram ${gp.gastou}`;
+    h += `<p>No começo ${gp.inicio === 1 ? "era 1" : "eram " + gp.inicio}. ${saiu} e ` +
+         (n === 0 ? "não ficou nenhum.</p>" : `${n === 1 ? "ficou 1" : "ficaram " + n}. Juntando de volta: ${n} + ${gp.gastou} = ${gp.inicio}.</p>`);
+  }
+  $("#frasesGanhar").innerHTML = h;
+}
+$("#gGanhar").onclick = () => { if (gp.blocos.length >= LIMITE) return; gp.blocos.push("novo"); gp.ganhou++; gpDesenhar(); };
+$("#gGastar").onclick = () => {
+  if (!gp.blocos.length) { abrirModal("Acabou", "Não tem mais nenhum diamante para gastar."); return; }
+  const el = document.getElementById(`tem-${gp.blocos.length - 1}`);
+  const fim = () => { gp.saiu.push(gp.blocos.pop()); gp.gastou++; gpDesenhar(); };
+  if (!el) return fim();
+  const r = el.getBoundingClientRect();
+  const destino = $("#gSaiu").getBoundingClientRect();
+  const clone = el.cloneNode(true);
+  clone.classList.add("voando");
+  Object.assign(clone.style, { left: r.left + "px", top: r.top + "px" });
+  document.body.appendChild(clone);
+  el.style.visibility = "hidden";
+  requestAnimationFrame(() => { clone.style.transform = `translate(${destino.left + destino.width / 2 - r.left - r.width / 2}px, ${destino.top - r.top - r.height - 6}px) rotate(20deg)`; });
+  setTimeout(() => { clone.remove(); fim(); }, 720);
+};
+$("#gIniMais").onclick = () => { gp.inicio = Math.min(15, gp.inicio + 1); gpZerar(); };
+$("#gIniMenos").onclick = () => { gp.inicio = Math.max(0, gp.inicio - 1); gpZerar(); };
+$("#gZerar").onclick = gpZerar;
+$("#gNome").oninput = gpDesenhar;
+$("#falarGanhar").onclick = () => falar(textoDe($("#frasesGanhar")));
+
+/* ================= QUANTO FALTA ================= */
+const FTEMAS = { chaves: ["🔑", "chave", "chaves", "abrir o baú"], estrelas: ["⭐", "estrela", "estrelas", "passar de fase"], figurinhas: ["🃏", "figurinha", "figurinhas", "completar a página do álbum"] };
+const ff = { tenho: 2, preciso: 5, contadas: 0, timer: null };
+function ffDesenhar() {
+  const [emo, um, varios, para] = FTEMAS[$("#fTema").value];
+  const nome = (n) => (n === 1 ? um : varios);
+  $("#fT").textContent = ff.tenho; $("#fP").textContent = ff.preciso;
+  const total = Math.max(ff.tenho, ff.preciso);
+  let h = "";
+  for (let k = 1; k <= total; k++) {
+    if (k <= ff.tenho) h += `<div class="casa cheia">${k}<span class="emo">${emo}</span></div>`;
+    else if (k <= ff.tenho + ff.contadas) h += `<div class="casa contada">${k}</div>`;
+    else h += `<div class="casa vazia">${k}</div>`;
+  }
+  $("#casas").innerHTML = h;
+  const falta = ff.preciso - ff.tenho;
+  let f = `<p>Para ${para}, você precisa de <b>${ff.preciso}</b> ${nome(ff.preciso)}. Você tem <b>${ff.tenho}</b>.</p>`;
+  if (falta <= 0) {
+    f += `<div class="resposta">Não falta nada! ${falta < 0 ? `E ainda ${-falta === 1 ? "sobra 1" : "sobram " + -falta}.` : "Tem certinho."}</div>`;
+  } else if (ff.contadas < falta) {
+    f += `<p style="color:var(--suave)">As casinhas tracejadas são as que faltam. Toque em “Contar até chegar”.</p>`;
+  } else {
+    const seq = Array.from({ length: falta }, (_, i) => ff.tenho + i + 1).join(", ");
+    f += `<div class="resposta">Contando do ${ff.tenho} até o ${ff.preciso}: ${seq}. ${falta === 1 ? "Foi" : "Foram"} <b>${falta}</b>.<br>${falta === 1 ? "Falta" : "Faltam"} <b>${falta} ${nome(falta)}</b>.` +
+         `<div class="conta"><span class="mais-cor">${ff.tenho} + ${falta} = ${ff.preciso}</span> &nbsp;&nbsp; <span class="menos-cor">${ff.preciso} − ${ff.tenho} = ${falta}</span></div>` +
+         `“Quanto falta” é a parte que ainda não temos. Dá para contar até chegar ou fazer a conta de tirar.</div>`;
+  }
+  $("#frasesFalta").innerHTML = f;
+}
+function ffMudar(campo, d) { clearInterval(ff.timer); ff[campo] = Math.max(campo === "preciso" ? 1 : 0, Math.min(20, ff[campo] + d)); ff.contadas = 0; ffDesenhar(); }
+$("#fTMais").onclick = () => ffMudar("tenho", 1); $("#fTMenos").onclick = () => ffMudar("tenho", -1);
+$("#fPMais").onclick = () => ffMudar("preciso", 1); $("#fPMenos").onclick = () => ffMudar("preciso", -1);
+$("#fTema").onchange = () => { ff.contadas = 0; ffDesenhar(); };
+$("#fContar").onclick = () => {
+  clearInterval(ff.timer);
+  const falta = ff.preciso - ff.tenho;
+  if (falta <= 0) { ffDesenhar(); return; }
+  ff.contadas = 0; ffDesenhar();
+  ff.timer = setInterval(() => {
+    ff.contadas++;
+    ffDesenhar();
+    falar(String(ff.tenho + ff.contadas));
+    if (ff.contadas >= falta) { clearInterval(ff.timer); setTimeout(() => falar(`${falta === 1 ? "Falta" : "Faltam"} ${falta}`), 900); }
+  }, 1000);
+};
+$("#falarFalta").onclick = () => falar(textoDe($("#frasesFalta")));
+
+/* ================= TROCO ================= */
+const NOTAS = [[2, "tartaruga"], [5, "garça"], [10, "arara"], [20, "mico-leão"], [50, "onça"], [100, "garoupa"]];
+const tr = { nota: 50, preco: 20, contadas: 0, timer: null };
+const unidade = () => (tr.nota <= 20 ? 1 : 10);
+function trAjustar() {
+  const u = unidade();
+  tr.preco = Math.max(u, Math.min(tr.nota, Math.round(tr.preco / u) * u));
+}
+function trDesenhar() {
+  const [produto, emo] = $("#tProduto").value.split("|");
+  $("#tPreco").textContent = tr.preco;
+  $("#notas").innerHTML = NOTAS.map(([v, bicho]) => `<button class="nota n${v}${v === tr.nota ? " escolhida" : ""}" data-v="${v}">R$ ${v}<small>${bicho}</small></button>`).join("");
+  $$("#notas .nota").forEach((b) => (b.onclick = () => { clearInterval(tr.timer); tr.nota = +b.dataset.v; trAjustar(); tr.contadas = 0; trDesenhar(); }));
+  const u = unidade(), n = tr.nota / u, p = tr.preco / u;
+  let h = "";
+  for (let k = 0; k < n; k++) {
+    const valor = (k + 1) * u;
+    if (k < p) h += `<div class="dinheiro loja">${k === p - 1 ? emo : ""}<span>${u === 10 ? "R$10" : "R$1"}</span></div>`;
+    else h += `<div class="dinheiro troco${k < p + tr.contadas ? " contada" : ""}">${k < p + tr.contadas ? valor : (u === 10 ? "R$10" : "R$1")}</div>`;
+  }
+  $("#barraDinheiro").innerHTML = h;
+  const troco = tr.nota - tr.preco;
+  let f = `<p>O ${produto} custa <b>R$ ${tr.preco}</b>. Você pagou com a nota de <b>R$ ${tr.nota}</b>.</p>`;
+  if (!troco) {
+    f += `<p>Os ${tr.nota} reais ficam todos na loja.</p><div class="resposta">Pagou certinho: não tem troco.</div>`;
+  } else {
+    f += `<p>Dos ${tr.nota} reais, ${tr.preco === 1 ? "1 fica" : tr.preco + " ficam"} na loja (o preço). ${troco === 1 ? "O outro 1 volta" : "Os outros " + troco + " voltam"} para você.</p>`;
+    /* o troco é quantos pulos se dá do preço até a nota, e não o número onde se chega */
+    const pulos = troco / u;
+    const seq = Array.from({ length: pulos }, (_, i) => tr.preco + (i + 1) * u).join(", ");
+    const contagem = u === 10
+      ? `Contando de 10 em 10 do ${tr.preco} até o ${tr.nota}: ${seq}. ${pulos === 1 ? "Foi 1 nota" : "Foram " + pulos + " notas"} de 10: o troco é ${troco}.`
+      : `Contando do ${tr.preco} até o ${tr.nota}: ${seq}. ${pulos === 1 ? "Foi 1" : "Foram " + pulos}: o troco é ${troco}.`;
+    f += `<div class="resposta">Você deu <b>R$ ${troco} a mais</b> do que o preço. Esse “a mais” volta para você: é o <b>troco de R$ ${troco}</b>.` +
+      `<div class="conta"><span class="menos-cor">${tr.nota} − ${tr.preco} = ${troco}</span> &nbsp;&nbsp; <span class="mais-cor">${tr.preco} + ${troco} = ${tr.nota}</span></div>` +
+      `${contagem}</div>`;
+  }
+  $("#frasesTroco").innerHTML = f;
+}
+$("#tPMais").onclick = () => { clearInterval(tr.timer); tr.preco = Math.min(tr.nota, tr.preco + unidade()); tr.contadas = 0; trDesenhar(); };
+$("#tPMenos").onclick = () => { clearInterval(tr.timer); tr.preco = Math.max(unidade(), tr.preco - unidade()); tr.contadas = 0; trDesenhar(); };
+$("#tProduto").onchange = trDesenhar;
+$("#tContar").onclick = () => {
+  clearInterval(tr.timer);
+  const u = unidade(), faltam = (tr.nota - tr.preco) / u;
+  tr.contadas = 0; trDesenhar();
+  if (!faltam) return;
+  tr.timer = setInterval(() => {
+    tr.contadas++; trDesenhar();
+    falar(String(tr.preco + tr.contadas * u));
+    if (tr.contadas >= faltam) { clearInterval(tr.timer); setTimeout(() => falar(`O troco é ${tr.nota - tr.preco} ${tr.nota - tr.preco === 1 ? "real" : "reais"}`), 1000); }
+  }, 1000);
+};
+$("#falarTroco").onclick = () => falar(textoDe($("#frasesTroco")));
+
+/* ================= REVISÃO (QUIZ) ================= */
+/* Cada pergunta calcula a resposta pela conta (resp) a partir dos números da própria pergunta. */
+const PERGUNTAS = [
+  { cat: "Juntar (ganhou)", txt: "Bia tinha 4 figurinhas e ganhou mais 3. Com quantas figurinhas ela ficou?", resp: () => 4 + 3, ops: [1, 4, 7, 8],
+    vis: { tipo: "ganhar", inicio: 4, ganhou: 3 },
+    exp: "Ganhou: as figurinhas <b>se juntam</b>. A torre sobe 3. <div class='conta mais-cor'>4 + 3 = 7</div>",
+    mesa: { tela: "ganhar", inicio: 4, ganhar: 3 } },
+  { cat: "Tirar (comeu)", txt: "Téo tinha 8 balas e comeu 3. Com quantas balas ele ficou?", resp: () => 8 - 3, ops: [5, 3, 8, 11],
+    vis: { tipo: "tirar", inicio: 8, saiu: 3 },
+    exp: "Comeu: as balas <b>saem</b>. Das 8, saem 3 e ficam 5. <div class='conta menos-cor'>8 − 3 = 5</div>",
+    mesa: { tela: "ganhar", inicio: 8, gastar: 3 } },
+  { cat: "Comparar: a mais", txt: "Madu tem 5 bolas. Felipe tem 2 bolas. Quantas bolas a mais Madu tem do que Felipe?", resp: () => 5 - 2, ops: [2, 3, 5, 7],
+    vis: { tipo: "comparar", tema: "bolas", torres: [["Madu", 5], ["Felipe", 2]] },
+    exp: "Ninguém ganhou nem perdeu: só estamos <b>comparando</b>. Ligando um a um, 3 bolas da Madu ficam sem par. Não é para juntar (5 + 2 = 7). <div class='conta'>5 − 2 = 3</div>",
+    mesa: { tela: "torres", tema: "bolas", torres: [["Madu", 5], ["Felipe", 2]] } },
+  { cat: "Comparar: a menos", txt: "Madu tem 5 bolas e Felipe tem 2. Quantas bolas a menos Felipe tem do que Madu?", resp: () => 5 - 2, ops: [7, 5, 2, 3],
+    vis: { tipo: "comparar", tema: "bolas", torres: [["Madu", 5], ["Felipe", 2]] },
+    exp: "São os <b>mesmos 3 blocos amarelos</b>, agora vistos do lado do Felipe: ele tem 3 a menos. Entre as mesmas duas pessoas, “a mais” e “a menos” dão sempre o mesmo número. <div class='conta'>5 − 2 = 3</div>",
+    mesa: { tela: "torres", tema: "bolas", torres: [["Madu", 5], ["Felipe", 2]] } },
+  { cat: "Juntar × comparar", txt: "Madu tinha 5 bolas e ganhou mais 2. Com quantas bolas ela ficou?", resp: () => 5 + 2, ops: [3, 2, 7, 5],
+    vis: { tipo: "ganhar", inicio: 5, ganhou: 2 },
+    exp: "Agora a Madu <b>ganhou</b>: as bolas se juntam. <div class='conta mais-cor'>5 + 2 = 7</div>Cuidado com as palavras: “ganhou mais 2” é juntar. “Quantas a mais do que…” é comparar, ligando um a um.",
+    mesa: { tela: "ganhar", inicio: 5, ganhar: 2 } },
+  { cat: "Idades: a mais", txt: "Lia tem 9 anos. Davi tem 7 anos. Quantos anos a mais Lia tem do que Davi?", resp: () => 9 - 7, ops: [16, 9, 7, 2],
+    vis: { tipo: "comparar", tema: "anos", torres: [["Lia", 9], ["Davi", 7]] },
+    exp: "Comparamos as idades. Começando no 7 e contando até o 9: 8, 9. Foram 2. <div class='conta'>9 − 7 = 2</div>",
+    dica: "Conte do 7 até o 9 e veja quantos números você falou.",
+    mesa: { tela: "torres", tema: "anos", torres: [["Lia", 9], ["Davi", 7]] } },
+  { cat: "Idades: a menos", txt: "Lia tem 9 anos e Davi tem 7. Quantos anos a menos Davi tem do que Lia?", resp: () => 9 - 7, ops: [2, 1, 16, 7],
+    vis: { tipo: "comparar", tema: "anos", torres: [["Lia", 9], ["Davi", 7]] },
+    exp: "É o mesmo número da pergunta anterior, agora visto do lado do Davi: ele tem 2 anos a menos do que a Lia. <div class='conta'>9 − 7 = 2</div>",
+    dica: "Conte do 7 até o 9 e veja quantos números você falou.",
+    mesa: { tela: "torres", tema: "anos", torres: [["Lia", 9], ["Davi", 7]] } },
+  { cat: "Quanto falta", txt: "O baú precisa de 5 chaves para abrir. Você tem 2 chaves. Quantas chaves ainda faltam?", resp: () => 5 - 2, ops: [2, 3, 5, 7],
+    vis: { tipo: "falta", tenho: 2, preciso: 5 },
+    exp: "Conte do 2 até o 5: 3, 4, 5. Foram 3. <div class='conta'><span class='mais-cor'>2 + 3 = 5</span> &nbsp; <span class='menos-cor'>5 − 2 = 3</span></div>",
+    mesa: { tela: "falta", tenho: 2, preciso: 5 } },
+  { cat: "Troco", txt: "O chocolate custa 20 reais. Você pagou com uma nota de 50 reais. Quanto você recebeu de troco?", resp: () => 50 - 20, ops: [20, 50, 30, 70],
+    vis: { tipo: "troco", preco: 20, nota: 50 },
+    exp: "Dos 50 reais, 20 ficam na loja e 30 voltam para você. Contando de 10 em 10 do 20 até o 50: 30, 40, 50. Foram 3 notas de 10: o troco é 30. <div class='conta menos-cor'>50 − 20 = 30</div>",
+    mesa: { tela: "troco", preco: 20, nota: 50 } },
+  { cat: "Troco: deu a mais", txt: "O sorvete custa 8 reais. Você pagou com uma nota de 10 reais. Quanto você recebeu de troco?", resp: () => 10 - 8, ops: [8, 10, 18, 2],
+    vis: { tipo: "troco", preco: 8, nota: 10 },
+    exp: "Você deu 10, mas o sorvete custa 8. Você deu 2 a mais do que o preço, e esses 2 voltam para você: é o troco. <div class='conta menos-cor'>10 − 8 = 2</div>",
+    mesa: { tela: "troco", preco: 8, nota: 10 } },
+  { cat: "Três torres", txt: "Ana tem 6 diamantes, Rui tem 4 e Edu tem 9. Quantos diamantes a mais Edu tem do que Rui?", resp: () => 9 - 4, ops: [5, 4, 3, 13],
+    vis: { tipo: "comparar", tema: "gemas", torres: [["Ana", 6], ["Rui", 4], ["Edu", 9]], par: [2, 1] },
+    exp: "Só olhamos o Edu e o Rui (a Ana fica de fora). Ligando um a um, 5 diamantes do Edu ficam sem par. <div class='conta'>9 − 4 = 5</div>",
+    mesa: { tela: "torres", tema: "gemas", torres: [["Ana", 6], ["Rui", 4], ["Edu", 9]], par: [2, 1] } },
+  { cat: "Qual conta?", txt: "Madu tem 5 bolas e Felipe tem 2. Qual conta mostra quantas bolas a mais Madu tem do que Felipe?", resp: () => `5 − 2 = ${5 - 2}`, ops: ["5 + 2 = 7", "2 + 2 = 4", "5 − 2 = 3", "5 + 5 = 10"],
+    vis: { tipo: "comparar", tema: "bolas", torres: [["Madu", 5], ["Felipe", 2]] },
+    exp: "Aqui só estamos comparando as duas quantidades: o que importa é o que sobra sem par. Para comparar, tiramos a menor da maior. <div class='conta'>5 − 2 = 3</div>",
+    mesa: { tela: "torres", tema: "bolas", torres: [["Madu", 5], ["Felipe", 2]] } },
+  { cat: "Que conta é?", txt: "Gui tinha 9 diamantes. Ele gastou 4 para atravessar a ponte do jogo. Que tipo de conta é essa?", resp: () => "Tirar", ops: ["Juntar", "Comparar duas pessoas", "Completar o que falta", "Tirar"],
+    vis: { tipo: "tirar", inicio: 9, saiu: 4 },
+    exp: "Gastou: os diamantes <b>saem</b>. É tirar. <div class='conta menos-cor'>9 − 4 = 5</div>Ficou com 5 diamantes.",
+    dica: "Pense: os diamantes aumentaram, diminuíram, ou alguém comparou?",
+    mesa: { tela: "ganhar", inicio: 9, gastar: 4 } },
+  { cat: "Pimentinha: a mais que soma", txt: "Felipe tem 2 bolas. Madu tem 3 bolas a mais do que Felipe. Quantas bolas Madu tem?", resp: () => 2 + 3, ops: [1, 5, 3, 2],
+    vis: { tipo: "comparar", tema: "bolas", torres: [["Felipe", 2], ["Madu", 5]], esconder: 1 },
+    exp: "Cuidado! Aqui a pergunta <b>não</b> é “quantas a mais”: isso a história já contou (3 a mais). A pergunta é quantas a Madu tem. Ela tem tantas quanto o Felipe (2) e mais 3, então juntamos. <div class='conta mais-cor'>2 + 3 = 5</div>O segredo é desenhar: primeiro a torre do Felipe; a da Madu é igual à do Felipe, com mais 3 em cima.",
+    dica: "A Madu tem tantas quanto o Felipe (2) e mais 3. Conte a torre dela inteira.",
+    mesa: { tela: "torres", tema: "bolas", torres: [["Felipe", 2], ["Madu", 5]] } },
+];
+
+/* por que cada alternativa errada engana (mostrado quando ela marca essa alternativa) */
+const ERROS = [
+  { 1: "1 é tirar (4 − 3). Mas ela ganhou: ganhar junta.", 4: "4 é o que ela tinha antes de ganhar.", 8: "Conte de novo, devagar: 4 e mais 3, um de cada vez." },
+  { 3: "3 são as balas que ele comeu, e não as que ficaram.", 8: "8 é o que ele tinha antes de comer.", 11: "11 é juntar (8 + 3). Mas ele comeu: as balas saem." },
+  { 7: "7 é juntar os dois (5 + 2). Mas ninguém ganhou nada: só estamos comparando.", 2: "2 é quantas bolas o Felipe tem. A pergunta é quantas a mais.", 5: "5 é quantas bolas a Madu tem. A pergunta é quantas a mais." },
+  { 7: "7 é juntar os dois (5 + 2). Comparar não junta.", 2: "2 é quantas bolas o Felipe tem. A pergunta é quantas a menos.", 5: "5 é quantas bolas a Madu tem. A pergunta é quantas a menos." },
+  { 3: "3 seria comparar 5 com 2 (quantas a mais). Aqui a Madu ganhou: ganhar junta.", 2: "2 é só o que ela ganhou.", 5: "5 é o que ela tinha antes de ganhar." },
+  { 16: "16 é juntar as idades (9 + 7). Comparar não junta.", 7: "7 é a idade do Davi.", 9: "9 é a idade da Lia." },
+  { 1: "Conte de novo: do 7 até o 9, quantos números você falou?", 16: "16 é juntar as idades (9 + 7). Comparar não junta.", 7: "7 é a idade do Davi." },
+  { 7: "7 é juntar (5 + 2). Mas a pergunta é quanto falta.", 2: "2 é o que você já tem.", 5: "5 é quantas chaves o baú precisa." },
+  { 70: "70 é juntar (50 + 20). No troco, a gente tira o preço do que pagou.", 20: "20 é o preço, que fica na loja.", 50: "50 é o que você deu." },
+  { 18: "18 é juntar (10 + 8). No troco, a gente tira o preço do que pagou.", 8: "8 é o preço, que fica na loja.", 10: "10 é o que você deu." },
+  { 13: "13 é juntar o Edu e o Rui (9 + 4). Comparar não junta.", 4: "4 é quantos o Rui tem.", 3: "3 é quantos o Edu tem a mais do que a Ana. A pergunta é sobre o Edu e o Rui." },
+  { "5 + 2 = 7": "Essa conta junta os dois. Comparar não junta.", "2 + 2 = 4": "Essa conta nem usa as bolas da Madu.", "5 + 5 = 10": "Essa conta junta a Madu com ela mesma." },
+  { "Juntar": "Juntar seria ganhar. Ele gastou.", "Comparar duas pessoas": "Só tem uma pessoa na história: não dá para comparar.", "Completar o que falta": "Ninguém perguntou quanto falta." },
+  { 1: "1 é tirar (3 − 2). Mas a Madu tem tantas quanto o Felipe e ainda mais 3.", 2: "2 é quantas o Felipe tem.", 3: "3 é só o que ela tem a mais." },
+];
+PERGUNTAS.forEach((q, k) => (q.erros = ERROS[k]));
+const DICA = {
+  comparar: "Ligue um a um e conte os blocos que ficam sem par (os amarelos).",
+  ganhar: "Ganhou? Então junta: a torre sobe. Conte a torre toda.",
+  tirar: "Saíram? Então tira: conte os blocos que ficaram (os riscados saíram).",
+  falta: "Conte do que você tem até chegar ao que precisa (as casinhas verdes).",
+  troco: "O preço fica na loja (marrom). Conte o que volta para você (verde).",
+};
+
+const quiz = { i: -1, tentativa: 0, primeira: [], veioDoQuiz: false, respondida: false, fila: null };
+/* próxima pergunta: a seguinte, ou a seguinte da fila "refazer as que errei"; null no fim */
+function proximaPergunta() {
+  if (quiz.fila) { const p = quiz.fila.indexOf(quiz.i); return p >= 0 && p + 1 < quiz.fila.length ? quiz.fila[p + 1] : null; }
+  return quiz.i + 1 < PERGUNTAS.length ? quiz.i + 1 : null;
+}
+
+/* depois = mostra a solução desenhada; erro = sem o número do total pedido (ela conta) */
+function visualPergunta(v, depois, erro) {
+  const box = document.createElement("div");
+  box.className = "mini";
+  if (v.tipo === "comparar") {
+    const palco = document.createElement("div");
+    palco.className = "palco";
+    box.appendChild(palco);
+    const torres = v.torres.map(([nome, n], k) => ({ nome, n, cor: CORES[k], escondida: !depois && v.esconder === k, rotuloOculto: erro && v.esconder === k }));
+    setTimeout(() => desenharTorres(palco, torres, { tema: v.tema, par: v.par || [0, 1], ligar: depois, semNumeroExtra: erro, altura: 230, prefixo: "q" + quiz.i + (depois ? (erro ? "e" : "d") : "a") }), 0);
+  } else if (v.tipo === "ganhar" || v.tipo === "tirar") {
+    const palco = document.createElement("div");
+    palco.className = "palco";
+    box.appendChild(palco);
+    const t = v.tipo === "ganhar" ? { nome: "", n: v.inicio + v.ganhou, novos: v.ganhou, cor: CORES[0] } : { nome: "", n: v.inicio - v.saiu, saiu: v.saiu, cor: CORES[0] };
+    t.nome = v.tipo === "ganhar" ? `${v.inicio} e ganhou ${v.ganhou}` : `${v.inicio} e saíram ${v.saiu}`;
+    if (!depois) { t.n = v.inicio; t.novos = 0; t.saiu = 0; t.nome = `começou com ${v.inicio}`; }
+    if (erro) t.rotuloOculto = true;
+    setTimeout(() => desenharTorres(palco, [t], { tema: "blocos", altura: 230, prefixo: "qg" + quiz.i }), 0);
+    if (!depois) {
+      const legenda = document.createElement("p");
+      legenda.style.textAlign = "center"; legenda.style.margin = "4px 0";
+      legenda.innerHTML = v.tipo === "ganhar" ? `<b class="mais-cor">e ganhou ${v.ganhou}…</b>` : `<b class="menos-cor">e saíram ${v.saiu}…</b>`;
+      box.appendChild(legenda);
+    }
+  } else if (v.tipo === "falta") {
+    let h = `<div class="casas">`;
+    for (let k = 1; k <= v.preciso; k++) h += k <= v.tenho ? `<div class="casa cheia">${k}<span class="emo">🔑</span></div>` : `<div class="casa ${depois ? "contada" : "vazia"}">${depois ? k : "?"}</div>`;
+    box.innerHTML = h + "</div>";
+  } else if (v.tipo === "troco") {
+    const u = v.nota <= 20 ? 1 : 10;
+    let h = `<div class="barra-dinheiro">`;
+    for (let k = 0; k < v.nota / u; k++) {
+      const loja = k < v.preco / u;
+      h += loja ? `<div class="dinheiro loja"><span>${u === 10 ? "R$10" : "R$1"}</span></div>`
+               : `<div class="dinheiro troco${depois ? " contada" : ""}">${depois ? (k + 1) * u : (u === 10 ? "R$10" : "R$1")}</div>`;
+    }
+    box.innerHTML = h + `</div><div class="legenda"><span class="l-loja">preço (fica na loja)</span><span class="l-troco">troco</span></div>`;
+  }
+  return box;
+}
+
+function quizInicio() {
+  quiz.i = -1; quiz.primeira = []; quiz.fila = null;
+  $("#quizTitulo").textContent = "Revisão";
+  $("#quiz").innerHTML = `
+    <div style="text-align:center">
+      <span class="fagulha" data-fagulha="idle" data-tam="110"></span>
+      <p class="pergunta">${PERGUNTAS.length} perguntas sobre <span class="mais-cor">mais</span>, <span class="menos-cor">menos</span>, juntar, tirar, comparar, quanto falta e troco.</p>
+      <p>Se errar, aparece a explicação com desenho. Dá para tentar de novo e ver na mesa.</p>
+      <button class="btn verde grande" id="quizComecar">▶️ Começar</button>
+    </div>`;
+  acenderFagulhas($("#quiz"));
+  $("#quizComecar").onclick = () => quizMostrar(0);
+}
+
+function quizMostrar(i) {
+  quiz.i = i; quiz.tentativa = 0; quiz.respondida = false;
+  const q = PERGUNTAS[i];
+  $("#quizTitulo").textContent = `Pergunta ${i + 1} de ${PERGUNTAS.length} · ${q.cat}`;
+  const prog = PERGUNTAS.map((_, k) => `<i class="${k === i ? "atual" : quiz.primeira[k] === true ? "ok" : quiz.primeira[k] === false ? "erro" : ""}"></i>`).join("");
+  const c = $("#quiz");
+  c.innerHTML = `<div class="progresso">${prog}</div><div class="pergunta" id="qTexto">${q.txt}</div><div id="qVisual"></div>
+    <div class="opcoes">${q.ops.map((o, k) => `<button class="opcao" data-v="${esc(o)}"><span class="letra">${"ABCD"[k]}</span>${esc(o)}</button>`).join("")}</div>
+    <div class="feedback" id="qFeedback"></div>`;
+  $("#qVisual").appendChild(visualPergunta(q.vis, false));
+  $$("#quiz .opcao").forEach((b) => (b.onclick = () => quizResponder(b)));
+}
+
+function quizResponder(btn) {
+  if (quiz.respondida) return;
+  const q = PERGUNTAS[quiz.i];
+  const certa = String(q.resp());
+  const acertou = btn.dataset.v === certa;
+  quiz.tentativa++;
+  if (quiz.primeira[quiz.i] === undefined) quiz.primeira[quiz.i] = acertou;
+  const fb = $("#qFeedback");
+  if (acertou) {
+    quiz.respondida = true;
+    btn.classList.add("certa");
+    $$("#quiz .opcao").forEach((b) => (b.disabled = true));
+    fb.className = "feedback ok";
+    fb.innerHTML = `<h3><span class="fagulha" data-fagulha="celebrate" data-tam="54"></span>Isso mesmo!</h3>${q.exp}`;
+    acenderFagulhas(fb);
+    celebrar(quiz.tentativa === 1 ? "Muito bem!" : "Agora sim!");
+    fb.appendChild(visualPergunta(q.vis, true));
+    const linha = document.createElement("div");
+    linha.className = "linha-botoes";
+    linha.innerHTML = `<button class="btn" id="qMesa">🧱 Ver na mesa</button><button class="btn verde grande" id="qProx">${proximaPergunta() !== null ? "Próxima ▶️" : "Ver resultado 🏁"}</button>`;
+    fb.appendChild(linha);
+    const prox = proximaPergunta();
+    $("#qProx").onclick = () => (prox !== null ? quizMostrar(prox) : quizFim());
+  } else {
+    btn.classList.add("errada");
+    btn.disabled = true;
+    fb.className = "feedback erro";
+    const porque = (q.erros && q.erros[btn.dataset.v]) || "";
+    fb.innerHTML = `<h3><span class="fagulha" data-fagulha="encourage" data-tam="54"></span>Quase! Vamos olhar juntos.</h3><p><b>Você marcou ${esc(btn.dataset.v)}.</b> ${porque}</p><p>${q.dica || DICA[q.vis.tipo]}</p><p><b>Tente de novo.</b></p>`;
+    acenderFagulhas(fb);
+    fb.appendChild(visualPergunta(q.vis, true, true));
+    const linha = document.createElement("div");
+    linha.className = "linha-botoes";
+    linha.innerHTML = `<button class="btn" id="qMesa">🧱 Ver na mesa</button>`;
+    fb.appendChild(linha);
+  }
+  $("#qMesa").onclick = () => abrirNaMesa(q.mesa);
+}
+
+function abrirNaMesa(m) {
+  quiz.veioDoQuiz = true;
+  if (m.tela === "torres") {
+    mesa.qtd = m.torres.length;
+    m.torres.forEach(([nome, n], k) => { mesa.torres[k].nome = nome; mesa.torres[k].n = n; });
+    mesa.tema = m.tema; $("#tema").value = m.tema;
+    mesa.par = m.par ? [...m.par] : [0, 1];
+    mesa.ligar = false; mesa.revelado = false; mesa.ultimo = "";
+    desenharCartoes();
+  } else if (m.tela === "ganhar") {
+    gp.inicio = m.inicio; gpZerar();
+    for (let k = 0; k < (m.ganhar || 0); k++) { gp.blocos.push("novo"); gp.ganhou++; }
+    for (let k = 0; k < (m.gastar || 0); k++) { gp.saiu.push(gp.blocos.pop()); gp.gastou++; }
+    gpDesenhar();
+  } else if (m.tela === "falta") {
+    ff.tenho = m.tenho; ff.preciso = m.preciso; ff.contadas = 0; ffDesenhar();
+  } else if (m.tela === "troco") {
+    tr.nota = m.nota; tr.preco = m.preco; tr.contadas = 0; trDesenhar();
+  }
+  irPara(m.tela);
+}
+
+function quizFim() {
+  const acertos = quiz.primeira.filter((x) => x === true).length;
+  const n = PERGUNTAS.length;
+  const estrelas = acertos === n ? 3 : acertos >= n * 0.7 ? 2 : 1;
+  const erradas = PERGUNTAS.map((q, k) => ({ q, k })).filter(({ k }) => quiz.primeira[k] === false);
+  $("#quizTitulo").textContent = "Resultado";
+  if (estrelas >= 2) celebrar(estrelas === 3 ? "Todas de primeira!" : "Muito bem!", 2200);
+  $("#quiz").innerHTML = `<div style="text-align:center"><span class="fagulha" data-fagulha="${estrelas >= 2 ? "celebrate" : "encourage"}" data-tam="100"></span></div><div class="estrelas">${"⭐".repeat(estrelas)}${"☆".repeat(3 - estrelas)}</div>
+    <p class="pergunta">Acertou ${acertos} de ${n} de primeira.</p>
+    ${erradas.length ? `<div class="janela verde"><div class="barra">Para o adulto: onde precisou de ajuda</div><div class="conteudo"><ul>${erradas.map(({ q, k }) => `<li>Pergunta ${k + 1} (${q.cat}): ${q.txt}</li>`).join("")}</ul></div></div>` : `<p style="text-align:center">Todas de primeira! 🎉</p>`}
+    <div class="linha-botoes">${erradas.length ? `<button class="btn ouro grande" id="qRefazer">🔁 Refazer as que errou</button>` : ""}<button class="btn verde grande" id="qDeNovo">▶️ Fazer tudo de novo</button></div>`;
+  acenderFagulhas($("#quiz"));
+  $("#qDeNovo").onclick = () => { quiz.primeira = []; quiz.fila = null; quizMostrar(0); };
+  if (erradas.length) $("#qRefazer").onclick = () => {
+    quiz.fila = erradas.map(({ k }) => k);   /* só as que errou, uma depois da outra */
+    quiz.fila.forEach((k) => (quiz.primeira[k] = undefined));
+    quizMostrar(quiz.fila[0]);
+  };
+}
+
+$("#falarQuiz").onclick = () => {
+  if (quiz.i < 0) return falar(textoDe($("#quiz")));
+  const q = PERGUNTAS[quiz.i];
+  falar(q.txt + " " + q.ops.map((o, k) => `${"ABCD"[k]}: ${o}.`).join(" "));
+};
+
+/* autoverificação do banco: a resposta calculada aparece uma única vez entre as opções */
+PERGUNTAS.forEach((q, k) => {
+  const certa = String(q.resp());
+  const vezes = q.ops.map(String).filter((o) => o === certa).length;
+  if (vezes !== 1 || new Set(q.ops.map(String)).size !== 4) console.error(`Pergunta ${k + 1}: resposta ${certa} aparece ${vezes} vez(es) ou opções repetidas`);
+  const erradas = q.ops.map(String).filter((o) => o !== certa);
+  const chaves = Object.keys(q.erros || {});
+  if (chaves.length !== 3 || !erradas.every((o) => chaves.includes(o))) console.error(`Pergunta ${k + 1}: explicação de erro não cobre as 3 alternativas erradas`);
+});
+
+/* ---------- início ---------- */
+function medirTopo() { document.documentElement.style.setProperty("--topo-h", $(".topo").offsetHeight + "px"); }
+medirTopo();
+window.addEventListener("resize", medirTopo);
+acenderFagulhas();
+desenharCartoes();
+desenharMesa();
+gpZerar();
+ffDesenhar();
+trDesenhar();
+quizInicio();
+window.addEventListener("resize", () => { if ($("#tela-torres").classList.contains("ativa")) desenharMesa(false); });
+/* as fontes da internet chegam depois e mudam a altura do topo: medir de novo */
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { medirTopo(); desenharMesa(false); });
+</script>
+</body>
+</html>
