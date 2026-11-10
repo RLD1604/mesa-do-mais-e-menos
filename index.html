@@ -62,11 +62,11 @@ nav.abas button {
   border: 0; border-radius: 18px; padding: 10px 16px 9px; font-size: 1.05rem; font-weight: 800; cursor: pointer; color: #fff;
   transition: transform .08s ease, box-shadow .08s ease; box-shadow: 0 6px 0 var(--cd), var(--shadow-soft); background: var(--c);
 }
-nav.abas button:nth-child(1) { --c: var(--grape); --cd: var(--grape-deep); }
-nav.abas button:nth-child(2) { --c: var(--sky); --cd: var(--sky-deep); }
-nav.abas button:nth-child(3) { --c: var(--tangerine); --cd: var(--tangerine-deep); }
-nav.abas button:nth-child(4) { --c: var(--mint); --cd: var(--mint-deep); }
-nav.abas button:nth-child(5) { --c: var(--berry); --cd: var(--berry-deep); }
+nav.abas button[data-tela="torres"] { --c: var(--grape); --cd: var(--grape-deep); }
+nav.abas button[data-tela="ganhar"] { --c: var(--sky); --cd: var(--sky-deep); }
+nav.abas button[data-tela="falta"] { --c: var(--tangerine); --cd: var(--tangerine-deep); }
+nav.abas button[data-tela="troco"] { --c: var(--mint); --cd: var(--mint-deep); }
+nav.abas button[data-tela="quiz"] { --c: var(--berry); --cd: var(--berry-deep); }
 nav.abas button.ativa { transform: translateY(5px); box-shadow: 0 1px 0 var(--cd), 0 0 0 4px color-mix(in srgb, var(--c) 30%, transparent); }
 
 main { max-width: 1040px; margin: 0 auto; padding: 0 12px 48px; }
@@ -244,7 +244,7 @@ label.chk input { width: 22px; height: 22px; accent-color: var(--grape); }
 /* modal */
 .fundo-modal { position: fixed; inset: 0; background: rgba(59,46,88,.45); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
 .fundo-modal.aberto { display: flex; }
-.fundo-modal .janela { max-width: 560px; width: 100%; }
+.fundo-modal .janela { max-width: 560px; width: 100%; max-height: calc(100vh - 32px); overflow: auto; margin: 0; }
 
 .voando { position: fixed; z-index: 200; transition: transform .7s cubic-bezier(.4,1.4,.6,1), opacity .7s; pointer-events: none; }
 
@@ -408,6 +408,103 @@ main { max-width: 1440px; }
   .topo nav.abas { padding: 2px 0 7px; }
   .topo nav.abas button { font-size: .92rem; padding: 6px 11px 5px; }
 }
+/* ---------- Aventura: modo de jogo com mapa, missões e recompensas (10/11/2026) ---------- */
+nav.abas button[data-tela="aventura"] { --c: var(--sunny-deep); --cd: #A87A0E; }
+@media (min-width: 900px) and (max-width: 1199px) and (max-height: 700px) {
+  .topo .marca { font-size: 1.2rem; }
+  .topo nav.abas { gap: 6px; }
+  .topo nav.abas button { padding: 6px 9px 5px; }
+}
+@media (max-width: 899px) {
+  .av-mapa { row-gap: 52px; column-gap: 4px; padding-top: 48px; }
+  .av-no:nth-child(n) { transform: none; }
+  .av-mapa::before { display: none; }
+  .av-ilha { width: 56px; height: 56px; font-size: 1.4rem; }
+  .av-no .nome { max-width: 74px; font-size: .8rem; }
+  .av-placar .av-meds { display: none; }
+}
+#tela-aventura.ativa { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+.av-placar { flex: none; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--card-soft); border: 2px solid var(--line); border-radius: 18px; padding: 4px 10px; box-shadow: var(--shadow-soft); font-family: var(--font-display); font-weight: 800; font-size: 1.12rem; }
+.av-placar .pt { display: inline-flex; align-items: center; gap: 4px; background: var(--cream); border-radius: 12px; padding: 2px 10px; }
+.av-placar .direita { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+.av-placar .btn { margin: 2px 0 6px; padding: 6px 10px 5px; font-size: .95rem; min-height: 44px; min-width: 44px; }
+.av-corpo { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+.av-titulo { flex: none; text-align: center; margin: 4px 0; font-size: 1.6rem; color: var(--grape); }
+.av-herois { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-content: center; }
+.av-heroi-cartao { border: 3px solid var(--line); border-radius: 22px; background: var(--card-soft); padding: 12px 6px; cursor: pointer; font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; color: var(--ink); box-shadow: 0 6px 0 var(--line), var(--shadow-soft); display: flex; flex-direction: column; align-items: center; gap: 6px; min-height: 44px; }
+.av-heroi-cartao:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--line); }
+.av-mapa { flex: 1; min-height: 170px; position: relative; display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 4px; padding: 48px 8px 14px; border-radius: 22px; border: 2px solid var(--line);
+  background: radial-gradient(260px 120px at 15% 85%, rgba(31,190,151,.18), transparent 70%), radial-gradient(300px 140px at 85% 20%, rgba(255,197,61,.22), transparent 70%), linear-gradient(180deg, #DDF1FF, #D9F4EA); }
+.av-mapa::before { content: ""; position: absolute; left: 7%; right: 7%; top: calc(50% + 14px); border-top: 6px dashed rgba(122,79,224,.35); }
+.av-no { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; z-index: 1; }
+.av-no:nth-child(even) { transform: translateY(24px); } .av-no:nth-child(odd) { transform: translateY(-12px); }
+.av-ilha { width: 66px; height: 66px; border-radius: 50%; border: 0; cursor: pointer; font-size: 1.7rem; font-family: var(--font-display); font-weight: 800; color: #fff; background: var(--grape); box-shadow: 0 6px 0 var(--grape-deep), var(--shadow-soft); display: grid; place-items: center; }
+.av-ilha.feita { background: var(--mint); box-shadow: 0 6px 0 var(--mint-deep), var(--shadow-soft); }
+.av-ilha.trancada { background: #CFC6E2; box-shadow: 0 6px 0 #A99FC2; cursor: default; }
+.av-ilha.escolhida { outline: 4px solid var(--sunny); outline-offset: 3px; }
+.av-no .nome { font-family: var(--font-display); font-weight: 800; font-size: .88rem; text-align: center; max-width: 90px; line-height: 1.05; }
+.av-no .estr { font-size: .78rem; min-height: 1em; font-weight: 800; }
+.av-no .heroi-aqui { position: absolute; top: -44px; animation: flutuar 2.4s ease-in-out infinite; }
+.av-info { flex: none; margin: 0 !important; }
+.av-info .conteudo { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 8px 14px !important; }
+.av-info h3 { margin: 0; font-size: 1.3rem; color: var(--grape); } .av-info p { margin: 2px 0 0; font-size: 1rem; }
+.av-info .btn { min-height: 48px; }
+.av-barra { height: 14px; border-radius: 8px; background: var(--line); overflow: hidden; min-width: 110px; flex: 1; }
+.av-barra i { display: block; height: 100%; background: linear-gradient(90deg, var(--mint), var(--sky)); border-radius: 8px; transition: width .4s; }
+.av-missao { flex: 1; min-height: 0; display: grid; gap: 10px; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+.av-missao .janela { margin: 0; display: flex; flex-direction: column; min-height: 0; }
+.av-missao .janela > .barra { padding: 4px 10px; font-size: 1.02rem; flex: none; }
+.av-missao .janela > .barra .selo { width: 32px; height: 32px; border-radius: 10px; font-size: 1rem; }
+.av-missao .janela > .barra .btn { margin: 0 0 4px auto; padding: 4px 10px 3px; min-height: 44px; min-width: 44px; }
+.av-missao .janela > .conteudo { flex: 1; min-height: 0; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.av-missao .palco { flex: 1; min-height: 0; overflow: hidden; padding: 8px 6px 4px; }
+.av-pips { margin-left: auto; display: flex; gap: 4px; } .av-pips i { width: 14px; height: 14px; border-radius: 5px; background: var(--line); display: inline-block; }
+.av-pips i.ok { background: var(--mint); } .av-pips i.atual { background: var(--grape); }
+.av-pergunta { flex: none; margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; line-height: 1.25; }
+.av-dica { flex: 1; min-height: 0; overflow: auto; font-size: 1.02rem; line-height: 1.35; }
+.av-dica .caixa { display: flex; gap: 8px; align-items: flex-start; padding: 6px 10px; border-radius: 14px; }
+.av-dica .caixa.ok { background: #E3F9F1; border: 2px solid var(--mint); } .av-dica .caixa.erro { background: #FFF1E4; border: 2px solid var(--tangerine); }
+.av-dica p { margin: 2px 0; }
+.av-controles { flex: none; }
+.av-teclado { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.av-tecla { min-height: 46px; border: 0; border-radius: 14px; font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; color: var(--grape); background: var(--cream); box-shadow: 0 4px 0 var(--line); cursor: pointer; padding: 0; }
+.av-tecla:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.av-tecla.errada { background: #FFE6EE; color: var(--berry-deep); animation: balanco .4s; }
+.av-tecla.certa { background: var(--mint); color: #fff; }
+.av-montar { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.av-montar .btn { min-width: 64px; min-height: 52px; font-size: 1.8rem; margin: 0 2px 6px; padding: 2px 12px 0; }
+.av-montar .btn.grande { font-size: 1.25rem; }
+.av-montar .valor { font-family: var(--font-display); font-weight: 800; font-size: 2rem; min-width: 40px; text-align: center; }
+.av-escolhas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.av-escolhas .btn { margin: 0 0 6px; min-height: 64px; font-size: 1.12rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.av-escolhas .btn b { font-size: 1.6rem; line-height: 1; }
+.av-centro { align-self: center; width: 100%; text-align: center; }
+.av-lupa { font-size: 2.6rem; }
+.av-nota { font-family: var(--font-display); font-weight: 800; margin: 0 0 4px; font-size: 1.1rem; }
+.av-vitoria { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 4px; background: var(--card-soft); border: 2px solid var(--line); border-radius: 22px; padding: 8px; }
+.av-medalha { width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; font-size: 3rem; background: radial-gradient(circle at 35% 30%, #FFE9A8, var(--sunny) 60%, var(--sunny-deep)); box-shadow: 0 6px 0 #A87A0E, var(--shadow-soft); animation: festa 1.6s ease-in-out 2; }
+.av-toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 260; background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 16px; font-family: var(--font-display); font-weight: 800; display: none; }
+.av-toast.aberto { display: block; animation: aparecer .25s ease-out; }
+.av-tabela { width: 100%; border-collapse: collapse; font-size: .95rem; margin-bottom: 8px; }
+.av-tabela td, .av-tabela th { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: left; }
+@media (min-width: 600px) { #tela-aventura.ativa { height: calc(100vh - var(--topo-h, 76px) - 22px); overflow: hidden; } }
+@media (min-width: 600px) and (max-width: 899px) {
+  .av-missao { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .av-missao .av-painel > .conteudo { flex: none; }
+  .av-dica { max-height: 150px; flex: none; }
+}
+@media (min-width: 600px) and (max-height: 700px) {
+  .av-pergunta { font-size: 1.1rem; } .av-tecla { min-height: 44px; font-size: 1.2rem; }
+  .av-mapa { padding-top: 42px; } .av-ilha { width: 56px; height: 56px; font-size: 1.4rem; }
+  .av-medalha { width: 80px; height: 80px; font-size: 2.3rem; } .av-titulo { font-size: 1.3rem; }
+  .av-placar { font-size: 1rem; padding: 2px 8px; } .av-herois .avatar svg { width: 76px; height: 76px; }
+  .av-montar .btn { min-height: 48px; }
+}
+@media (max-width: 599px) {
+  .av-missao { grid-template-columns: minmax(0, 1fr); } .av-missao .palco { min-height: 240px; }
+  .av-herois { grid-template-columns: 1fr 1fr; } .av-no:nth-child(n) { transform: none; } .av-mapa::before { display: none; }
+  .av-teclado { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -418,7 +515,8 @@ main { max-width: 1440px; }
   <span class="fagulha" data-fagulha="idle" data-tam="44"></span>
   <div class="marca">Mesa do <span class="mais-cor">Mais</span> e do <span class="menos-cor">Menos</span><small>Vamos descobrir o mais e o menos! Toque em 🔊 para ouvir. ✨</small></div>
   <nav class="abas" id="abas">
-    <button data-tela="torres" class="ativa">🧱 <span class="longo">Comparar torres</span><span class="curto">Torres</span></button>
+    <button data-tela="aventura" class="ativa">🗺️ <span class="longo">Aventura</span><span class="curto">Mapa</span></button>
+    <button data-tela="torres">🧱<span class="longo">Comparar torres</span><span class="curto">Torres</span></button>
     <button data-tela="ganhar">💎 <span class="longo">Ganhar e gastar</span><span class="curto">Ganhar</span></button>
     <button data-tela="falta">🔑 <span class="longo">Quanto falta</span><span class="curto">Falta</span></button>
     <button data-tela="troco">💵 Troco</button>
@@ -427,8 +525,15 @@ main { max-width: 1440px; }
 </div></header>
 
 <main>
+<!-- ================= AVENTURA ================= -->
+<section class="tela ativa" id="tela-aventura">
+  <div class="av-placar" id="avPlacar"></div>
+  <div class="av-corpo" id="avCorpo"></div>
+</section>
+<div class="av-toast" id="avToast" role="status"></div>
+
 <!-- ================= TORRES ================= -->
-<section class="tela ativa" id="tela-torres">
+<section class="tela" id="tela-torres">
   <div class="janela azul col-controles">
     <div class="barra"><span class="selo s-grape">🧱</span>Monte as torres</div>
     <div class="conteudo">
@@ -727,6 +832,7 @@ function irPara(tela) {
   $$("#abas button").forEach((b) => b.classList.toggle("ativa", b.dataset.tela === tela));
   $$("section.tela").forEach((s) => s.classList.toggle("ativa", s.id === "tela-" + tela));
   if (tela === "torres") desenharMesa();
+  if (tela === "aventura") avDesenhar();
   if (tela !== "quiz" && quiz.veioDoQuiz) $("#voltarQuiz").style.display = "block";
   if (tela === "quiz") { $("#voltarQuiz").style.display = "none"; quiz.veioDoQuiz = false; }
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1441,6 +1547,516 @@ PERGUNTAS.forEach((q, k) => {
   if (chaves.length !== 3 || !erradas.every((o) => chaves.includes(o))) console.error(`Pergunta ${k + 1}: explicação de erro não cobre as 3 alternativas erradas`);
 });
 
+/* =====================================================================
+   AVENTURA (10/11/2026): mapa de 7 fases, 5 missões cada, estrelas, diamantes e medalhas.
+   Missões geradas por código (gerador com semente); a resposta sai sempre dos dados.
+   ===================================================================== */
+const AV_CHAVE = "mesaAventura_v1";
+const ART = { Madu: "a", Felipe: "o", Clara: "a", Laura: "a" };
+const COISAS = { blocos: ["bloco", "blocos"], gemas: ["diamante", "diamantes"], chaves: ["chave", "chaves"], figurinhas: ["figurinha", "figurinhas"] };
+const pl = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+const qt = (n, t) => pl(n, COISAS[t][0], COISAS[t][1]);
+const reais = (n) => (n === 1 ? "1 real" : n + " reais");
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const oA = (n) => (ART[n] === "o" ? "O " : "A ") + n;
+const oa = (n) => (ART[n] === "o" ? "o " : "a ") + n;
+const ele = (n) => (ART[n] === "o" ? "ele" : "ela");
+const deN = (n) => (ART[n] === "o" ? "do " : "da ") + n;
+const aoA = (n) => (ART[n] === "o" ? "ao " : "à ") + n;
+const doQue = (n) => "do que " + oa(n);
+const sobra = (n) => (n === 1 ? "sobra 1" : "sobram " + n);
+const faltaTxt = (n) => (n === 1 ? "falta 1" : "faltam " + n);
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const FASES = [
+  { nome: "Juntar", curto: "Juntar", emo: "➕", missoes: 5, desc: "Ganhou? A torre cresce: é juntar." },
+  { nome: "Tirar", curto: "Tirar", emo: "➖", missoes: 5, desc: "Gastou ou deu? A torre diminui: é tirar." },
+  { nome: "Quantos a mais", curto: "A mais", emo: "⚖️", missoes: 5, desc: "Duas torres: quantos uma tem a mais do que a outra?" },
+  { nome: "Quantos a menos e deixar igual", curto: "A menos", emo: "🤝", missoes: 5, desc: "Quantos a menos do que o outro? Quanto precisa ganhar para ficar igual?" },
+  { nome: "Quanto falta", curto: "Falta", emo: "🔑", missoes: 5, desc: "Tenho alguns e preciso de mais: quanto falta?" },
+  { nome: "Troco", curto: "Troco", emo: "💵", missoes: 5, desc: "O que você deu a mais do que o preço volta para você." },
+  { nome: "Detetive", curto: "Detetive", emo: "🔍", missoes: 5, desc: "Leia a história: junta, tira ou compara?" },
+];
+
+function gerarMissao(fase, indice, semente) {
+  const r = mulberry32(((semente >>> 0) ^ Math.imul(fase + 1, 2654435761) ^ Math.imul(indice + 1, 40503)) >>> 0);
+  const ent = (min, max) => min + Math.floor(r() * (max - min + 1));
+  const iA = ent(0, NOMES.length - 1);
+  const A = NOMES[iA], B = NOMES[(iA + ent(1, NOMES.length - 1)) % NOMES.length];
+  const t = r() < 0.5 ? "blocos" : "gemas", V = COISAS[t][1];
+  const d = { A, B, tema: t, teclado: Array.from({ length: 13 }, (_, k) => k) };
+  let tipo = "responder", texto = "", resposta;
+  const saiuTxt = (b) => (t === "gemas" ? `Gastou ${qt(b, t)}` : `Deu ${qt(b, t)} para ${oa(B)}`);
+  if (fase === 0) {
+    d.a = ent(1, 8); d.b = ent(1, 10 - d.a); resposta = d.a + d.b;
+    if (indice % 2) { tipo = "montar"; d.op = "montar_juntar"; d.inicio = d.a; texto = `${oA(A)} tinha ${qt(d.a, t)}. Ganhou ${qt(d.b, t)}. A torre já mostra o que ${ele(A)} tinha: ponha o que ${ele(A)} ganhou e toque em Pronto.`; }
+    else { d.op = "soma"; texto = `${oA(A)} tinha ${qt(d.a, t)}. Ganhou ${qt(d.b, t)}. Com quantos ${V} ${ele(A)} ficou?`; }
+  } else if (fase === 1) {
+    d.a = ent(3, 10); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
+    if (indice % 2) { tipo = "montar"; d.op = "montar_tirar"; d.inicio = d.a; texto = `${oA(A)} tinha ${qt(d.a, t)}. ${saiuTxt(d.b)}. A torre já mostra o que ${ele(A)} tinha: tire o que saiu e toque em Pronto.`; }
+    else { d.op = "sub"; texto = `${oA(A)} tinha ${qt(d.a, t)}. ${saiuTxt(d.b)}. Com quantos ${V} ${oa(A)} ficou?`; }
+  } else if (fase === 2) {
+    if (indice === 2 || indice === 4) {
+      tipo = "montar"; d.op = "montar_mais"; d.a = ent(1, 6); d.b = ent(1, 10 - d.a); d.inicio = 0; resposta = d.a + d.b;
+      texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)} a mais ${doQue(A)}. Monte a torre ${deN(B)}.`;
+    } else {
+      d.op = "comparar"; d.a = ent(2, 10); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
+      texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(A)} tem a mais ${doQue(B)}?`;
+    }
+  } else if (fase === 3) {
+    d.a = ent(3, 12); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
+    if (indice === 1) { tipo = "montar"; d.op = "montar_menos"; d.inicio = 0; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)} a menos ${doQue(A)}. Monte a torre ${deN(B)}.`; }
+    else if (indice === 2) { d.op = "igualar"; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(B)} precisa ganhar para ficar igual ${aoA(A)}?`; }
+    else if (indice === 3) { tipo = "montar"; d.op = "montar_igual"; d.inicio = d.b; resposta = d.a; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Deixe a torre ${deN(B)} igual à ${deN(A)}.`; }
+    else { d.op = "comparar_menos"; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(B)} tem a menos ${doQue(A)}?`; }
+  } else if (fase === 4) {
+    const ch = r() < 0.5;
+    d.op = "falta"; d.coisa = ch ? "chaves" : "figurinhas"; d.emo = ch ? "🔑" : "⭐";
+    d.a = ent(4, 12); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
+    texto = ch ? `Para abrir o baú, preciso de ${qt(d.a, "chaves")}. Tenho ${d.b}. Quantas chaves faltam?`
+               : `O álbum tem lugar para ${qt(d.a, "figurinhas")}. Já colei ${d.b}. Quantas figurinhas faltam?`;
+  } else if (fase === 5) {
+    d.op = "troco"; d.item = ["o lanche", "o livro", "o brinquedo", "o suco"][ent(0, 3)];
+    if (indice % 2 === 0) { d.nota = r() < 0.5 ? 10 : 20; d.preco = d.nota === 10 ? ent(1, 9) : ent(8, 19); }
+    else { d.nota = r() < 0.5 ? 50 : 100; d.preco = 10 * ent(1, d.nota / 10 - 1); d.teclado = [10, 20, 30, 40, 50, 60, 70, 80, 90]; }
+    d.a = d.nota; d.b = d.preco; resposta = d.nota - d.preco;
+    texto = `Você deu uma nota de ${reais(d.nota)}. ${cap(d.item)} custa ${reais(d.preco)}. Quanto de troco volta para você?`;
+  } else {
+    if (indice === 0 || indice === 4) {
+      tipo = "escolher"; d.op = "escolher"; d.historia = indice === 4 ? "comparar" : ["juntar", "tirar"][ent(0, 1)]; delete d.teclado;
+      if (d.historia === "juntar") { d.a = ent(1, 6); d.b = ent(1, 4); texto = `${oA(A)} tinha ${qt(d.a, t)}. Ganhou ${qt(d.b, t)}. Com quantos ${V} ${ele(A)} ficou?`; }
+      else if (d.historia === "tirar") { d.a = ent(4, 10); d.b = ent(1, d.a - 1); texto = `${oA(A)} tinha ${qt(d.a, t)}. ${saiuTxt(d.b)}. Com quantos ${V} ${oa(A)} ficou?`; }
+      else { d.a = ent(3, 10); d.b = ent(1, d.a - 1); texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(A)} tem a mais ${doQue(B)}?`; }
+      texto = "🔍 " + texto + " O que acontece nessa história: junta, tira ou compara?";
+      resposta = d.historia;
+    } else if (indice === 1) {
+      d.op = "mais_do_que_soma"; d.a = ent(1, 6); d.b = ent(1, 10 - d.a); resposta = d.a + d.b;
+      texto = `${oA(B)} tem ${qt(d.a, t)}. ${oA(A)} tem ${qt(d.b, t)} a mais ${doQue(B)}. Quantos ${V} ${oa(A)} tem?`;
+    } else if (indice === 2) {
+      d.op = "soma"; d.a = ent(1, 7); d.b = ent(1, 10 - d.a); resposta = d.a + d.b;
+      texto = `${oA(A)} tinha ${qt(d.a, t)}. Ganhou mais ${qt(d.b, t)}. Com quantos ${V} ${ele(A)} ficou?`;
+    } else {
+      d.op = "comparar"; d.a = ent(2, 10); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
+      texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(A)} tem a mais ${doQue(B)}?`;
+    }
+  }
+  return { fase, indice, tipo, texto, dados: d, resposta };
+}
+
+function conferir(m, resp) {
+  const d = m.dados;
+  if (m.tipo === "escolher") {
+    if (resp === m.resposta) return { certo: true, erro: null };
+    const fez = { juntar: "juntou", tirar: "tirou", comparar: "comparou" }[resp] || "escolheu";
+    return { certo: false, erro: `${fez}_em_vez_de_${m.resposta}` };
+  }
+  const v = Number(resp);
+  if (v === m.resposta) return { certo: true, erro: null };
+  const a = d.a, b = d.b, soma = a + b, dif = Math.abs(a - b);
+  let erro = null;
+  if (m.tipo === "montar" && v === d.inicio) erro = "nao_mexeu";
+  else switch (d.op) {
+    case "soma": case "montar_juntar":
+      /* repetir um número da história vem antes: quando a = 2b, a − b é igual a b e não quer dizer que a criança tirou */
+      if (v === a || v === b) erro = d.op === "montar_juntar" && v === b ? "montou_so_o_que_ganhou" : "respondeu_um_dos_numeros";
+      else if (v === dif) erro = "tirou_em_vez_de_juntar"; break;
+    case "sub": case "montar_tirar":
+      if (v === soma) erro = "juntou_em_vez_de_tirar"; else if (v === b) erro = "respondeu_o_que_saiu"; break;
+    case "comparar": case "comparar_menos":
+      if (v === soma) erro = "juntou_em_vez_de_comparar"; else if (v === a || v === b) erro = "respondeu_um_dos_numeros"; break;
+    case "igualar":
+      if (v === soma) erro = "juntou_em_vez_de_igualar"; else if (v === a || v === b) erro = "respondeu_um_dos_numeros"; break;
+    case "montar_mais":
+      if (v === a - b) erro = "trocou_mais_por_menos"; else if (v === a) erro = "montou_igual"; else if (v === b) erro = "montou_so_a_diferenca"; break;
+    case "montar_menos":
+      if (v === soma) erro = "trocou_menos_por_mais"; else if (v === b) erro = "montou_so_a_diferenca"; else if (v === a) erro = "montou_igual"; break;
+    case "montar_igual":
+      if (v === dif) erro = "montou_so_o_que_faltava"; else if (v === soma) erro = "juntou_em_vez_de_igualar"; break;
+    case "falta":
+      if (v === soma) erro = "juntou_em_vez_de_completar"; else if (v === a || v === b) erro = "respondeu_um_dos_numeros"; break;
+    case "troco":
+      if (v === soma) erro = "juntou_preco_e_nota"; else if (v === a || v === b) erro = "respondeu_um_dos_numeros"; break;
+    case "mais_do_que_soma":
+      if (v === b) erro = "respondeu_so_o_a_mais"; else if (v === dif) erro = "tirou_em_vez_de_juntar"; else if (v === a) erro = "respondeu_um_dos_numeros"; break;
+  }
+  const passo = d.op === "troco" && d.nota > 20 ? 10 : 1;
+  if (!erro && Math.abs(v - m.resposta) === passo) erro = "contou_um_a_mais_ou_a_menos";
+  return { certo: false, erro: erro || "outro" };
+}
+
+/* frases do 1º erro (dizem o tipo de erro sem entregar a resposta) */
+const AV_MSG = {
+  juntou_em_vez_de_comparar: "Você juntou os dois. Aqui ninguém ganhou nada: é para comparar.",
+  juntou_em_vez_de_igualar: "Você juntou os dois. Para ficar igual, ligue um a um e veja quantos faltam na torre menor.",
+  montou_so_o_que_faltava: "Sua torre ficou só com o tanto que faltava. Ela já tinha alguns: ponha até nenhum ficar sem par.",
+  montou_so_o_que_ganhou: "Sua torre ficou só com o que ganhou. Ela já tinha alguns: os que ganhou vão em cima.",
+  juntou_em_vez_de_tirar: "Você juntou. Mas aqui saíram coisas: a quantidade diminui.",
+  tirou_em_vez_de_juntar: "Você tirou. Mas aqui a quantidade aumenta.",
+  juntou_em_vez_de_completar: "Você juntou os dois números. Aqui é para ver quanto falta.",
+  juntou_preco_e_nota: "Você juntou a nota e o preço. O troco é o que você deu a mais do que o preço.",
+  trocou_mais_por_menos: "Sua torre ficou mais baixa. \"A mais do que\" quer dizer mais alta.",
+  trocou_menos_por_mais: "Sua torre ficou mais alta. \"A menos do que\" quer dizer mais baixa.",
+  montou_so_a_diferenca: "Você montou só o tanto a mais ou a menos. Comece deixando igual à outra torre e depois ponha ou tire.",
+  montou_igual: "Sua torre ficou igual à outra. Não pode ficar igual.",
+  respondeu_so_o_a_mais: "Esse é só o tanto a mais. A pergunta quer saber quantos são na torre inteira, contando todos.",
+  respondeu_um_dos_numeros: "Esse número já estava na história. A pergunta quer outro número.",
+  respondeu_o_que_saiu: "Esse é o tanto que saiu. A pergunta quer saber quantos ficaram.",
+  nao_mexeu: "A torre ainda está como começou. Use os botões ＋ e −.",
+  contou_um_a_mais_ou_a_menos: "Quase! Conte de novo, bem devagar, tocando em cada um.",
+  comparou_em_vez_de_juntar: "Você escolheu comparar. Mas a história fala de uma pessoa só.",
+  comparou_em_vez_de_tirar: "Você escolheu comparar. Mas aqui alguém deu ou gastou: a quantidade diminui.",
+  tirou_em_vez_de_comparar: "Você escolheu tirar. Mas ninguém gastou nada nessa história.",
+};
+/* nomes para o adulto */
+const AV_ROTULOS = {
+  juntou_em_vez_de_comparar: "Juntou os dois quando era para comparar", juntou_em_vez_de_tirar: "Juntou quando era para tirar",
+  juntou_em_vez_de_igualar: "Juntou os dois quando era para deixar igual", montou_so_o_que_faltava: "Montou só o que faltava para igualar",
+  montou_so_o_que_ganhou: "Montou só o que ganhou, sem o que já tinha",
+  tirou_em_vez_de_juntar: "Tirou quando era para juntar", juntou_em_vez_de_completar: "Juntou quando era para ver quanto falta",
+  juntou_preco_e_nota: "No troco, juntou a nota e o preço", trocou_mais_por_menos: "Montou \"a menos\" quando era \"a mais\"",
+  trocou_menos_por_mais: "Montou \"a mais\" quando era \"a menos\"", montou_so_a_diferenca: "Montou só o tanto a mais ou a menos",
+  montou_igual: "Montou igual à outra torre", respondeu_so_o_a_mais: "\"Tem 3 a mais do que\": respondeu só o 3",
+  respondeu_um_dos_numeros: "Repetiu um número da história", respondeu_o_que_saiu: "Respondeu o que saiu, não o que ficou",
+  nao_mexeu: "Tocou em Pronto sem mexer na torre", contou_um_a_mais_ou_a_menos: "Errou a contagem por 1 (ou por 10 no troco)",
+  comparou_em_vez_de_juntar: "Escolheu comparar quando era juntar", comparou_em_vez_de_tirar: "Escolheu comparar quando era tirar",
+  tirou_em_vez_de_comparar: "Escolheu tirar quando era comparar", outro: "Outro erro",
+};
+
+function avOpDesenho(m) {
+  return m.tipo === "escolher" ? { juntar: "soma", tirar: "sub", comparar: "comparar" }[m.dados.historia] : m.dados.op;
+}
+function avDica1(m) {
+  const d = m.dados, op = avOpDesenho(m);
+  if (m.tipo === "escolher") return "Pergunte: alguém ganhou? Alguém deu ou gastou? Ou são dois para comparar? Veja o desenho.";
+  switch (op) {
+    case "soma": return "Conte todos da torre, um por um: os que já tinha e os verdes, que chegaram.";
+    case "sub": return "Os riscados saíram. Conte só os que ficaram na torre.";
+    case "montar_juntar": return "Ganhou: a torre cresce. Ponha um na torre para cada um que ganhou.";
+    case "montar_tirar": return "Saiu: a torre diminui. Tire um da torre para cada um que saiu.";
+    case "comparar": case "comparar_menos": case "igualar": return "Veja os fios: cada bloco de uma torre ligado a um da outra. Conte os amarelos, que ficaram sem par.";
+    case "montar_mais": return `"A mais do que" ${oa(d.A)}: a torre ${deN(d.B)} fica mais alta. Deixe igual primeiro e depois ponha os que são a mais.`;
+    case "montar_menos": return `"A menos do que" ${oa(d.A)}: a torre ${deN(d.B)} fica mais baixa. Deixe igual primeiro e depois tire.`;
+    case "montar_igual": return "Veja os fios. Ponha blocos até nenhum bloco ficar sem par.";
+    case "falta": return "Conte só as casas vazias, uma por uma.";
+    case "troco": return d.nota > 20 ? "Os quadrados marrons pagam o preço. Cada quadrado verde vale 10 reais: conte de 10 em 10 só os verdes. É o que volta para você." : "Os quadrados marrons pagam o preço. Conte os verdes, um por um: é o que volta para você.";
+    case "mais_do_que_soma": return `A torre ${deN(d.A)} apareceu: os amarelos são os que ${ele(d.A)} tem a mais. Conte todos os blocos dessa torre.`;
+  }
+  return "Olhe o desenho e conte devagar.";
+}
+function avPasso(m) {
+  const d = m.dados, t = d.tema, c = (n) => qt(n, t), dif = Math.abs(d.a - d.b);
+  if (m.tipo === "escolher") {
+    if (d.historia === "juntar") return `Ganhou: a quantidade aumenta. É <b>juntar</b>: ${d.a} + ${d.b} = ${d.a + d.b}.`;
+    if (d.historia === "tirar") return `Saiu: a quantidade diminui. É <b>tirar</b>: ${d.a} − ${d.b} = ${d.a - d.b}.`;
+    return `Ninguém ganhou nem gastou: são dois para <b>comparar</b>. Ligando um a um, ${sobra(dif)} sem par: ${d.a} − ${d.b} = ${dif}.`;
+  }
+  switch (d.op) {
+    case "soma": case "montar_juntar": return `Tinha ${c(d.a)}. Ganhou ${c(d.b)}. Ganhar é juntar: <b>${d.a} + ${d.b} = ${d.a + d.b}</b>.`;
+    case "sub": case "montar_tirar": return `Tinha ${c(d.a)}. ${d.b === 1 ? "Saiu" : "Saíram"} ${c(d.b)}. Tirar: <b>${d.a} − ${d.b} = ${d.a - d.b}</b>.`;
+    case "comparar": return `Ligando um a um, ${sobra(dif)} sem par. ${oA(d.A)} tem ${c(dif)} a mais ${doQue(d.B)}: <b>${d.a} − ${d.b} = ${dif}</b>. Comparar não é juntar os dois.`;
+    case "comparar_menos": return `Ligando um a um, ${sobra(dif)} sem par. ${oA(d.B)} tem ${c(dif)} a menos ${doQue(d.A)}: <b>${d.a} − ${d.b} = ${dif}</b>.`;
+    case "igualar": return `Ligando um a um, ${sobra(dif)} sem par. Para ficar igual ${aoA(d.A)}, ${oa(d.B)} precisa ganhar ${c(dif)}: <b>${d.a} − ${d.b} = ${dif}</b>.`;
+    case "montar_mais": return `${oA(d.A)} tem ${c(d.a)}. Com ${c(d.b)} a mais ${doQue(d.A)}: <b>${d.a} + ${d.b} = ${d.a + d.b}</b>. A torre ${deN(d.B)} fica com ${c(d.a + d.b)}.`;
+    case "montar_menos": return `${oA(d.A)} tem ${c(d.a)}. Com ${c(d.b)} a menos ${doQue(d.A)}: <b>${d.a} − ${d.b} = ${d.a - d.b}</b>. A torre ${deN(d.B)} fica com ${c(d.a - d.b)}.`;
+    case "montar_igual": return `${oA(d.A)} tem ${c(d.a)}. Para ficar igual, a torre ${deN(d.B)} também precisa de ${c(d.a)}: <b>${d.b} + ${dif} = ${d.a}</b>.`;
+    case "falta": return `Preciso de ${d.a}. Tenho ${d.b}. Do ${d.b} até o ${d.a} ${dif === 1 ? "é 1 pulo" : "são " + dif + " pulos"}: ${faltaTxt(dif)}. <b>${d.a} − ${d.b} = ${dif}</b>.`;
+    case "troco": return `Você deu ${reais(d.nota)}. ${cap(d.item)} custa ${reais(d.preco)}. <b>${d.nota} − ${d.preco} = ${d.nota - d.preco}</b>. O que você deu a mais do que o preço volta para você: ${reais(d.nota - d.preco)} de troco.`;
+    case "mais_do_que_soma": return `${oA(d.B)} tem ${c(d.a)}. ${oA(d.A)} tem ${c(d.b)} a mais ${doQue(d.B)}: a torre ${deN(d.A)} é igual à ${deN(d.B)} e ainda tem ${c(d.b)} em cima. <b>${d.a} + ${d.b} = ${d.a + d.b}</b>.`;
+  }
+  return "";
+}
+
+/* ---------- progresso salvo ---------- */
+function avNovoEstado() {
+  return { v: 1, heroi: null, som: true, diamantes: 0, estrelas: 0, fases: FASES.map(() => ({ melhor: [0, 0, 0, 0, 0], atual: 0, completa: false })), medalhas: [], conquistas: {}, seq: 0, erros: {} };
+}
+function avCarregar() {
+  try {
+    const s = localStorage.getItem(AV_CHAVE);
+    if (s) {
+      const o = JSON.parse(s);
+      if (o && o.v === 1 && Array.isArray(o.fases) && o.fases.length === FASES.length) return Object.assign(avNovoEstado(), o);
+    }
+  } catch (e) { /* sem armazenamento: joga sem salvar */ }
+  return avNovoEstado();
+}
+let avEstado = avCarregar();
+function avSalvar() { try { localStorage.setItem(AV_CHAVE, JSON.stringify(avEstado)); } catch (e) { /* segue sem salvar */ } }
+const avLiberada = (k) => k === 0 || avEstado.fases[k - 1].completa;
+function avFaseAtual() { const i = avEstado.fases.findIndex((f) => !f.completa); return i < 0 ? FASES.length - 1 : i; }
+
+/* ---------- sons curtos (WebAudio, só depois do primeiro toque) ---------- */
+let avAudio = null;
+document.addEventListener("pointerdown", () => {
+  try {
+    if (!avAudio) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) avAudio = new AC(); }
+    else if (avAudio.state === "suspended") avAudio.resume();
+  } catch (e) { avAudio = null; }
+}, { passive: true });
+function avSom(tipo) {
+  if (!avEstado.som || !avAudio) return;
+  try {
+    const notas = {
+      acerto: [[660, 0, 0.12], [880, 0.11, 0.2]], erro: [[330, 0, 0.16], [262, 0.14, 0.24]],
+      estrela: [[1046, 0, 0.1], [1318, 0.08, 0.12], [1568, 0.16, 0.18]], vitoria: [[523, 0, 0.15], [659, 0.15, 0.15], [784, 0.3, 0.15], [1046, 0.45, 0.4]],
+    }[tipo] || [];
+    const t0 = avAudio.currentTime, vol = tipo === "erro" ? 0.07 : 0.16;
+    notas.forEach(([f, ini, dur]) => {
+      const o = avAudio.createOscillator(), g = avAudio.createGain();
+      o.type = tipo === "erro" ? "sine" : "triangle"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t0 + ini); g.gain.exponentialRampToValueAtTime(vol, t0 + ini + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + ini + dur);
+      o.connect(g); g.connect(avAudio.destination); o.start(t0 + ini); o.stop(t0 + ini + dur + 0.05);
+    });
+  } catch (e) { /* sem som */ }
+}
+
+/* ---------- tela ---------- */
+const av = { vista: "mapa", fase: 0, missao: null, tent: 0, valor: 0, nivel: 0, resolvida: false, sel: null, ultimoErro: null };
+let avToastTimer = null;
+function avToast(txt) {
+  const el = $("#avToast"); if (!el) return;
+  el.textContent = txt; el.classList.add("aberto");
+  clearTimeout(avToastTimer); avToastTimer = setTimeout(() => el.classList.remove("aberto"), 2400);
+}
+const AV_CONQ = { primeira: "Primeira missão!", seq5: "5 de primeira seguidas!", todas: "Todas as fases!" };
+function avConquista(ch) { if (avEstado.conquistas[ch]) return; avEstado.conquistas[ch] = true; avToast("🏆 Conquista: " + AV_CONQ[ch]); }
+
+function avDesenhar() {
+  avPlacar();
+  if (!avEstado.heroi) return avTelaHeroi();
+  if (av.vista === "missao" && av.missao) return avTelaMissao();
+  if (av.vista === "vitoria") return avTelaVitoria();
+  av.vista = "mapa";
+  avTelaMapa();
+}
+function avPlacar() {
+  const e = avEstado, h = e.heroi, meds = e.medalhas.map((k) => FASES[k].emo).join("");
+  $("#avPlacar").innerHTML = `${h ? avatar(h, 38) : `<span class="fagulha">${fagulhaSVG("idle", 32)}</span>`}
+    <span class="pt" title="estrelas">⭐ ${e.estrelas}</span><span class="pt" title="diamantes">💎 ${e.diamantes}</span>
+    <span class="pt" title="medalhas">🏅 ${e.medalhas.length}${meds ? ` <span class="av-meds">${meds}</span>` : ""}</span>
+    <span class="direita">${h && av.vista !== "mapa" ? `<button class="btn" id="avMapaBtn">🗺️ <span class="longo">Mapa</span></button>` : ""}<button class="btn" id="avSomBtn" aria-label="ligar ou desligar o som">${e.som ? "🔊" : "🔇"}</button><button class="btn" id="avAdulto">👪 <span class="longo">Para o adulto</span><span class="curto">Adulto</span></button></span>`;
+  const mb = $("#avMapaBtn"); if (mb) mb.onclick = () => { av.vista = "mapa"; av.missao = null; avDesenhar(); };
+  $("#avSomBtn").onclick = () => { avEstado.som = !avEstado.som; avSalvar(); avPlacar(); avSom("acerto"); };
+  $("#avAdulto").onclick = avAbrirAdulto;
+}
+function avTelaHeroi() {
+  $("#avCorpo").innerHTML = `<h2 class="av-titulo">Quem vai jogar a aventura? Escolha seu herói!</h2>
+    <div class="av-herois">${NOMES.map((n) => `<button class="av-heroi-cartao" data-heroi="${n}">${avatar(n, 96)}${n}</button>`).join("")}</div>`;
+  $$("#avCorpo [data-heroi]").forEach((b) => (b.onclick = () => {
+    avEstado.heroi = b.dataset.heroi; avSalvar(); avSom("estrela"); av.vista = "mapa"; avDesenhar();
+  }));
+}
+function avTelaMapa() {
+  const atual = avFaseAtual();
+  if (av.sel == null || !avLiberada(av.sel)) av.sel = atual;
+  const nos = FASES.map((F, k) => {
+    const f = avEstado.fases[k], lib = avLiberada(k), est = f.melhor.reduce((s, x) => s + x, 0);
+    return `<div class="av-no">${k === atual ? `<span class="heroi-aqui">${avatar(avEstado.heroi, 40)}</span>` : ""}
+      <button class="av-ilha${f.completa ? " feita" : ""}${lib ? "" : " trancada"}${k === av.sel ? " escolhida" : ""}" data-fase="${k}" ${lib ? "" : "disabled"} aria-label="Fase ${k + 1}: ${F.nome}">${lib ? (f.completa ? "🏅" : F.emo) : "🔒"}</button>
+      <span class="nome">${k + 1}. ${F.curto}</span><span class="estr">${est ? "⭐ " + est : ""}</span></div>`;
+  }).join("");
+  const k = av.sel, F = FASES[k], f = avEstado.fases[k], feitas = Math.min(f.atual, F.missoes);
+  const rotulo = f.completa && (f.atual === 0 || f.atual >= F.missoes) ? "🔁 Jogar de novo" : f.atual > 0 ? "▶️ Continuar" : "▶️ Jogar";
+  $("#avCorpo").innerHTML = `<div class="av-mapa">${nos}</div>
+    <div class="janela av-info"><div class="conteudo"><span class="selo s-grape">${F.emo}</span>
+      <div style="flex:2;min-width:180px"><h3>Fase ${k + 1}: ${F.nome}${f.completa ? " 🏅" : ""}</h3><p>${F.desc}</p></div>
+      <div class="av-barra" title="${feitas} de ${F.missoes}"><i style="width:${(100 * (f.completa && f.atual === 0 ? F.missoes : feitas)) / F.missoes}%"></i></div>
+      <button class="btn verde grande" id="avJogar">${rotulo}</button></div></div>`;
+  $$("#avCorpo [data-fase]").forEach((b) => (b.onclick = () => { av.sel = +b.dataset.fase; avTelaMapa(); }));
+  $("#avJogar").onclick = () => avComecar(av.sel);
+}
+function avComecar(k) {
+  if (!avLiberada(k)) return;
+  av.fase = k;
+  const f = avEstado.fases[k];
+  if (f.atual >= FASES[k].missoes) f.atual = 0;
+  av.vista = "missao";
+  avNovaMissao();
+}
+function avNovaMissao() {
+  const f = avEstado.fases[av.fase];
+  av.missao = gerarMissao(av.fase, f.atual, Math.floor(Math.random() * 2147483647));
+  av.tent = 0; av.nivel = 0; av.resolvida = false; av.ultimoErro = null;
+  av.valor = av.missao.dados.inicio || 0;
+  avPlacar();
+  avTelaMissao();
+}
+function avTelaMissao() {
+  const m = av.missao, f = avEstado.fases[av.fase], F = FASES[av.fase];
+  const idx = m.indice;
+  const pips = Array.from({ length: F.missoes }, (_, k) => `<i class="${k < idx || (k === idx && av.resolvida) ? "ok" : k === idx ? "atual" : ""}"></i>`).join("");
+  $("#avCorpo").innerHTML = `<div class="av-missao">
+    <div class="janela av-desenho"><div class="barra"><span class="selo s-grape">${F.emo}</span>Fase ${av.fase + 1}: ${F.curto}<span class="av-pips">${pips}</span></div>
+      <div class="conteudo"><div class="palco" id="avPalco"></div></div></div>
+    <div class="janela av-painel"><div class="barra"><span class="selo s-sunny">🎯</span>Missão ${idx + 1} de ${F.missoes}<button class="btn" id="avOuvir" aria-label="ouvir a missão">🔊</button></div>
+      <div class="conteudo"><p class="av-pergunta" id="avTexto">${m.texto}</p><div class="av-dica" id="avDica"></div><div class="av-controles" id="avControles"></div></div></div></div>`;
+  $("#avOuvir").onclick = () => falar(m.texto);
+  avMostrarDica();
+  avControles();
+  requestAnimationFrame(() => avPintar(av.resolvida ? 2 : av.nivel));
+}
+function avControles() {
+  const m = av.missao, el = $("#avControles"), f = avEstado.fases[av.fase];
+  if (av.resolvida) {
+    el.innerHTML = `<div class="linha-botoes"><button class="btn verde grande" id="avProxima">${f.atual >= FASES[av.fase].missoes ? "🏅 Ver a medalha" : "▶️ Próxima missão"}</button></div>`;
+    $("#avProxima").onclick = () => {
+      if (f.atual >= FASES[av.fase].missoes) { av.vista = "vitoria"; av.missao = null; avDesenhar(); celebrar(`Medalha: ${FASES[av.fase].nome}!`, 2200); avSom("vitoria"); }
+      else avNovaMissao();
+    };
+    return;
+  }
+  if (m.tipo === "montar") {
+    el.innerHTML = `<div class="av-montar"><button class="btn vermelho" id="avMenos" aria-label="tirar um bloco">−</button><span class="valor" id="avValor">${av.valor}</span><button class="btn verde" id="avMais" aria-label="pôr um bloco">＋</button><button class="btn escuro grande" id="avPronto">Pronto!</button></div>`;
+    const mudar = (dv) => { av.valor = Math.max(0, Math.min(12, av.valor + dv)); $("#avValor").textContent = av.valor; avPintar(av.nivel); };
+    $("#avMenos").onclick = () => mudar(-1);
+    $("#avMais").onclick = () => mudar(1);
+    $("#avPronto").onclick = () => avResponder(av.valor);
+  } else if (m.tipo === "escolher") {
+    const ops = [["juntar", "➕", "Junta"], ["tirar", "➖", "Tira"], ["comparar", "⚖️", "Compara"]];
+    el.innerHTML = `<div class="av-escolhas">${ops.map(([v, emo, txt]) => `<button class="btn" data-esc="${v}"><b>${emo}</b>${txt}</button>`).join("")}</div>`;
+    $$("#avControles [data-esc]").forEach((b) => (b.onclick = () => avResponder(b.dataset.esc, b)));
+  } else {
+    el.innerHTML = `<div class="av-teclado">${m.dados.teclado.map((n) => `<button class="av-tecla" data-n="${n}">${n}</button>`).join("")}</div>`;
+    $$("#avControles [data-n]").forEach((b) => (b.onclick = () => avResponder(+b.dataset.n, b)));
+  }
+}
+function avMostrarDica() {
+  const m = av.missao, el = $("#avDica");
+  if (!el) return;
+  if (av.resolvida) {
+    const s = av.tent === 0 ? 3 : av.tent === 1 ? 2 : 1;
+    el.innerHTML = `<div class="caixa ok"><span class="fagulha">${fagulhaSVG("celebrate", 46)}</span><div><p><b>${s === 3 ? "De primeira!" : "Conseguiu!"} ${"⭐".repeat(s)} +${10 * s} 💎</b></p><p>${avPasso(m)}</p></div></div>`;
+    return;
+  }
+  if (av.nivel === 0) { el.innerHTML = ""; return; }
+  const msg = AV_MSG[av.ultimoErro] || "";
+  el.innerHTML = av.nivel === 1
+    ? `<div class="caixa erro"><span class="fagulha">${fagulhaSVG("encourage", 46)}</span><div><p><b>Quase! Vamos olhar juntos.</b></p>${msg ? `<p>${msg}</p>` : ""}<p>${avDica1(m)}</p></div></div>`
+    : `<div class="caixa erro"><span class="fagulha">${fagulhaSVG("encourage", 46)}</span><div><p><b>Vamos passo a passo.</b></p>${msg ? `<p>${msg}</p>` : ""}<p>${avPasso(m)}</p><p>Agora tente de novo!</p></div></div>`;
+}
+function avResponder(valor, botao) {
+  const m = av.missao;
+  if (!m || av.resolvida) return;
+  const res = conferir(m, valor);
+  if (res.certo) {
+    if (botao) botao.classList.add("certa");
+    return avAcertou();
+  }
+  av.tent++; av.nivel = Math.min(2, av.tent); av.ultimoErro = res.erro;
+  avEstado.erros[res.erro] = (avEstado.erros[res.erro] || 0) + 1;
+  avEstado.seq = 0;
+  avSalvar();
+  avSom("erro");
+  if (botao) { botao.classList.remove("errada"); void botao.offsetWidth; botao.classList.add("errada"); }
+  avMostrarDica();
+  avPintar(av.nivel);
+}
+function avAcertou() {
+  const f = avEstado.fases[av.fase], m = av.missao, F = FASES[av.fase];
+  const s = av.tent === 0 ? 3 : av.tent === 1 ? 2 : 1;
+  av.resolvida = true;
+  const antes = f.melhor[m.indice] || 0;
+  f.melhor[m.indice] = Math.max(antes, s);
+  avEstado.estrelas += Math.max(0, s - antes); avEstado.diamantes += 10 * s;
+  avEstado.seq = av.tent === 0 ? (avEstado.seq || 0) + 1 : 0;
+  f.atual = m.indice + 1;
+  if (f.atual >= F.missoes && !f.completa) { f.completa = true; if (!avEstado.medalhas.includes(av.fase)) avEstado.medalhas.push(av.fase); }
+  avConquista("primeira");
+  if (avEstado.seq >= 5) avConquista("seq5");
+  if (avEstado.fases.every((x) => x.completa)) avConquista("todas");
+  avSalvar();
+  avSom("acerto"); setTimeout(() => avSom("estrela"), 260);
+  avPlacar();
+  avTelaMissao();
+}
+function avTelaVitoria() {
+  const k = av.fase, F = FASES[k], f = avEstado.fases[k], est = f.melhor.reduce((s, x) => s + x, 0);
+  $("#avCorpo").innerHTML = `<div class="av-vitoria"><span class="fagulha">${fagulhaSVG("celebrate", 64)}</span><div class="av-medalha">${F.emo}</div>
+    <h2 class="av-titulo">Medalha da fase ${k + 1}: ${F.nome}!</h2><p class="av-nota">⭐ ${est} de ${3 * F.missoes} estrelas nesta fase</p>
+    <div class="linha-botoes"><button class="btn grande" id="avVoltaMapa">🗺️ Mapa</button>${k < FASES.length - 1 ? `<button class="btn verde grande" id="avProxFase">▶️ Próxima fase</button>` : ""}</div></div>`;
+  $("#avVoltaMapa").onclick = () => { av.vista = "mapa"; av.sel = null; avDesenhar(); };
+  const pf = $("#avProxFase"); if (pf) pf.onclick = () => avComecar(k + 1);
+}
+/* desenho da missão: nivel 0 = só o desenho; 1 = dica (liga um a um, sem números); 2 = passo a passo (com números) */
+function avPintar(nivel) {
+  const m = av.missao, palco = $("#avPalco");
+  if (!m || !palco) return;
+  const d = m.dados, op = avOpDesenho(m);
+  const H = Math.max(110, Math.min(320, (palco.clientHeight || 300) - 64));
+  const c0 = CORES[0], c1 = CORES[1];
+  const base = { tema: d.tema, altura: H, prefixo: "av", tamAvatar: 24, maxLado: 40 };
+  palco.style.gap = "";
+  if (m.tipo === "escolher" && nivel === 0) { palco.innerHTML = `<div class="av-centro"><span class="fagulha">${fagulhaSVG("idle", 80)}</span><div class="av-lupa">🔍</div></div>`; return; }
+  if (op === "soma" || op === "montar_juntar") {
+    const n = op === "soma" ? d.a + d.b : av.valor;
+    return desenharTorres(palco, [{ nome: d.A, n, cor: c0, novos: Math.max(0, n - d.a), rotuloOculto: op === "soma" && !av.resolvida }], base);
+  }
+  if (op === "sub" || op === "montar_tirar") {
+    const n = op === "sub" ? d.a - d.b : av.valor, saiu = Math.max(0, d.a - n);
+    const alt = Math.max(60, Math.round(((H - 10) * Math.max(1, n)) / Math.max(1, n + saiu)) + 10);
+    return desenharTorres(palco, [{ nome: d.A, n, cor: c0, saiu, rotuloOculto: op === "sub" && !av.resolvida }], { ...base, altura: alt });
+  }
+  if (["comparar", "comparar_menos", "igualar", "montar_mais", "montar_menos", "montar_igual"].includes(op)) {
+    const nB = op.startsWith("montar") ? av.valor : d.b;
+    return desenharTorres(palco, [{ nome: d.A, n: d.a, cor: c0 }, { nome: d.B, n: nB, cor: c1 }], { ...base, par: [0, 1], ligar: nivel >= 1, semNumeroExtra: nivel < 2 });
+  }
+  if (op === "mais_do_que_soma") {
+    if (nivel === 0) return desenharTorres(palco, [{ nome: d.B, n: d.a, cor: c1 }, { nome: d.A, n: 0, cor: c0, escondida: true }], base);
+    return desenharTorres(palco, [{ nome: d.A, n: d.a + d.b, cor: c0, rotuloOculto: !av.resolvida }, { nome: d.B, n: d.a, cor: c1 }], { ...base, par: [0, 1], ligar: true, semNumeroExtra: nivel < 2 });
+  }
+  if (op === "falta") {
+    let h = `<div class="av-centro"><div class="casas">`;
+    for (let k = 1; k <= d.a; k++) {
+      h += k <= d.b ? `<div class="casa cheia">${k}<span class="emo">${d.emo}</span></div>`
+        : nivel >= 2 ? `<div class="casa contada">${k - d.b}</div>` : `<div class="casa vazia">${nivel === 1 ? k : "?"}</div>`;
+    }
+    palco.innerHTML = h + "</div></div>";
+    return;
+  }
+  if (op === "troco") {
+    const u = d.nota <= 20 ? 1 : 10, n = d.nota / u, pago = d.preco / u;
+    let h = `<div class="av-centro"><p class="av-nota">Nota de ${reais(d.nota)} · ${cap(d.item)}: ${reais(d.preco)}</p><div class="barra-dinheiro">`;
+    for (let k = 1; k <= n; k++) {
+      h += k <= pago ? `<div class="dinheiro loja">${u}</div>`
+        : nivel >= 2 ? `<div class="dinheiro troco contada">${(k - pago) * u}</div>` : `<div class="dinheiro troco">${nivel === 1 ? u : "?"}</div>`;
+    }
+    palco.innerHTML = h + `</div><div class="legenda"><span class="l-loja">paga o preço</span><span class="l-troco">volta para você</span></div></div>`;
+  }
+}
+function avAbrirAdulto() {
+  const linhas = FASES.map((F, k) => {
+    const f = avEstado.fases[k], est = f.melhor.reduce((s, x) => s + x, 0);
+    return `<tr><td>${k + 1}. ${F.nome}</td><td>${f.completa ? "completa 🏅" : avLiberada(k) ? Math.min(f.atual, F.missoes) + " de " + F.missoes : "trancada"}</td><td>⭐ ${est} de ${3 * F.missoes}</td></tr>`;
+  }).join("");
+  const errs = Object.entries(avEstado.erros).sort((x, y) => y[1] - x[1]);
+  const conq = Object.keys(avEstado.conquistas).map((c) => AV_CONQ[c]).filter(Boolean);
+  abrirModal("Para o adulto", `<table class="av-tabela"><tr><th>Fase</th><th>Progresso</th><th>Estrelas</th></tr>${linhas}</table>
+    <p><b>Erros mais frequentes</b> (cada erro conta uma vez; nenhum tira ponto):</p>
+    ${errs.length ? `<table class="av-tabela">${errs.map(([k, n]) => `<tr><td>${AV_ROTULOS[k] || k}</td><td>${n}</td></tr>`).join("")}</table>` : "<p>Nenhum erro registrado ainda.</p>"}
+    <p>Conquistas: ${conq.length ? conq.join(" · ") : "nenhuma ainda."} Total: ⭐ ${avEstado.estrelas} · 💎 ${avEstado.diamantes}.</p>
+    <p style="font-size:.9rem">O progresso fica guardado só neste navegador.</p>
+    <div class="linha-botoes"><button class="btn vermelho" id="avZerar">Recomeçar do zero</button></div>`);
+  $("#avZerar").onclick = () => {
+    if (!confirm("Apagar todo o progresso da Aventura? Não dá para desfazer.")) return;
+    avEstado = avNovoEstado(); avSalvar();
+    $("#modal").classList.remove("aberto");
+    av.vista = "mapa"; av.missao = null; av.sel = null;
+    avDesenhar();
+  };
+}
+window.JOGO = { gerarMissao, conferir, FASES, get estado() { return avEstado; } };
+/* autoverificação das missões: a resposta calculada é aceita e cabe no teclado */
+for (let fz = 0; fz < FASES.length; fz++) for (let ix = 0; ix < 5; ix++) for (let sm = 1; sm <= 25; sm++) {
+  const mm = gerarMissao(fz, ix, sm * 7919);
+  if (!conferir(mm, mm.resposta).certo || (mm.tipo === "responder" && !mm.dados.teclado.includes(mm.resposta)) || (mm.tipo === "montar" && (mm.resposta < 0 || mm.resposta > 12))) console.error("Missão inválida", fz, ix, sm, mm);
+}
+
 /* ---------- início ---------- */
 function medirTopo() { document.documentElement.style.setProperty("--topo-h", $(".topo").offsetHeight + "px"); }
 medirTopo();
@@ -1452,7 +2068,9 @@ gpZerar();
 ffDesenhar();
 trDesenhar();
 quizInicio();
+avDesenhar();
 window.addEventListener("resize", () => { if ($("#tela-torres").classList.contains("ativa")) desenharMesa(false); });
+window.addEventListener("resize", () => { if ($("#tela-aventura").classList.contains("ativa") && av.vista === "missao" && av.missao) avPintar(av.resolvida ? 2 : av.nivel); });
 /* as fontes da internet chegam depois e mudam a altura do topo: medir de novo */
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { medirTopo(); desenharMesa(false); });
 </script>
