@@ -6,7 +6,7 @@
 <title>Mesa do Mais e do Menos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
 <style>
 /* Identidade visual do Silabário Mágico ("Ateliê de Feitiços"): creme quente, tinta ameixa, Baloo 2 + Nunito, botões tijolinho, Fagulha */
 :root {
@@ -505,6 +505,594 @@ nav.abas button[data-tela="aventura"] { --c: var(--sunny-deep); --cd: #A87A0E; }
   .av-herois { grid-template-columns: 1fr 1fr; } .av-no:nth-child(n) { transform: none; } .av-mapa::before { display: none; }
   .av-teclado { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
+/* ---------- Visual novo (10/11/2026): mais moderno e mais visual ----------
+   Referências: botões 3D com borda sólida e "afundar" ao tocar (estilo Duolingo; Josh Comeau, "3D button"),
+   cartões em "argila" (sombra externa macia + brilho interno; claymorphism), mapa de fases com cenário,
+   ilhas em esfera brilhante e animações curtas com mola. Só aparência: tamanhos e lógica continuam os mesmos. */
+:root {
+  --clay: 0 12px 26px -12px rgba(59, 46, 88, .38), 0 2px 6px rgba(59, 46, 88, .06), inset 0 2px 0 rgba(255, 255, 255, .9), inset 0 -3px 8px rgba(59, 46, 88, .05);
+  --mola: cubic-bezier(.34, 1.56, .64, 1);
+  --vidro: rgba(255, 255, 255, .74);
+}
+body {
+  background:
+    radial-gradient(900px 520px at -5% -10%, rgba(122, 79, 224, .26), transparent 60%),
+    radial-gradient(820px 520px at 105% -5%, rgba(70, 182, 246, .30), transparent 60%),
+    radial-gradient(900px 600px at 50% 115%, rgba(31, 190, 151, .22), transparent 60%),
+    linear-gradient(180deg, #F2ECFF 0%, #EAF6FF 55%, #FFF5E8 100%);
+  background-attachment: fixed;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(rgba(122, 79, 224, .13) 1.6px, transparent 1.8px); background-size: 24px 24px;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 75%); mask-image: linear-gradient(180deg, #000, transparent 75%);
+}
+/* topo de vidro */
+.topo { background: var(--vidro); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5); border-bottom: 0;
+  box-shadow: 0 1px 0 rgba(122, 79, 224, .14), 0 10px 26px -18px rgba(59, 46, 88, .45); position: relative; z-index: 40; }
+.topo .marca { letter-spacing: -.02em; text-shadow: 0 2px 0 rgba(122, 79, 224, .12); }
+/* abas: botões 3D com face em degradê, brilho em cima e mola ao passar o mouse */
+nav.abas button {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 78%, #fff), var(--c) 70%);
+  box-shadow: 0 5px 0 var(--cd), 0 12px 18px -10px var(--cd), inset 0 2px 0 rgba(255, 255, 255, .5);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .18); border-radius: 16px;
+  transition: transform .28s var(--mola), box-shadow .15s ease, filter .15s ease;
+}
+nav.abas button:hover { transform: translateY(-2px); filter: brightness(1.07); }
+nav.abas button:active { transform: translateY(4px); transition-duration: .04s; }
+nav.abas button.ativa { transform: translateY(4px); box-shadow: 0 1px 0 var(--cd), 0 0 0 3px #fff, 0 0 0 6px color-mix(in srgb, var(--c) 50%, transparent), inset 0 2px 0 rgba(255, 255, 255, .45); }
+/* cartões (janelas) em argila */
+.janela { border: 0; border-radius: 24px; background: rgba(255, 255, 255, .94); box-shadow: var(--clay); }
+.janela > .barra { background: linear-gradient(180deg, #FCFAFF, #F2ECFF); border-bottom: 1px solid rgba(122, 79, 224, .12); }
+.selo { box-shadow: 0 3px 0 var(--cd), inset 0 2px 0 rgba(255, 255, 255, .45), 0 6px 12px -6px var(--cd); border-radius: 14px; }
+/* botões 3D: face clara, borda sólida embaixo, sobem um pouco no mouse e afundam no toque */
+.btn { --edge: #D9CEF1; background: linear-gradient(180deg, #FFFFFF, #F5F1FF);
+  box-shadow: 0 4px 0 var(--edge), 0 10px 16px -10px rgba(59, 46, 88, .45), inset 0 2px 0 #fff;
+  transition: transform .28s var(--mola), box-shadow .12s ease, filter .15s ease; }
+.btn.verde { --edge: var(--mint-deep); background: linear-gradient(180deg, #4BE0B6, var(--mint) 75%); box-shadow: 0 4px 0 var(--edge), 0 12px 18px -10px var(--edge), inset 0 2px 0 rgba(255, 255, 255, .45); text-shadow: 0 1px 0 rgba(0, 0, 0, .15); }
+.btn.vermelho { --edge: var(--berry-deep); background: linear-gradient(180deg, #FF85A8, var(--berry) 75%); box-shadow: 0 4px 0 var(--edge), 0 12px 18px -10px var(--edge), inset 0 2px 0 rgba(255, 255, 255, .45); }
+.btn.escuro { --edge: var(--grape-deep); background: linear-gradient(180deg, #9673F0, var(--grape) 75%); box-shadow: 0 4px 0 var(--edge), 0 12px 18px -10px var(--edge), inset 0 2px 0 rgba(255, 255, 255, .4); }
+.btn.ouro, .btn.ligado { --edge: var(--sunny-deep); background: linear-gradient(180deg, #FFDB7A, var(--sunny) 75%); box-shadow: 0 4px 0 var(--edge), 0 12px 18px -10px var(--edge), inset 0 2px 0 rgba(255, 255, 255, .6); }
+.btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.04); }
+.btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--edge), inset 0 2px 0 rgba(255, 255, 255, .4); transition-duration: .04s; }
+select, input[type=text] { border-color: #E4DCF5; box-shadow: inset 0 2px 4px rgba(59, 46, 88, .06); }
+select:focus-visible, input[type=text]:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+/* cartões das torres */
+.cartao { border-radius: 20px; background: linear-gradient(160deg, color-mix(in srgb, var(--c) 80%, #fff), var(--c) 55%, var(--cd));
+  box-shadow: 0 5px 0 var(--cd), 0 14px 22px -12px var(--cd), inset 0 2px 0 rgba(255, 255, 255, .4); }
+.cartao .numero { text-shadow: 0 2px 0 rgba(0, 0, 0, .15); }
+/* mesa: chão claro com linhas-guia leves */
+.palco, .duas-colunas { background: repeating-linear-gradient(0deg, transparent 0 29px, rgba(122, 79, 224, .06) 29px 31px), linear-gradient(180deg, #FBF9FF, #F1EBFF);
+  box-shadow: inset 0 2px 10px rgba(59, 46, 88, .07); border-radius: 20px; }
+/* palco como cenário: luz no meio e um chão onde as torres ficam em pé */
+.palco, .av-missao .palco {
+  background:
+    linear-gradient(180deg, transparent calc(100% - 26px), #E3D9FB calc(100% - 26px), #D6C9F6),
+    radial-gradient(60% 70% at 50% 60%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #EEF7FF 0%, #F4EEFF 100%);
+}
+/* pergunta da missão em balão e teclado maior quando a tela é grande */
+.av-pergunta { background: linear-gradient(180deg, #F7F3FF, #EEE6FF); border-radius: 18px; padding: 10px 14px; color: var(--ink);
+  box-shadow: inset 0 2px 0 #fff, 0 8px 16px -12px rgba(59, 46, 88, .5); }
+@media (min-width: 900px) and (min-height: 600px) {
+  .av-pergunta { font-size: clamp(1.3rem, 3.6vh, 1.85rem); }
+  .av-tecla { min-height: clamp(46px, 9vh, 76px); font-size: clamp(1.35rem, 3.6vh, 1.9rem); border-radius: 18px; }
+  .av-montar .btn { min-height: clamp(52px, 9vh, 76px); min-width: clamp(64px, 9vh, 84px); }
+  .av-escolhas .btn { min-height: clamp(64px, 12vh, 104px); }
+}
+/* blocos com cara de peça de montar: brilho em cima, sombra embaixo */
+.bloco { border-radius: 10px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .13), 0 4px 0 var(--sombra, rgba(0, 0, 0, .22)), 0 7px 10px -5px rgba(59, 46, 88, .4); }
+.bloco::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .34), rgba(255, 255, 255, 0) 55%); }
+.bloco.fantasma::before, .bloco.saiu::before { display: none; }
+.bloco > .emo { position: relative; z-index: 1; } .bloco > .num { z-index: 1; }
+.bloco.fantasma { border-color: #A99FC9; background: rgba(255, 255, 255, .55) !important; }
+.casa.cheia, .casa.contada { box-shadow: 0 5px 0 var(--cd, var(--grape-deep)), inset 0 2px 0 rgba(255, 255, 255, .35), 0 8px 12px -6px rgba(59, 46, 88, .4); }
+.casa.cheia { background: linear-gradient(180deg, #9673F0, var(--grape) 70%); }
+.casa.contada { --cd: var(--mint-deep); background: linear-gradient(180deg, #4BE0B6, var(--mint) 70%); }
+.casa.vazia { border-color: #B7ADD6; background: rgba(255, 255, 255, .6); }
+.nota { border-radius: 14px; box-shadow: 0 5px 0 rgba(0, 0, 0, .18), inset 0 0 0 3px rgba(255, 255, 255, .35), 0 10px 14px -8px rgba(0, 0, 0, .35); transition: transform .25s var(--mola); }
+.nota:hover { transform: translateY(-3px); }
+.dinheiro.loja { box-shadow: 0 4px 0 #8a5d38, inset 0 2px 0 rgba(255, 255, 255, .3); }
+/* revisão */
+.opcao { border: 0; border-radius: 22px; background: linear-gradient(180deg, #fff, #F7F3FF); box-shadow: 0 6px 0 #DCD2F2, 0 14px 20px -14px rgba(59, 46, 88, .5), inset 0 2px 0 #fff;
+  transition: transform .28s var(--mola), box-shadow .12s ease; }
+.opcao:hover:not(:disabled) { transform: translateY(-2px); }
+.opcao:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 1px 0 #DCD2F2; transition-duration: .04s; }
+.opcao .letra { background: linear-gradient(180deg, #9673F0, var(--grape)); box-shadow: inset 0 2px 0 rgba(255, 255, 255, .35); }
+.opcao.certa { background: linear-gradient(180deg, #F0FFF9, #DDF8EE); box-shadow: 0 6px 0 var(--mint-deep), 0 0 0 3px var(--mint); }
+.opcao.errada { background: linear-gradient(180deg, #FFF2F6, #FFE1EA); box-shadow: 0 6px 0 var(--berry-deep), 0 0 0 3px var(--berry); }
+.feedback { border-radius: 20px; box-shadow: 0 10px 20px -14px rgba(59, 46, 88, .45); }
+.progresso i { border-radius: 999px; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .08); }
+/* comemoração e janelas por cima */
+.festa .cartao-festa { border: 0; border-radius: 30px; background: radial-gradient(circle at 50% 0%, #FFF8DC, #fff 60%); box-shadow: 0 30px 60px -20px rgba(59, 46, 88, .55), inset 0 2px 0 #fff; animation: saltar .5s var(--mola); }
+.festa .cartao-festa h2 { background: linear-gradient(90deg, var(--mint-deep), var(--sky-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@keyframes saltar { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.confete:nth-child(3n) { border-radius: 50%; width: 11px; height: 11px; }
+.confete:nth-child(4n) { width: 6px; height: 16px; }
+.fundo-modal { background: rgba(43, 32, 72, .42); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.aviso-frases, .aviso-mesa { border-width: 0; box-shadow: 0 0 0 3px var(--sky), 0 14px 24px -14px rgba(42, 143, 203, .6); background: linear-gradient(180deg, #F2FAFF, #E3F3FE); }
+/* ---- Aventura ---- */
+.av-placar { border: 0; background: var(--vidro); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: var(--clay); border-radius: 22px; }
+.av-placar .pt { border-radius: 999px; padding: 2px 12px 2px 8px; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .06), inset 0 2px 0 rgba(255, 255, 255, .7); }
+.av-placar .pt[title=estrelas] { background: linear-gradient(180deg, #FFF8D6, #FFEDA8); color: #7A5600; }
+.av-placar .pt[title=diamantes] { background: linear-gradient(180deg, #E9F7FF, #CDEBFF); color: #0B6699; }
+.av-placar .pt[title=medalhas] { background: linear-gradient(180deg, #F5F0FF, #E4D9FF); color: var(--grape-deep); }
+.av-placar .avatar svg { filter: drop-shadow(0 3px 4px rgba(59, 46, 88, .3)); }
+.av-titulo { background: linear-gradient(90deg, var(--grape), var(--sky-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.av-heroi-cartao { --hc: var(--grape); --hf: #EFE6FF; border: 0; border-radius: 28px; position: relative; overflow: hidden;
+  background: radial-gradient(circle at 50% 30%, #fff 0 30%, transparent 65%), linear-gradient(180deg, var(--hf), #fff);
+  box-shadow: 0 7px 0 color-mix(in srgb, var(--hc) 55%, #fff), 0 18px 26px -16px var(--hc), inset 0 2px 0 #fff;
+  transition: transform .3s var(--mola), box-shadow .15s ease; }
+.av-heroi-cartao::after { content: ""; position: absolute; left: 50%; top: 14%; width: 70%; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; z-index: 0;
+  background: radial-gradient(circle, color-mix(in srgb, var(--hc) 30%, transparent), transparent 70%); }
+.av-heroi-cartao > * { position: relative; z-index: 1; }
+.av-heroi-cartao .avatar svg { filter: drop-shadow(0 8px 10px rgba(59, 46, 88, .3)); transition: transform .3s var(--mola); }
+.av-heroi-cartao:hover { transform: translateY(-4px) rotate(-1deg); }
+.av-heroi-cartao:hover .avatar svg { transform: scale(1.08) rotate(3deg); }
+.av-heroi-cartao:active { transform: translateY(5px); box-shadow: 0 2px 0 color-mix(in srgb, var(--hc) 55%, #fff), inset 0 2px 0 #fff; transition-duration: .04s; }
+.av-herois { align-content: stretch; padding: 4px 2px 10px; }
+.av-heroi-cartao { justify-content: center; gap: 12px; font-size: 1.45rem; }
+.av-herois .avatar svg { width: clamp(76px, 26vh, 190px); height: clamp(76px, 26vh, 190px); }
+.av-titulo { font-size: 1.9rem; }
+.av-heroi-nome { display: inline-block; padding: 2px 14px; border-radius: 999px; color: #fff; background: var(--hc); box-shadow: 0 3px 0 color-mix(in srgb, var(--hc) 70%, #000), inset 0 2px 0 rgba(255, 255, 255, .35); text-shadow: 0 1px 0 rgba(0, 0, 0, .2); }
+/* mapa com cenário: céu, sol, nuvens, morros e uma estrada */
+.av-mapa { border: 0; box-shadow: var(--clay); overflow: hidden;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 90'%3E%3Cg fill='%23fff' opacity='.92'%3E%3Cellipse cx='60' cy='40' rx='38' ry='15'/%3E%3Cellipse cx='86' cy='30' rx='25' ry='17'/%3E%3Cellipse cx='300' cy='58' rx='33' ry='12'/%3E%3Cellipse cx='321' cy='49' rx='19' ry='13'/%3E%3C/g%3E%3C/svg%3E") top left / 420px auto repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160' preserveAspectRatio='none'%3E%3Cpath d='M0 92Q150 34 320 80T640 70T960 58T1200 82V160H0Z' fill='%23B6EBCB'/%3E%3Cpath d='M0 122Q210 74 430 112T830 104T1200 100V160H0Z' fill='%2388DBAF'/%3E%3C/svg%3E") bottom center / 100% 46% no-repeat,
+    radial-gradient(90px 90px at 92% 18%, #FFE27A 0 34%, rgba(255, 226, 122, .35) 36%, transparent 70%),
+    linear-gradient(180deg, #A9DCFF 0%, #D6EEFF 50%, #E3F6EC 100%); }
+.av-mapa::before { border-top: 0; height: 22px; top: calc(50% + 3px); border-radius: 999px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .95) 0 16px, transparent 16px 32px) center / 100% 4px no-repeat, #F3DCAE;
+  box-shadow: inset 0 -4px 0 #E2C38A, 0 4px 10px -4px rgba(120, 90, 30, .4); }
+.av-ilha { background: radial-gradient(circle at 34% 28%, #C3ADFF, var(--grape) 55%, var(--grape-deep));
+  box-shadow: 0 6px 0 var(--grape-deep), 0 14px 18px -8px rgba(59, 46, 88, .6), inset 0 -4px 8px rgba(0, 0, 0, .18);
+  transition: transform .3s var(--mola); text-shadow: 0 2px 2px rgba(0, 0, 0, .2); }
+.av-ilha:not(:disabled):hover { transform: translateY(-3px) scale(1.06); }
+.av-ilha:not(:disabled):active { transform: translateY(3px); transition-duration: .04s; }
+.av-ilha.feita { background: radial-gradient(circle at 34% 28%, #A6F5DC, var(--mint) 55%, var(--mint-deep)); box-shadow: 0 6px 0 var(--mint-deep), 0 14px 18px -8px rgba(20, 146, 111, .6), inset 0 -4px 8px rgba(0, 0, 0, .15); }
+.av-ilha.trancada { background: radial-gradient(circle at 34% 28%, #F1EDF9, #CFC6E2 60%, #B3A9CC); box-shadow: 0 6px 0 #A99FC2, inset 0 -4px 8px rgba(0, 0, 0, .1); }
+.av-ilha.escolhida { outline: 0; box-shadow: 0 6px 0 var(--grape-deep), 0 0 0 4px #fff, 0 0 0 9px var(--sunny), 0 16px 22px -8px rgba(59, 46, 88, .6); }
+.av-ilha.feita.escolhida { box-shadow: 0 6px 0 var(--mint-deep), 0 0 0 4px #fff, 0 0 0 9px var(--sunny), 0 16px 22px -8px rgba(20, 146, 111, .6); }
+.av-ilha.atual:not(.escolhida) { animation: chamar 1.8s ease-out infinite; }
+@keyframes chamar {
+  0% { box-shadow: 0 6px 0 var(--grape-deep), 0 0 0 0 rgba(255, 197, 61, .75), inset 0 -4px 8px rgba(0, 0, 0, .18); }
+  100% { box-shadow: 0 6px 0 var(--grape-deep), 0 0 0 16px rgba(255, 197, 61, 0), inset 0 -4px 8px rgba(0, 0, 0, .18); }
+}
+@media (min-width: 900px) and (min-height: 600px) {
+  .av-ilha { width: clamp(66px, 12vh, 96px); height: clamp(66px, 12vh, 96px); font-size: clamp(1.7rem, 4.6vh, 2.5rem); }
+  .av-mapa::before { height: 28px; }
+  .av-no .heroi-aqui { top: -50px; }
+}
+.av-no .nome { background: rgba(255, 255, 255, .88); border-radius: 999px; padding: 1px 8px; margin-top: 4px; box-shadow: 0 3px 8px -3px rgba(59, 46, 88, .35); }
+.av-no .estr { color: #7A5600; text-shadow: 0 1px 0 #fff; }
+.av-no .heroi-aqui svg { filter: drop-shadow(0 5px 5px rgba(59, 46, 88, .35)); }
+.av-barra { height: 16px; background: #ECE6F7; box-shadow: inset 0 2px 3px rgba(59, 46, 88, .12); }
+.av-barra i { background: linear-gradient(90deg, var(--mint), var(--sky)); box-shadow: inset 0 3px 0 rgba(255, 255, 255, .4); }
+.av-pips i { border-radius: 999px; }
+.av-pips i.atual { box-shadow: 0 0 0 3px color-mix(in srgb, var(--grape) 30%, transparent); }
+.av-tecla { background: linear-gradient(180deg, #fff, #F3EEFF); box-shadow: 0 4px 0 #D6CAF0, 0 8px 12px -8px rgba(59, 46, 88, .45), inset 0 2px 0 #fff; transition: transform .25s var(--mola); }
+.av-tecla:hover { transform: translateY(-2px); }
+.av-tecla:active { transform: translateY(3px); box-shadow: 0 1px 0 #D6CAF0; transition-duration: .04s; }
+.av-tecla.certa { background: linear-gradient(180deg, #4BE0B6, var(--mint)); box-shadow: 0 4px 0 var(--mint-deep); }
+.av-dica .caixa { border-width: 0; border-radius: 16px; }
+.av-dica .caixa.ok { box-shadow: 0 0 0 2px var(--mint), 0 10px 16px -12px var(--mint-deep); background: linear-gradient(180deg, #F0FFF9, #E0F8EF); }
+.av-dica .caixa.erro { box-shadow: 0 0 0 2px var(--tangerine), 0 10px 16px -12px var(--tangerine-deep); background: linear-gradient(180deg, #FFF8F0, #FFEEDD); }
+.av-vitoria { border: 0; box-shadow: var(--clay); background: radial-gradient(circle at 50% 35%, #FFF6D6, #fff 55%); }
+.av-medalha { position: relative; isolation: isolate; box-shadow: 0 6px 0 #A87A0E, 0 18px 26px -12px rgba(168, 122, 14, .7), inset 0 3px 0 rgba(255, 255, 255, .6); }
+.av-medalha::before { content: ""; position: absolute; inset: -34px; border-radius: 50%; z-index: -1; animation: girar 10s linear infinite;
+  background: repeating-conic-gradient(rgba(255, 197, 61, .45) 0 9deg, transparent 9deg 22deg);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 70%); mask-image: radial-gradient(circle, #000 30%, transparent 70%); }
+@keyframes girar { to { transform: rotate(360deg); } }
+.av-toast { border-radius: 999px; background: rgba(43, 32, 72, .9); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 14px 30px -12px rgba(43, 32, 72, .7); }
+/* ---------- Visual de videogame (10/11/2026, 2ª rodada) ----------
+   Pedido dele: letras e desenhos "como um videogame", com cores de jogo (tipo Nintendo).
+   Referências: paleta de jogo de plataforma (vermelho, amarelo-moeda, azul-céu, verde-grama), contorno escuro de desenho
+   animado, sombra dura sem desfoque, título "toon" com contorno e sombra (Smashing Magazine, "Toon Text").
+   Fontes: Lilita One (títulos e abas), Fredoka (botões e números), Andika (texto de leitura: "a" e "g" de um andar só,
+   feita pela SIL para quem está aprendendo a ler). Sem internet, caem nas fontes arredondadas do sistema. */
+:root {
+  --k: #1D2145;
+  --cream: #F2FAFF; --cream-2: #DDF2FF; --ink: #1D2145; --ink-soft: #46507D; --line: #C6D5EA; --card-soft: #FFFFFF;
+  --grape: #2F6BEA; --grape-deep: #1A45A6; --tangerine: #FF8A1F; --tangerine-deep: #CC6200; --sunny: #FFD21F; --sunny-deep: #D9A000;
+  --mint: #34BE4A; --mint-deep: #1F8A31; --sky: #2DB7F5; --sky-deep: #1185C0; --berry: #E8323C; --berry-deep: #A81C24;
+  --font-game: "Lilita One", "Fredoka", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --font-display: "Fredoka", "Baloo 2", ui-rounded, "Segoe UI Rounded", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --font-body: "Andika", "Fredoka", "Segoe UI", system-ui, sans-serif;
+  --toon-s: 1.5px 0 0 var(--k), -1.5px 0 0 var(--k), 0 1.5px 0 var(--k), 0 -1.5px 0 var(--k), 1px 1px 0 var(--k), -1px 1px 0 var(--k), 1px -1px 0 var(--k), -1px -1px 0 var(--k), 0 2.5px 0 var(--k);
+  --toon: 2px 0 0 var(--k), -2px 0 0 var(--k), 0 2px 0 var(--k), 0 -2px 0 var(--k), 1.5px 1.5px 0 var(--k), -1.5px 1.5px 0 var(--k), 1.5px -1.5px 0 var(--k), -1.5px -1.5px 0 var(--k), 0 4px 0 var(--k);
+  --toon-g: 3px 0 0 var(--k), -3px 0 0 var(--k), 0 3px 0 var(--k), 0 -3px 0 var(--k), 2px 2px 0 var(--k), -2px 2px 0 var(--k), 2px -2px 0 var(--k), -2px -2px 0 var(--k), 0 6px 0 var(--k);
+  --anel: 0 0 0 3px var(--k);
+  --anel-f: 0 0 0 2px var(--k);
+}
+html { font-synthesis: none; }
+body { font-family: var(--font-body); font-weight: 700; color: var(--ink); line-height: 1.3;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 320'%3E%3Cg fill='%23fff' opacity='.6'%3E%3Cellipse cx='80' cy='64' rx='48' ry='18'/%3E%3Cellipse cx='110' cy='48' rx='30' ry='21'/%3E%3Cellipse cx='62' cy='52' rx='22' ry='14'/%3E%3Cellipse cx='380' cy='206' rx='54' ry='19'/%3E%3Cellipse cx='412' cy='189' rx='32' ry='22'/%3E%3Cellipse cx='352' cy='195' rx='22' ry='14'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 520px auto repeat,
+    linear-gradient(180deg, #4FC3FF 0%, #8FDBFF 45%, #CDEFFF 100%);
+  background-attachment: fixed; }
+body::before { display: none; }
+h1, h2, h3, h4 { font-family: var(--font-game); font-weight: 400; letter-spacing: .01em; }
+
+/* topo vermelho de jogo, com listras e título com contorno */
+.topo { background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .07) 0 14px, transparent 14px 28px), linear-gradient(180deg, #F0393F, #D41E28);
+  -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 4px solid var(--k); box-shadow: 0 4px 0 rgba(29, 33, 69, .22); }
+.topo .marca { font-family: var(--font-game); font-weight: 400; color: #fff; letter-spacing: .02em; text-shadow: var(--toon); }
+.topo .marca .mais-cor { color: var(--sunny); } .topo .marca .menos-cor { color: #8FE3FF; }
+.topo .marca small { font-family: var(--font-body); color: #fff; text-shadow: 0 1px 0 rgba(0, 0, 0, .4); letter-spacing: 0; }
+
+/* abas: botão de jogo em duas cores, contorno escuro e sombra dura */
+nav.abas button { font-family: var(--font-game); font-weight: 400; letter-spacing: .02em; color: #fff; text-shadow: var(--toon-s);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 62%, #fff) 0 46%, var(--c) 47%);
+  box-shadow: var(--anel), 0 5px 0 3px var(--k), inset 0 -4px 0 var(--cd); border-radius: 16px; }
+nav.abas button:hover { transform: translateY(-2px); filter: brightness(1.06); }
+nav.abas button:active { transform: translateY(4px); box-shadow: var(--anel), 0 1px 0 3px var(--k), inset 0 -2px 0 var(--cd); }
+nav.abas button.ativa { transform: translateY(3px); box-shadow: var(--anel), 0 0 0 6px var(--sunny), 0 2px 0 6px var(--k), inset 0 -5px 0 var(--cd); }
+
+/* janelas: cartão branco com contorno e sombra dura; faixa amarela de título */
+.janela { background: #fff; border: 0; border-radius: 20px; box-shadow: var(--anel), 0 6px 0 3px var(--k); }
+.janela > .barra { background: linear-gradient(180deg, #FFF0A0, #FFD84A); border-bottom: 3px solid var(--k); color: var(--k);
+  font-family: var(--font-game); font-weight: 400; letter-spacing: .02em; }
+.selo { box-shadow: var(--anel-f), 0 3px 0 2px var(--k), inset 0 -3px 0 var(--cd); }
+.heroi { border: 0; box-shadow: var(--anel), 0 6px 0 3px var(--k); background: #fff; }
+.heroi h2 { color: #fff; text-shadow: var(--toon); }
+
+/* botões */
+.btn, .btn.verde, .btn.vermelho, .btn.escuro, .btn.ouro, .btn.ligado {
+  font-family: var(--font-display); font-weight: 700; border-radius: 14px;
+  box-shadow: var(--anel), 0 4px 0 3px var(--k), inset 0 -4px 0 var(--edge); }
+.btn { --edge: #B9C8DF; color: var(--k); background: linear-gradient(180deg, #fff 0 50%, #EEF4FF 51%); }
+.btn.verde { --edge: var(--mint-deep); color: #fff; text-shadow: var(--toon-s); background: linear-gradient(180deg, #6EDB7B 0 50%, var(--mint) 51%); }
+.btn.vermelho { --edge: var(--berry-deep); color: #fff; text-shadow: var(--toon-s); background: linear-gradient(180deg, #FF6A70 0 50%, var(--berry) 51%); }
+.btn.escuro { --edge: var(--grape-deep); color: #fff; text-shadow: var(--toon-s); background: linear-gradient(180deg, #6B98FF 0 50%, var(--grape) 51%); }
+.btn.ouro, .btn.ligado { --edge: var(--sunny-deep); color: var(--k); text-shadow: none; background: linear-gradient(180deg, #FFE787 0 50%, var(--sunny) 51%); }
+.btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.05); }
+.btn:active:not(:disabled) { transform: translateY(3px); box-shadow: var(--anel), 0 1px 0 3px var(--k), inset 0 -2px 0 var(--edge); }
+select, input[type=text] { border: 0; box-shadow: var(--anel-f), inset 0 2px 4px rgba(29, 33, 69, .1); }
+select:focus-visible, input[type=text]:focus-visible { outline: 3px solid var(--sunny); outline-offset: 3px; }
+
+/* cartões das torres e números grandes */
+.cartao { box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -5px 0 var(--cd); background: linear-gradient(160deg, color-mix(in srgb, var(--c) 72%, #fff), var(--c) 55%); }
+.cartao .numero { font-family: var(--font-game); font-weight: 400; color: #fff; text-shadow: var(--toon); }
+.cartao .btn { color: var(--k); }
+.conta { font-family: var(--font-game); font-weight: 400; letter-spacing: .04em; }
+
+/* palco: céu claro e chão de grama */
+.palco, .av-missao .palco {
+  background:
+    linear-gradient(180deg, transparent calc(100% - 24px), var(--k) calc(100% - 24px) calc(100% - 21px), #5ACB5E calc(100% - 21px), #3FAE47),
+    radial-gradient(60% 70% at 50% 55%, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #BFE9FF 0%, #E8F8FF 100%);
+  box-shadow: inset 0 0 0 3px var(--k); border-radius: 18px; }
+.duas-colunas { background: linear-gradient(180deg, #E3F5FF, #F4FBFF); box-shadow: inset 0 0 0 3px var(--k); }
+
+/* blocos: peça de brinquedo com contorno */
+.bloco { border-radius: 9px; box-shadow: inset 0 0 0 2.5px var(--k), inset 0 -5px 0 rgba(0, 0, 0, .2), 0 3px 0 var(--k); font-family: var(--font-game); font-weight: 400; }
+.bloco::before { inset: 4px 5px auto 5px; height: 32%; border-radius: 6px; background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .1)); }
+.bloco.fantasma { box-shadow: none; border-color: var(--k); }
+.bloco.saiu { box-shadow: none; }
+.casa.cheia, .casa.contada { box-shadow: var(--anel-f), 0 4px 0 2px var(--k), inset 0 -4px 0 var(--cd, var(--grape-deep)); }
+.casa.cheia { background: linear-gradient(180deg, #6B98FF 0 50%, var(--grape) 51%); }
+.casa.contada { background: linear-gradient(180deg, #6EDB7B 0 50%, var(--mint) 51%); }
+.casa.vazia { border-color: var(--k); }
+.nota { box-shadow: var(--anel-f), 0 4px 0 2px var(--k), inset 0 0 0 4px rgba(255, 255, 255, .35); }
+.dinheiro.loja { box-shadow: var(--anel-f), 0 4px 0 2px var(--k); }
+
+/* revisão: perguntas e respostas em letra de leitura */
+.pergunta { font-family: var(--font-body); font-weight: 700; color: var(--k); }
+.opcao { font-family: var(--font-body); font-weight: 700; color: var(--k); border: 0; border-radius: 20px; background: linear-gradient(180deg, #fff 0 55%, #F0F6FF 56%);
+  box-shadow: var(--anel), 0 6px 0 3px var(--k); }
+.opcao:active:not(:disabled) { transform: translateY(5px); box-shadow: var(--anel), 0 1px 0 3px var(--k); }
+.opcao .letra { font-family: var(--font-game); font-weight: 400; background: var(--grape); box-shadow: var(--anel-f), inset 0 -3px 0 var(--grape-deep); text-shadow: var(--toon-s); }
+.opcao.certa { background: #DDF7E1; box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 0 0 4px var(--mint); }
+.opcao.errada { background: #FFE2E4; box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 0 0 4px var(--berry); }
+.feedback { box-shadow: var(--anel), 0 5px 0 3px var(--k); }
+.feedback h3 { font-family: var(--font-game); font-weight: 400; }
+.progresso i { box-shadow: var(--anel-f); }
+
+/* comemoração */
+.festa .cartao-festa { box-shadow: var(--anel), 0 8px 0 3px var(--k); background: radial-gradient(circle at 50% 0%, #FFF3B0, #fff 60%); }
+.festa .cartao-festa h2 { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--sunny); text-shadow: var(--toon-g); }
+.fundo-modal { background: rgba(29, 33, 69, .5); }
+.aviso-frases, .aviso-mesa { box-shadow: var(--anel), 0 5px 0 3px var(--k); background: #EAF7FF; }
+
+/* ---- Aventura ---- */
+.av-placar { background: #fff; box-shadow: var(--anel), 0 5px 0 3px var(--k); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.av-placar .pt { box-shadow: var(--anel-f), inset 0 -3px 0 rgba(0, 0, 0, .1); font-family: var(--font-game); font-weight: 400; letter-spacing: .02em; }
+.av-placar .pt[title=estrelas] { background: linear-gradient(180deg, #FFF0A0, var(--sunny)); color: var(--k); }
+.av-placar .pt[title=diamantes] { background: linear-gradient(180deg, #B8E9FF, #6CCFFF); color: var(--k); }
+.av-placar .pt[title=medalhas] { background: linear-gradient(180deg, #FFC9A0, #FF9F55); color: var(--k); }
+.av-titulo { font-family: var(--font-game); font-weight: 400; letter-spacing: .02em; background: none; -webkit-background-clip: border-box; background-clip: border-box;
+  color: #fff; text-shadow: var(--toon-g); margin-bottom: 10px; }
+.av-heroi-cartao { --hf: #F2F8FF; box-shadow: var(--anel), 0 7px 0 3px var(--k); background: radial-gradient(circle at 50% 32%, #fff 0 32%, transparent 66%), linear-gradient(180deg, var(--hf), #fff); }
+.av-heroi-cartao:active { transform: translateY(5px); box-shadow: var(--anel), 0 2px 0 3px var(--k); }
+.av-heroi-cartao::after { background: radial-gradient(circle, color-mix(in srgb, var(--hc) 38%, transparent), transparent 70%); }
+.av-heroi-nome { font-family: var(--font-game); font-weight: 400; letter-spacing: .03em; text-shadow: var(--toon-s); box-shadow: var(--anel-f), 0 3px 0 2px var(--k); }
+/* mapa: céu forte, morros verdes com contorno, estrada de terra */
+.av-mapa { box-shadow: var(--anel), 0 6px 0 3px var(--k);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 90'%3E%3Cg fill='%23fff' stroke='%231D2145' stroke-width='2.5'%3E%3Cpath d='M30 50a16 16 0 0 1 14-18a22 22 0 0 1 40-4a16 16 0 0 1 14 22z'/%3E%3Cpath d='M270 66a13 13 0 0 1 12-14a18 18 0 0 1 33-3a13 13 0 0 1 12 17z'/%3E%3C/g%3E%3C/svg%3E") top left / 420px auto repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160' preserveAspectRatio='none'%3E%3Cpath d='M0 92Q150 30 320 80T640 68T960 56T1200 82V160H0Z' fill='%2389DD7C' stroke='%231D2145' stroke-width='3' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M0 124Q210 72 430 112T830 102T1200 100V160H0Z' fill='%2347B84D' stroke='%231D2145' stroke-width='3' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") bottom center / 100% 46% no-repeat,
+    radial-gradient(70px 70px at 92% 18%, #FFE14D 0 40%, rgba(255, 225, 77, .35) 42%, transparent 72%),
+    linear-gradient(180deg, #5CC8FF 0%, #9FE0FF 55%, #C9F0FF 100%); }
+.av-mapa::before { background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .9) 0 16px, transparent 16px 32px) center / 100% 4px no-repeat, #E9C27E;
+  box-shadow: 0 0 0 3px var(--k), inset 0 -5px 0 #C99A55; }
+.av-ilha { font-family: var(--font-game); font-weight: 400; text-shadow: var(--toon-s);
+  background: radial-gradient(circle at 34% 28%, #9BBBFF, var(--grape) 55%, var(--grape-deep));
+  box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -6px 0 rgba(0, 0, 0, .2); }
+.av-ilha.feita { background: radial-gradient(circle at 34% 28%, #A8F0A8, var(--mint) 55%, var(--mint-deep)); box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -6px 0 rgba(0, 0, 0, .18); }
+.av-ilha.trancada { background: radial-gradient(circle at 34% 28%, #F3F5FA, #C9CFDD 60%, #A9B1C4); box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -6px 0 rgba(0, 0, 0, .1); text-shadow: none; }
+.av-ilha.escolhida, .av-ilha.feita.escolhida { box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -6px 0 rgba(0, 0, 0, .2), 0 0 0 8px var(--sunny), 0 0 0 11px var(--k); }
+.av-ilha.atual:not(.escolhida) { animation: chamar-game 1.6s ease-out infinite; }
+@keyframes chamar-game {
+  0% { box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -6px 0 rgba(0, 0, 0, .2), 0 0 0 3px rgba(255, 210, 31, .9); }
+  100% { box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -6px 0 rgba(0, 0, 0, .2), 0 0 0 18px rgba(255, 210, 31, 0); }
+}
+.av-no .nome { font-family: var(--font-display); font-weight: 700; color: var(--k); background: #fff; box-shadow: var(--anel-f); margin-top: 7px; }
+.av-no .estr { color: var(--k); text-shadow: 0 1px 0 #fff; }
+.av-info h3 { color: var(--k); }
+.av-barra { background: #E4ECF7; box-shadow: var(--anel-f), inset 0 2px 3px rgba(29, 33, 69, .15); }
+.av-barra i { background: linear-gradient(180deg, #FFE787 0 45%, var(--sunny) 46%); box-shadow: inset 0 -3px 0 var(--sunny-deep); }
+.av-pips i { box-shadow: var(--anel-f); }
+.av-pips i.ok { background: var(--mint); } .av-pips i.atual { background: var(--sunny); box-shadow: var(--anel-f), 0 0 0 5px rgba(255, 210, 31, .45); }
+.av-pergunta { font-family: var(--font-body); font-weight: 700; color: var(--k); background: #fff; box-shadow: var(--anel), 0 4px 0 3px var(--k); margin: 3px 3px 6px; }
+.av-tecla { font-family: var(--font-game); font-weight: 400; color: var(--k); background: linear-gradient(180deg, #fff 0 50%, #EEF4FF 51%);
+  box-shadow: var(--anel-f), 0 4px 0 2px var(--k), inset 0 -4px 0 #B9C8DF; }
+.av-tecla:active { transform: translateY(3px); box-shadow: var(--anel-f), 0 1px 0 2px var(--k); }
+.av-tecla.certa { color: #fff; text-shadow: var(--toon-s); background: linear-gradient(180deg, #6EDB7B 0 50%, var(--mint) 51%); box-shadow: var(--anel-f), 0 4px 0 2px var(--k), inset 0 -4px 0 var(--mint-deep); }
+.av-montar .valor { font-family: var(--font-game); font-weight: 400; }
+.av-dica .caixa.ok { background: #E3F9E6; box-shadow: var(--anel-f), inset 4px 0 0 var(--mint); }
+.av-dica .caixa.erro { background: #FFF1E4; box-shadow: var(--anel-f), inset 4px 0 0 var(--tangerine); }
+.av-vitoria { box-shadow: var(--anel), 0 6px 0 3px var(--k); background: radial-gradient(circle at 50% 35%, #FFF3B0, #fff 55%); }
+.av-medalha { box-shadow: var(--anel), 0 6px 0 3px var(--k), inset 0 -6px 0 rgba(0, 0, 0, .18); }
+.palco .rotulo-torre { background: #fff; border-radius: 999px; padding: 0 10px; box-shadow: var(--anel-f), 0 3px 0 2px var(--k); position: relative; z-index: 2; }
+/* fase dos portões: estrada que sobe, portões + (verde) e − (vermelho), herói com contador */
+.av-portoes { height: 100%; width: 100%; display: flex; flex-direction: column-reverse; align-items: center; justify-content: space-between; gap: 4px; padding: 4px 0 20px;
+  background: linear-gradient(90deg, transparent calc(50% - 128px), var(--k) calc(50% - 128px) calc(50% - 125px), #EDCB8C calc(50% - 125px) calc(50% + 125px), var(--k) calc(50% + 125px) calc(50% + 128px), transparent calc(50% + 128px)); }
+.pt-linha { display: flex; gap: 26px; justify-content: center; position: relative; z-index: 1; }
+.pt-portao { min-width: clamp(78px, 10vw, 112px); min-height: clamp(44px, 8.5vh, 66px); padding: 0 10px; border: 0; border-radius: 18px 18px 6px 6px; cursor: pointer;
+  font-family: var(--font-game); font-weight: 400; font-size: clamp(1.45rem, 4.2vh, 2.15rem); color: #fff; text-shadow: var(--toon);
+  box-shadow: var(--anel), 0 5px 0 3px var(--k), inset 0 -5px 0 rgba(0, 0, 0, .2); transition: transform .25s var(--mola), opacity .2s; }
+.pt-portao.mais { background: linear-gradient(180deg, #8BE59A 0 45%, var(--mint) 46%); }
+.pt-portao.menos { background: linear-gradient(180deg, #FF8F95 0 45%, var(--berry) 46%); }
+.pt-portao:disabled { cursor: default; }
+.pt-linha.atual .pt-portao:not(:disabled) { animation: chamarPortao 1.4s ease-in-out infinite; }
+.pt-linha.atual .pt-portao:not(:disabled):hover { animation: none; transform: translateY(-3px) scale(1.05); }
+.pt-linha.atual .pt-portao:not(:disabled):active { animation: none; transform: translateY(4px); }
+@keyframes chamarPortao { 50% { transform: translateY(-4px); } }
+.pt-linha.futura .pt-portao, .pt-linha.passada .pt-portao:not(.escolhido) { opacity: .42; filter: saturate(.55); }
+.pt-portao.escolhido { box-shadow: var(--anel), 0 5px 0 3px var(--k), 0 0 0 7px #fff, 0 0 0 10px var(--k); }
+.pt-portao.sugerido { box-shadow: var(--anel), 0 5px 0 3px var(--k), 0 0 0 7px var(--sunny), 0 0 0 10px var(--k); }
+.pt-linha .pt-portao.sugerido { opacity: 1; filter: none; }
+.pt-heroi { position: relative; display: flex; align-items: center; gap: 6px; z-index: 2; }
+.pt-heroi svg { filter: drop-shadow(0 3px 0 rgba(29, 33, 69, .35)); }
+.pt-cont { font-family: var(--font-game); font-size: 1.5rem; line-height: 1.25; min-width: 46px; text-align: center; padding: 0 10px; border-radius: 999px; background: #fff; color: var(--k); box-shadow: var(--anel-f), 0 3px 0 2px var(--k); }
+.pt-heroi.pulou .pt-cont { animation: pularCont .45s var(--mola); }
+@keyframes pularCont { from { transform: scale(.55); } to { transform: scale(1); } }
+.pt-voa { position: absolute; left: 2px; top: -10px; font-family: var(--font-game); font-size: 1.7rem; text-shadow: var(--toon); pointer-events: none; animation: voar 1.1s ease-out forwards; }
+.pt-voa.mais { color: #8BE59A; } .pt-voa.menos { color: #FF8F95; }
+@keyframes voar { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-48px); opacity: 0; } }
+.pt-meta { font-family: var(--font-game); font-size: 1.2rem; padding: 2px 14px; border-radius: 999px; background: linear-gradient(180deg, #FFF0A0, var(--sunny)); color: var(--k); box-shadow: var(--anel-f), 0 3px 0 2px var(--k); z-index: 1; }
+.pt-meta b { font-weight: 400; font-size: 1.45rem; }
+.av-portoes-ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+.av-portoes-ctl .pc-item { font-family: var(--font-display); font-weight: 700; padding: 3px 12px; border-radius: 999px; background: #F0F6FF; box-shadow: var(--anel-f); }
+.av-portoes-ctl .pc-item b { font-family: var(--font-game); font-weight: 400; font-size: 1.4rem; }
+.av-portoes-ctl .agora { background: #fff; }
+.av-portoes-ctl .btn { margin: 4px 3px 8px; min-height: 48px; }
+.av-portoes-ctl .btn:disabled { opacity: .5; cursor: default; }
+/* ---------- Paleta calma (10/11/2026, 3ª rodada, pedido dele: "mais clara, neutra, que acalme") ----------
+   Mantém as fontes e as formas de jogo; troca as cores fortes por tons suaves e pouco saturados
+   (azul acinzentado, sálvia, rosa-claro, damasco, amarelo-manteiga) sobre creme claro, e o contorno escuro por cinza-ameixa. */
+:root {
+  --k: #6E6880;
+  --cream: #FBF8F3; --cream-2: #F3EEE6; --ink: #3E3A4C; --ink-soft: #77718A; --line: #E3DCD1; --card-soft: #FFFFFF;
+  --grape: #7D9BC9; --grape-deep: #5F7FAE; --tangerine: #EDB08A; --tangerine-deep: #CF8D63; --sunny: #F3D58C; --sunny-deep: #D3B366;
+  --mint: #93C9A2; --mint-deep: #6FA77F; --sky: #9CCDE3; --sky-deep: #6EADC9; --berry: #E8A0A5; --berry-deep: #C87C82;
+}
+body { background: linear-gradient(180deg, #E9F2F5 0%, #F3F1EC 55%, #F8F4EE 100%); background-attachment: fixed; }
+.topo { background: linear-gradient(180deg, #FFFFFF, #F6F1E9); border-bottom: 3px solid var(--line); box-shadow: 0 2px 0 rgba(110, 104, 128, .1); }
+.topo .marca { color: var(--grape-deep); text-shadow: 0 2px 0 #fff; }
+.topo .marca .mais-cor { color: var(--mint-deep); } .topo .marca .menos-cor { color: var(--berry-deep); }
+.topo .marca small { color: var(--ink-soft); text-shadow: none; }
+.janela > .barra { background: linear-gradient(180deg, #FFFDF8, #F4EDE1); border-bottom: 3px solid var(--line); color: var(--ink); }
+.heroi h2, .av-titulo { color: var(--ink); text-shadow: 0 2px 0 #fff; }
+.festa .cartao-festa { background: radial-gradient(circle at 50% 0%, #FFF6E2, #fff 60%); }
+.festa .cartao-festa h2 { color: var(--grape-deep); text-shadow: 0 3px 0 #fff; }
+.btn.verde { background: linear-gradient(180deg, #B9DFC3 0 50%, var(--mint) 51%); }
+.btn.vermelho { background: linear-gradient(180deg, #F4C6C9 0 50%, var(--berry) 51%); }
+.btn.escuro { background: linear-gradient(180deg, #B3C7E6 0 50%, var(--grape) 51%); }
+.btn.ouro, .btn.ligado { background: linear-gradient(180deg, #F9E9BE 0 50%, var(--sunny) 51%); }
+.casa.cheia { background: linear-gradient(180deg, #B3C7E6 0 50%, var(--grape) 51%); }
+.casa.contada { background: linear-gradient(180deg, #B9DFC3 0 50%, var(--mint) 51%); }
+.opcao.certa { background: #E7F4EA; } .opcao.errada { background: #FBE9EA; }
+.aviso-frases, .aviso-mesa { background: #F2F7F9; }
+.palco, .av-missao .palco {
+  background:
+    linear-gradient(180deg, transparent calc(100% - 24px), var(--k) calc(100% - 24px) calc(100% - 21px), #B4DABC calc(100% - 21px), #9CCDA8),
+    radial-gradient(60% 70% at 50% 55%, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #E4F1F6 0%, #F7FAF9 100%); }
+.duas-colunas { background: linear-gradient(180deg, #EEF5F7, #FAFBFA); }
+/* Aventura */
+.av-placar .pt[title=estrelas] { background: linear-gradient(180deg, #FCF3D9, var(--sunny)); }
+.av-placar .pt[title=diamantes] { background: linear-gradient(180deg, #E2F1F7, #BBDDEC); }
+.av-placar .pt[title=medalhas] { background: linear-gradient(180deg, #FAE3D4, var(--tangerine)); }
+.av-mapa {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 90'%3E%3Cg fill='%23fff' stroke='%236E6880' stroke-width='2'%3E%3Cpath d='M30 50a16 16 0 0 1 14-18a22 22 0 0 1 40-4a16 16 0 0 1 14 22z'/%3E%3Cpath d='M270 66a13 13 0 0 1 12-14a18 18 0 0 1 33-3a13 13 0 0 1 12 17z'/%3E%3C/g%3E%3C/svg%3E") top left / 420px auto repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160' preserveAspectRatio='none'%3E%3Cpath d='M0 92Q150 30 320 80T640 68T960 56T1200 82V160H0Z' fill='%23D2EAD4' stroke='%236E6880' stroke-width='2.5' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M0 124Q210 72 430 112T830 102T1200 100V160H0Z' fill='%23B2D8BA' stroke='%236E6880' stroke-width='2.5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") bottom center / 100% 46% no-repeat,
+    radial-gradient(70px 70px at 92% 18%, #F8E3A4 0 40%, rgba(248, 227, 164, .35) 42%, transparent 72%),
+    linear-gradient(180deg, #D3E8F2 0%, #E6F2F5 55%, #F1F7F2 100%); }
+.av-mapa::before { background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .95) 0 16px, transparent 16px 32px) center / 100% 4px no-repeat, #EDE0C6;
+  box-shadow: 0 0 0 3px var(--k), inset 0 -5px 0 #DCC9A4; }
+.av-ilha { background: radial-gradient(circle at 34% 28%, #CAD8EF, var(--grape) 55%, var(--grape-deep)); }
+.av-ilha.feita { background: radial-gradient(circle at 34% 28%, #D4ECDA, var(--mint) 55%, var(--mint-deep)); }
+.av-ilha.trancada { background: radial-gradient(circle at 34% 28%, #FAF8F4, #E2DDD5 60%, #CEC7BC); }
+.av-barra { background: #EFEAE2; }
+.av-barra i { background: linear-gradient(180deg, #F9E9BE 0 45%, var(--sunny) 46%); }
+.av-tecla.certa { background: linear-gradient(180deg, #B9DFC3 0 50%, var(--mint) 51%); }
+.av-vitoria { background: radial-gradient(circle at 50% 35%, #FFF6E2, #fff 55%); }
+.av-dica .caixa.ok { background: #EEF7F0; } .av-dica .caixa.erro { background: #FCF2EA; }
+/* texto escuro sobre os tons suaves (branco perde contraste no pastel) */
+nav.abas button, .btn.verde, .btn.vermelho, .btn.escuro, .av-tecla.certa, .av-heroi-nome { color: var(--ink); text-shadow: 0 1px 0 rgba(255, 255, 255, .55); }
+.cartao { color: var(--ink); } .cartao .numero { color: #fff; text-shadow: var(--toon); }
+.opcao .letra { color: var(--ink); text-shadow: 0 1px 0 rgba(255, 255, 255, .55); }
+/* portões */
+.av-portoes { background: linear-gradient(90deg, transparent calc(50% - 128px), var(--k) calc(50% - 128px) calc(50% - 125px), #F0E5CF calc(50% - 125px) calc(50% + 125px), var(--k) calc(50% + 125px) calc(50% + 128px), transparent calc(50% + 128px)); }
+.pt-portao.mais { background: linear-gradient(180deg, #B9DFC3 0 45%, var(--mint) 46%); }
+.pt-portao.menos { background: linear-gradient(180deg, #F4C6C9 0 45%, var(--berry) 46%); }
+.pt-voa.mais { color: #B9DFC3; } .pt-voa.menos { color: #F4C6C9; }
+.pt-meta { background: linear-gradient(180deg, #FCF3D9, var(--sunny)); }
+/* ---------- Visual "Overgrown" (10/11/2026, 4ª rodada, referência que ele mandou: "Overgrown", Alexandra Zutto, Dribbble) ----------
+   Estilo plano, sem contorno escuro nem brilho: paleta da ilustração (azul-céu #4EA7DC, cobalto #1372C6, marinho #063790,
+   verde-floresta #093C30, mostarda #E9BE01, terracota #C84A2A, gelo #E2F1F8), folhagem e flores no mapa.
+   Títulos em Fredoka sem contorno; perguntas e botões maiores (pedido dele). Só a ideia e as cores; nenhum desenho dela foi copiado. */
+:root {
+  --k: #BCD5E4;
+  --cream: #F4F9FC; --cream-2: #E2F1F8; --ink: #10283A; --ink-soft: #4A6274; --line: #C9DFEA; --card-soft: #FFFFFF;
+  --grape: #1372C6; --grape-deep: #063790; --tangerine: #F07A5A; --tangerine-deep: #C84A2A; --sunny: #E9BE01; --sunny-deep: #B08F00;
+  --mint: #2F9E62; --mint-deep: #1D6E43; --sky: #4EA7DC; --sky-deep: #2B7FB5; --berry: #C84A2A; --berry-deep: #8E3018;
+  --font-game: "Fredoka", "Baloo 2", ui-rounded, "Segoe UI Rounded", system-ui, sans-serif;
+  --toon-s: 0 0 0 transparent; --toon: 0 0 0 transparent; --toon-g: 0 0 0 transparent;
+  --anel: 0 0 0 0 transparent; --anel-f: 0 0 0 0 transparent;
+  --borda: #C9DFEA;
+}
+h1, h2, h3, h4, .topo .marca, nav.abas button, .janela > .barra, .cartao .numero, .conta, .bloco, .feedback h3, .festa .cartao-festa h2,
+.opcao .letra, .av-placar .pt, .av-titulo, .av-heroi-nome, .av-ilha, .av-tecla, .av-montar .valor, .pt-portao, .pt-cont, .pt-voa, .pt-meta,
+.pt-meta b, .av-portoes-ctl b { font-family: var(--font-game); font-weight: 700; letter-spacing: 0; text-shadow: none; }
+body { background: #E2F1F8; }
+/* topo e abas */
+.topo { background: #FFFFFF; border-bottom: 0; box-shadow: 0 3px 0 var(--borda); }
+.topo .marca { color: var(--grape-deep); text-shadow: none; }
+.topo .marca .mais-cor { color: var(--mint); } .topo .marca .menos-cor { color: var(--berry); }
+nav.abas button { color: var(--grape-deep); text-shadow: none; background: color-mix(in srgb, var(--c) 22%, #fff); box-shadow: 0 4px 0 var(--c); }
+nav.abas button:active { box-shadow: 0 1px 0 var(--c); }
+nav.abas button.ativa { background: color-mix(in srgb, var(--c) 42%, #fff); box-shadow: 0 0 0 3px var(--sunny), 0 2px 0 var(--c); }
+/* janelas e cartões planos */
+.janela { box-shadow: 0 6px 0 var(--borda); }
+.janela > .barra { background: #EAF5FB; border-bottom: 0; color: var(--grape-deep); }
+.selo { box-shadow: 0 3px 0 var(--cd); }
+.heroi { box-shadow: 0 6px 0 var(--borda); }
+.heroi h2, .av-titulo { color: var(--grape-deep); text-shadow: none; }
+.btn, .btn.verde, .btn.vermelho, .btn.escuro, .btn.ouro, .btn.ligado { box-shadow: 0 4px 0 var(--edge); text-shadow: none; font-size: 1.12rem; }
+.btn { --edge: var(--borda); color: var(--grape-deep); background: #fff; }
+.btn.verde { --edge: var(--mint-deep); color: #fff; background: #278A55; }
+.btn.vermelho { --edge: var(--berry-deep); color: #fff; background: var(--berry); }
+.btn.escuro { --edge: var(--grape-deep); color: #fff; background: var(--grape); }
+.btn.ouro, .btn.ligado { --edge: var(--sunny-deep); color: var(--ink); background: var(--sunny); }
+.btn:active:not(:disabled) { box-shadow: 0 1px 0 var(--edge); }
+select, input[type=text] { box-shadow: inset 0 0 0 2px var(--borda); }
+.cartao { color: var(--ink); background: color-mix(in srgb, var(--c) 20%, #fff); box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 55%, #fff); }
+.cartao .numero { color: var(--cd); }
+/* mesa e blocos */
+.palco, .av-missao .palco {
+  background: linear-gradient(180deg, transparent calc(100% - 22px), #2F9E62 calc(100% - 22px)), radial-gradient(60% 70% at 50% 55%, #fff, rgba(255, 255, 255, 0) 70%), #EAF5FB;
+  box-shadow: none; }
+.duas-colunas { background: #EAF5FB; box-shadow: none; }
+.palco .rotulo-torre { box-shadow: 0 3px 0 var(--borda); }
+.bloco { box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .18), 0 3px 0 var(--sombra, rgba(0, 0, 0, .2)); }
+.bloco::before { display: none; }
+.bloco.fantasma { border-color: var(--ink-soft); }
+.casa.cheia, .casa.contada { box-shadow: 0 4px 0 var(--cd, var(--grape-deep)); }
+.casa.cheia { background: var(--grape); } .casa.contada { background: var(--mint); }
+.casa.vazia { border-color: var(--ink-soft); }
+.nota, .dinheiro.loja { box-shadow: 0 4px 0 rgba(0, 0, 0, .2); }
+/* revisão */
+.pergunta { font-size: 1.75rem; }
+.opcao { background: #fff; box-shadow: 0 6px 0 var(--borda); color: var(--ink); }
+.opcao:active:not(:disabled) { box-shadow: 0 1px 0 var(--borda); }
+.opcao .letra { color: #fff; background: var(--grape); box-shadow: none; }
+.opcao.certa { background: #DDF2E5; box-shadow: 0 6px 0 var(--mint-deep), inset 0 0 0 4px var(--mint); }
+.opcao.errada { background: #FBE3DC; box-shadow: 0 6px 0 var(--berry-deep), inset 0 0 0 4px var(--berry); }
+.feedback { box-shadow: 0 5px 0 var(--borda); }
+.progresso i { box-shadow: none; }
+.festa .cartao-festa { box-shadow: 0 8px 0 var(--borda); background: #fff; }
+.festa .cartao-festa h2 { color: var(--grape-deep); }
+.aviso-frases, .aviso-mesa { box-shadow: 0 5px 0 var(--borda); background: #EAF5FB; }
+/* Aventura: placar, heróis, mapa com folhagem */
+.av-placar { background: #fff; box-shadow: 0 5px 0 var(--borda); }
+.av-placar .pt { box-shadow: none; color: var(--ink); }
+.av-placar .pt[title=estrelas] { background: #FBEDB0; } .av-placar .pt[title=diamantes] { background: #CFE8F6; } .av-placar .pt[title=medalhas] { background: #FAD6CB; }
+.av-heroi-cartao { background: #fff; box-shadow: 0 7px 0 var(--borda); }
+.av-heroi-cartao:active { box-shadow: 0 2px 0 var(--borda); }
+.av-heroi-nome { color: var(--ink); background: color-mix(in srgb, var(--hc) 30%, #fff); box-shadow: 0 3px 0 color-mix(in srgb, var(--hc) 60%, #fff); }
+.av-mapa { box-shadow: 0 6px 0 var(--borda);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 130'%3E%3Cg%3E%3Cellipse cx='40' cy='118' rx='58' ry='44' fill='%23093C30'/%3E%3Cellipse cx='120' cy='120' rx='46' ry='38' fill='%231372C6'/%3E%3Cellipse cx='196' cy='116' rx='54' ry='46' fill='%232F9E62'/%3E%3Cellipse cx='270' cy='122' rx='44' ry='34' fill='%23063790'/%3E%3Cpath d='M96 90q14-40 30-6q-14-6-30 6z' fill='%232F9E62'/%3E%3Cpath d='M232 84q8-42 26-12q-14-4-26 12z' fill='%23093C30'/%3E%3Cpath d='M6 96q-2-36 22-18q-12 2-22 18z' fill='%232F9E62'/%3E%3C/g%3E%3Cg fill='%23E9BE01'%3E%3Ccircle cx='150' cy='72' r='8'/%3E%3Ccircle cx='163' cy='78' r='8'/%3E%3Ccircle cx='160' cy='92' r='8'/%3E%3Ccircle cx='145' cy='93' r='8'/%3E%3Ccircle cx='139' cy='80' r='8'/%3E%3C/g%3E%3Ccircle cx='151' cy='83' r='7' fill='%23F07A5A'/%3E%3Ccircle cx='148' cy='82' r='1.4' fill='%23063790'/%3E%3Ccircle cx='154' cy='82' r='1.4' fill='%23063790'/%3E%3Cg fill='%23fff'%3E%3Ccircle cx='60' cy='70' r='6'/%3E%3Ccircle cx='68' cy='64' r='6'/%3E%3Ccircle cx='70' cy='74' r='6'/%3E%3C/g%3E%3Ccircle cx='66' cy='70' r='3' fill='%23C84A2A'/%3E%3C/svg%3E") bottom left / auto 44% repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 90'%3E%3Cg fill='%23E2F1F8'%3E%3Cpath d='M30 50a16 16 0 0 1 14-18a22 22 0 0 1 40-4a16 16 0 0 1 14 22z'/%3E%3Cpath d='M270 66a13 13 0 0 1 12-14a18 18 0 0 1 33-3a13 13 0 0 1 12 17z'/%3E%3C/g%3E%3C/svg%3E") top left / 420px auto repeat-x,
+    radial-gradient(34px 34px at 92% 18%, #E9BE01 0 96%, transparent 100%),
+    #4EA7DC; }
+.av-mapa::before { background: repeating-linear-gradient(90deg, #4EA7DC 0 14px, transparent 14px 30px) center / 100% 4px no-repeat, #E2F1F8; box-shadow: none; }
+.av-ilha { background: var(--grape); box-shadow: 0 6px 0 var(--grape-deep); }
+.av-ilha.feita { background: var(--mint); box-shadow: 0 6px 0 #093C30; }
+.av-ilha.trancada { background: #F4F9FC; box-shadow: 0 6px 0 #A9C9DA; }
+.av-ilha.escolhida, .av-ilha.feita.escolhida { box-shadow: 0 6px 0 var(--grape-deep), 0 0 0 5px #fff, 0 0 0 9px var(--sunny); }
+.av-ilha.feita.escolhida { box-shadow: 0 6px 0 #093C30, 0 0 0 5px #fff, 0 0 0 9px var(--sunny); }
+@keyframes chamar-game {
+  0% { box-shadow: 0 6px 0 var(--grape-deep), 0 0 0 0 rgba(233, 190, 1, .9); }
+  100% { box-shadow: 0 6px 0 var(--grape-deep), 0 0 0 18px rgba(233, 190, 1, 0); }
+}
+.av-no .nome { background: #fff; color: var(--ink); box-shadow: none; }
+.av-no .estr { color: var(--ink); text-shadow: none; }
+.av-no .estr:not(:empty) { background: #fff; border-radius: 999px; padding: 0 8px; margin-top: 3px; }
+.av-info h3 { color: var(--grape-deep); }
+.av-barra { background: #E2F1F8; box-shadow: none; }
+.av-barra i { background: var(--sunny); box-shadow: none; }
+.av-pips i { box-shadow: none; } .av-pips i.atual { background: var(--sunny); box-shadow: 0 0 0 3px rgba(233, 190, 1, .35); }
+/* missão: pergunta e dicas maiores, teclas maiores */
+.av-pergunta { background: #fff; box-shadow: 0 4px 0 var(--borda); color: var(--ink); font-size: 1.45rem; }
+.av-dica { font-size: 1.1rem; }
+.av-dica .caixa.ok { background: #DDF2E5; box-shadow: inset 5px 0 0 var(--mint); }
+.av-dica .caixa.erro { background: #FCEBE3; box-shadow: inset 5px 0 0 var(--tangerine); }
+.av-tecla { color: var(--grape-deep); background: #fff; box-shadow: 0 4px 0 var(--borda); min-height: 54px; font-size: 1.55rem; }
+.av-tecla:active { box-shadow: 0 1px 0 var(--borda); }
+.av-tecla.certa { color: #fff; background: #278A55; box-shadow: 0 4px 0 var(--mint-deep); }
+@media (min-width: 900px) and (min-height: 600px) {
+  .av-pergunta { font-size: clamp(1.45rem, 4vh, 2.05rem); }
+  .av-tecla { min-height: clamp(54px, 10vh, 84px); font-size: clamp(1.55rem, 4vh, 2.1rem); }
+}
+.av-vitoria { box-shadow: 0 6px 0 var(--borda); background: #fff; }
+.av-medalha { box-shadow: 0 6px 0 var(--sunny-deep); }
+.av-toast { background: var(--grape-deep); box-shadow: 0 6px 0 rgba(6, 55, 144, .3); }
+/* portões em arco de folhagem */
+.av-portoes { background: linear-gradient(90deg, transparent calc(50% - 125px), #fff calc(50% - 125px) calc(50% + 125px), transparent calc(50% + 125px)); }
+.pt-linha { gap: 34px; }
+.pt-portao { --g: #278A55; --gd: #093C30; position: relative; overflow: visible; color: #fff; background: var(--g); box-shadow: 0 5px 0 var(--gd);
+  border-radius: 999px 999px 10px 10px; padding: 10px 14px 0; min-width: clamp(96px, 12vw, 132px); min-height: clamp(54px, 10vh, 80px); font-size: clamp(1.7rem, 5vh, 2.5rem); }
+.pt-portao.mais { --g: #278A55; --gd: #093C30; background: var(--g); }
+.pt-portao.menos { --g: #C84A2A; --gd: #8E3018; background: var(--g); }
+.pt-portao::before { content: ""; position: absolute; left: -12px; right: -12px; top: -14px; height: 30px; pointer-events: none;
+  background:
+    radial-gradient(circle at 10% 75%, #093C30 0 10px, transparent 11px),
+    radial-gradient(circle at 26% 38%, #4EA7DC 0 10px, transparent 11px),
+    radial-gradient(circle at 46% 22%, #2F9E62 0 12px, transparent 13px),
+    radial-gradient(circle at 66% 30%, #1372C6 0 10px, transparent 11px),
+    radial-gradient(circle at 88% 70%, #093C30 0 10px, transparent 11px),
+    radial-gradient(circle at 58% 18%, #E9BE01 0 5px, transparent 6px); }
+.pt-portao.menos::before {
+  background:
+    radial-gradient(circle at 10% 75%, #2F9E62 0 10px, transparent 11px),
+    radial-gradient(circle at 26% 38%, #093C30 0 10px, transparent 11px),
+    radial-gradient(circle at 46% 22%, #4EA7DC 0 12px, transparent 13px),
+    radial-gradient(circle at 66% 30%, #2F9E62 0 10px, transparent 11px),
+    radial-gradient(circle at 88% 70%, #1372C6 0 10px, transparent 11px),
+    radial-gradient(circle at 40% 16%, #F07A5A 0 5px, transparent 6px); }
+.pt-portao.escolhido { box-shadow: 0 5px 0 var(--gd), 0 0 0 4px #fff, 0 0 0 8px var(--sunny); }
+.pt-portao.sugerido { box-shadow: 0 5px 0 var(--gd), 0 0 0 4px #fff, 0 0 0 8px var(--sunny); }
+.pt-linha.futura .pt-portao, .pt-linha.passada .pt-portao:not(.escolhido) { opacity: .4; filter: saturate(.5); }
+.pt-linha .pt-portao.sugerido { opacity: 1; filter: none; }
+.pt-cont { background: #fff; color: var(--grape-deep); box-shadow: 0 3px 0 var(--borda); font-size: 1.6rem; }
+.pt-heroi svg { filter: none; }
+.pt-voa.mais { color: #1D6E43; } .pt-voa.menos { color: #C84A2A; }
+.pt-meta { background: var(--sunny); color: var(--ink); box-shadow: 0 3px 0 var(--sunny-deep); font-size: 1.3rem; }
+/* conta montada passo a passo, ao lado */
+.av-portoes-ctl { flex-direction: column; gap: 6px; }
+.pt-contas { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.pt-passo { font-family: var(--font-game); font-weight: 700; font-size: clamp(1.35rem, 3.6vh, 1.9rem); color: var(--ink-soft); line-height: 1.2; }
+.pt-passo.ultimo { color: var(--grape-deep); }
+.pt-passo .mais { color: #1D6E43; } .pt-passo .menos { color: #C84A2A; }
+@media (max-height: 600px) { #quiz > div > .fagulha svg { width: 84px !important; height: 84px !important; } #quiz > div > .pergunta { margin: 2px 0 6px; } }
+.av-toast { font-family: var(--font-display); font-weight: 700; background: var(--k); box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--k); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -705,8 +1293,8 @@ nav.abas button[data-tela="aventura"] { --c: var(--sunny-deep); --cd: #A87A0E; }
 /* ---------- utilidades ---------- */
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
-const CORES = ["#7A4FE0", "#FF7A3D", "#46B6F6"];   /* uva, tangerina, céu (paleta do Silabário Mágico) */
-const FUNDO = { "#7A4FE0": "#5B34B8", "#FF7A3D": "#D95A22", "#46B6F6": "#2A8FCB" };
+const CORES = ["#1372C6", "#C84A2A", "#2F9E62"];   /* cobalto, terracota, verde (paleta Overgrown de 10/11/2026) */
+const FUNDO = { "#1372C6": "#063790", "#C84A2A": "#8E3018", "#2F9E62": "#093C30" };
 const sombraDe = (cor) => FUNDO[cor] || "rgba(0,0,0,.22)";
 
 /* personagens: rostinhos desenhados em SVG (estilo redondo do Silabário) */
@@ -1575,17 +2163,20 @@ function mulberry32(a) {
   };
 }
 const FASES = [
-  { nome: "Juntar", curto: "Juntar", emo: "➕", missoes: 5, desc: "Ganhou? A torre cresce: é juntar." },
-  { nome: "Tirar", curto: "Tirar", emo: "➖", missoes: 5, desc: "Gastou ou deu? A torre diminui: é tirar." },
-  { nome: "Quantos a mais", curto: "A mais", emo: "⚖️", missoes: 5, desc: "Duas torres: quantos uma tem a mais do que a outra?" },
-  { nome: "Quantos a menos e deixar igual", curto: "A menos", emo: "🤝", missoes: 5, desc: "Quantos a menos do que o outro? Quanto precisa ganhar para ficar igual?" },
-  { nome: "Quanto falta", curto: "Falta", emo: "🔑", missoes: 5, desc: "Tenho alguns e preciso de mais: quanto falta?" },
-  { nome: "Troco", curto: "Troco", emo: "💵", missoes: 5, desc: "O que você deu a mais do que o preço volta para você." },
-  { nome: "Detetive", curto: "Detetive", emo: "🔍", missoes: 5, desc: "Leia a história: junta, tira ou compara?" },
+  { id: "juntar", sem: 0, nome: "Juntar", curto: "Juntar", emo: "➕", missoes: 5, desc: "Ganhou? A torre cresce: é juntar." },
+  { id: "tirar", sem: 1, nome: "Tirar", curto: "Tirar", emo: "➖", missoes: 5, desc: "Gastou ou deu? A torre diminui: é tirar." },
+  { id: "portoes", sem: 7, nome: "Portões do mais e do menos", curto: "Portões", emo: "🚪", missoes: 5, desc: "Cada portão põe (+) ou tira (−). Escolha o caminho para chegar com o número da missão." },
+  { id: "amais", sem: 2, nome: "Quantos a mais", curto: "A mais", emo: "⚖️", missoes: 5, desc: "Duas torres: quantos uma tem a mais do que a outra?" },
+  { id: "amenos", sem: 3, nome: "Quantos a menos e deixar igual", curto: "A menos", emo: "🤝", missoes: 5, desc: "Quantos a menos do que o outro? Quanto precisa ganhar para ficar igual?" },
+  { id: "falta", sem: 4, nome: "Quanto falta", curto: "Falta", emo: "🔑", missoes: 5, desc: "Tenho alguns e preciso de mais: quanto falta?" },
+  { id: "troco", sem: 5, nome: "Troco", curto: "Troco", emo: "💵", missoes: 5, desc: "O que você deu a mais do que o preço volta para você." },
+  { id: "detetive", sem: 6, nome: "Detetive", curto: "Detetive", emo: "🔍", missoes: 5, desc: "Leia a história: junta, tira ou compara?" },
 ];
 
 function gerarMissao(fase, indice, semente) {
-  const r = mulberry32(((semente >>> 0) ^ Math.imul(fase + 1, 2654435761) ^ Math.imul(indice + 1, 40503)) >>> 0);
+  /* "sem" é o número original da fase: as missões das fases antigas continuam as mesmas depois que os portões entraram */
+  const fo = FASES[fase].sem;
+  const r = mulberry32(((semente >>> 0) ^ Math.imul(fo + 1, 2654435761) ^ Math.imul(indice + 1, 40503)) >>> 0);
   const ent = (min, max) => min + Math.floor(r() * (max - min + 1));
   const iA = ent(0, NOMES.length - 1);
   const A = NOMES[iA], B = NOMES[(iA + ent(1, NOMES.length - 1)) % NOMES.length];
@@ -1593,15 +2184,47 @@ function gerarMissao(fase, indice, semente) {
   const d = { A, B, tema: t, teclado: Array.from({ length: 13 }, (_, k) => k) };
   let tipo = "responder", texto = "", resposta;
   const saiuTxt = (b) => (t === "gemas" ? `Gastou ${qt(b, t)}` : `Deu ${qt(b, t)} para ${oa(B)}`);
-  if (fase === 0) {
+  if (fo === 7) {
+    /* portões: 1 fileira (direção, depois tamanho), 2 fileiras, 3 fileiras; só um caminho chega ao número pedido */
+    tipo = "portoes"; d.op = "portoes"; delete d.teclado;
+    const nl = indice < 2 ? 1 : indice < 4 ? 2 : 3;
+    let achou = null;
+    for (let tent = 0; tent < 500 && !achou; tent++) {
+      const s = ent(nl === 1 ? 3 : 2, 8);
+      const linhas = [];
+      for (let l = 0; l < nl; l++) {
+        let g;
+        if (indice === 0) { const k = ent(1, 3); g = [k, -k]; }
+        else if (indice === 1) { const sg = r() < 0.5 ? 1 : -1, a = ent(1, 4); let b = ent(1, 4); if (b === a) b = a === 4 ? 1 : a + 1; g = [sg * a, sg * b]; }
+        else { const x = ent(1, 4); if (r() < 0.7) g = [x, -ent(1, 3)]; else { let y = ent(1, 4); if (y === x) y = x === 4 ? 1 : x + 1; g = [x, y]; } }
+        if (r() < 0.5) g.reverse();
+        linhas.push(g);
+      }
+      const finais = [];
+      let valido = true;
+      for (let c = 0; c < 1 << nl && valido; c++) {
+        let v = s;
+        for (let l = 0; l < nl; l++) { v += linhas[l][(c >> l) & 1]; if (v < 0 || v > 12) valido = false; }
+        finais.push(v);
+      }
+      if (!valido) continue;
+      const cAlvo = ent(0, (1 << nl) - 1), alvo = finais[cAlvo];
+      if (alvo === s || finais.filter((v) => v === alvo).length !== 1) continue;
+      achou = { s, linhas, alvo, certo: linhas.map((_, l) => (cAlvo >> l) & 1) };
+    }
+    if (!achou) achou = { s: 4, linhas: [[2, -2]], alvo: 6, certo: [0] };
+    Object.assign(d, { inicio: achou.s, alvo: achou.alvo, linhas: achou.linhas, certo: achou.certo, a: achou.s, b: achou.alvo });
+    resposta = achou.alvo;
+    texto = `Você tem ${qt(achou.s, t)}. Chegue com ${qt(achou.alvo, t)}. O + põe, o − tira.`;
+  } else if (fo === 0) {
     d.a = ent(1, 8); d.b = ent(1, 10 - d.a); resposta = d.a + d.b;
     if (indice % 2) { tipo = "montar"; d.op = "montar_juntar"; d.inicio = d.a; texto = `${oA(A)} tinha ${qt(d.a, t)}. Ganhou ${qt(d.b, t)}. A torre já mostra o que ${ele(A)} tinha: ponha o que ${ele(A)} ganhou e toque em Pronto.`; }
     else { d.op = "soma"; texto = `${oA(A)} tinha ${qt(d.a, t)}. Ganhou ${qt(d.b, t)}. Com quantos ${V} ${ele(A)} ficou?`; }
-  } else if (fase === 1) {
+  } else if (fo === 1) {
     d.a = ent(3, 10); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
     if (indice % 2) { tipo = "montar"; d.op = "montar_tirar"; d.inicio = d.a; texto = `${oA(A)} tinha ${qt(d.a, t)}. ${saiuTxt(d.b)}. A torre já mostra o que ${ele(A)} tinha: tire o que saiu e toque em Pronto.`; }
     else { d.op = "sub"; texto = `${oA(A)} tinha ${qt(d.a, t)}. ${saiuTxt(d.b)}. Com quantos ${V} ${oa(A)} ficou?`; }
-  } else if (fase === 2) {
+  } else if (fo === 2) {
     if (indice === 2 || indice === 4) {
       tipo = "montar"; d.op = "montar_mais"; d.a = ent(1, 6); d.b = ent(1, 10 - d.a); d.inicio = 0; resposta = d.a + d.b;
       texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)} a mais ${doQue(A)}. Monte a torre ${deN(B)}.`;
@@ -1609,19 +2232,19 @@ function gerarMissao(fase, indice, semente) {
       d.op = "comparar"; d.a = ent(2, 10); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
       texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(A)} tem a mais ${doQue(B)}?`;
     }
-  } else if (fase === 3) {
+  } else if (fo === 3) {
     d.a = ent(3, 12); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
     if (indice === 1) { tipo = "montar"; d.op = "montar_menos"; d.inicio = 0; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)} a menos ${doQue(A)}. Monte a torre ${deN(B)}.`; }
     else if (indice === 2) { d.op = "igualar"; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(B)} precisa ganhar para ficar igual ${aoA(A)}?`; }
     else if (indice === 3) { tipo = "montar"; d.op = "montar_igual"; d.inicio = d.b; resposta = d.a; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Deixe a torre ${deN(B)} igual à ${deN(A)}.`; }
     else { d.op = "comparar_menos"; texto = `${oA(A)} tem ${qt(d.a, t)}. ${oA(B)} tem ${qt(d.b, t)}. Quantos ${V} ${oa(B)} tem a menos ${doQue(A)}?`; }
-  } else if (fase === 4) {
+  } else if (fo === 4) {
     const ch = r() < 0.5;
     d.op = "falta"; d.coisa = ch ? "chaves" : "figurinhas"; d.emo = ch ? "🔑" : "⭐";
     d.a = ent(4, 12); d.b = ent(1, d.a - 1); resposta = d.a - d.b;
     texto = ch ? `Para abrir o baú, preciso de ${qt(d.a, "chaves")}. Tenho ${d.b}. Quantas chaves faltam?`
                : `O álbum tem lugar para ${qt(d.a, "figurinhas")}. Já colei ${d.b}. Quantas figurinhas faltam?`;
-  } else if (fase === 5) {
+  } else if (fo === 5) {
     d.op = "troco"; d.item = ["o lanche", "o livro", "o brinquedo", "o suco"][ent(0, 3)];
     if (indice % 2 === 0) { d.nota = r() < 0.5 ? 10 : 20; d.preco = d.nota === 10 ? ent(1, 9) : ent(8, 19); }
     else { d.nota = r() < 0.5 ? 50 : 100; d.preco = 10 * ent(1, d.nota / 10 - 1); d.teclado = [10, 20, 30, 40, 50, 60, 70, 80, 90]; }
@@ -1682,6 +2305,8 @@ function conferir(m, resp) {
       if (v === soma) erro = "juntou_em_vez_de_completar"; else if (v === a || v === b) erro = "respondeu_um_dos_numeros"; break;
     case "troco":
       if (v === soma) erro = "juntou_preco_e_nota"; else if (v === a || v === b) erro = "respondeu_um_dos_numeros"; break;
+    case "portoes":
+      erro = v > m.resposta ? "passou_do_alvo" : "ficou_abaixo_do_alvo"; break;
     case "mais_do_que_soma":
       if (v === b) erro = "respondeu_so_o_a_mais"; else if (v === dif) erro = "tirou_em_vez_de_juntar"; else if (v === a) erro = "respondeu_um_dos_numeros"; break;
   }
@@ -1692,6 +2317,8 @@ function conferir(m, resp) {
 
 /* frases do 1º erro (dizem o tipo de erro sem entregar a resposta) */
 const AV_MSG = {
+  passou_do_alvo: "Você chegou com mais do que a missão pede. Volte e troque um portão: escolha um que tire (−) ou que ponha menos.",
+  ficou_abaixo_do_alvo: "Você chegou com menos do que a missão pede. Volte e troque um portão: escolha um que ponha (+) ou que tire menos.",
   juntou_em_vez_de_comparar: "Você juntou os dois. Aqui ninguém ganhou nada: é para comparar.",
   juntou_em_vez_de_igualar: "Você juntou os dois. Para ficar igual, ligue um a um e veja quantos faltam na torre menor.",
   montou_so_o_que_faltava: "Sua torre ficou só com o tanto que faltava. Ela já tinha alguns: ponha até nenhum ficar sem par.",
@@ -1715,6 +2342,7 @@ const AV_MSG = {
 };
 /* nomes para o adulto */
 const AV_ROTULOS = {
+  passou_do_alvo: "Nos portões, chegou com mais do que o pedido", ficou_abaixo_do_alvo: "Nos portões, chegou com menos do que o pedido",
   juntou_em_vez_de_comparar: "Juntou os dois quando era para comparar", juntou_em_vez_de_tirar: "Juntou quando era para tirar",
   juntou_em_vez_de_igualar: "Juntou os dois quando era para deixar igual", montou_so_o_que_faltava: "Montou só o que faltava para igualar",
   montou_so_o_que_ganhou: "Montou só o que ganhou, sem o que já tinha",
@@ -1745,6 +2373,7 @@ function avDica1(m) {
     case "montar_igual": return "Veja os fios. Ponha blocos até nenhum bloco ficar sem par.";
     case "falta": return "Conte só as casas vazias, uma por uma.";
     case "troco": return d.nota > 20 ? "Os quadrados marrons pagam o preço. Cada quadrado verde vale 10 reais: conte de 10 em 10 só os verdes. É o que volta para você." : "Os quadrados marrons pagam o preço. Conte os verdes, um por um: é o que volta para você.";
+    case "portoes": return `Você tem ${d.inicio} e precisa chegar com ${d.alvo}: no fim, vai ter ${d.alvo > d.inicio ? "mais" : "menos"} do que tem agora. O portão + põe, o − tira. Pense antes de tocar.`;
     case "mais_do_que_soma": return `A torre ${deN(d.A)} apareceu: os amarelos são os que ${ele(d.A)} tem a mais. Conte todos os blocos dessa torre.`;
   }
   return "Olhe o desenho e conte devagar.";
@@ -1767,6 +2396,11 @@ function avPasso(m) {
     case "montar_igual": return `${oA(d.A)} tem ${c(d.a)}. Para ficar igual, a torre ${deN(d.B)} também precisa de ${c(d.a)}: <b>${d.b} + ${dif} = ${d.a}</b>.`;
     case "falta": return `Preciso de ${d.a}. Tenho ${d.b}. Do ${d.b} até o ${d.a} ${dif === 1 ? "é 1 pulo" : "são " + dif + " pulos"}: ${faltaTxt(dif)}. <b>${d.a} − ${d.b} = ${dif}</b>.`;
     case "troco": return `Você deu ${reais(d.nota)}. ${cap(d.item)} custa ${reais(d.preco)}. <b>${d.nota} − ${d.preco} = ${d.nota - d.preco}</b>. O que você deu a mais do que o preço volta para você: ${reais(d.nota - d.preco)} de troco.`;
+    case "portoes": {
+      let v = d.inicio;
+      const passos = d.linhas.map((g, l) => { const x = g[d.certo[l]], antes = v; v += x; return `pelo ${x > 0 ? "+" + x : "−" + -x}: ${antes} ${x > 0 ? "+" : "−"} ${Math.abs(x)} = ${v}`; });
+      return `Começa com ${c(d.inicio)}. Passe ${passos.join("; depois ")}. Chega com <b>${c(d.alvo)}</b>.${av.resolvida ? "" : " Os portões com aro amarelo mostram o caminho."}`;
+    }
     case "mais_do_que_soma": return `${oA(d.B)} tem ${c(d.a)}. ${oA(d.A)} tem ${c(d.b)} a mais ${doQue(d.B)}: a torre ${deN(d.A)} é igual à ${deN(d.B)} e ainda tem ${c(d.b)} em cima. <b>${d.a} + ${d.b} = ${d.a + d.b}</b>.`;
   }
   return "";
@@ -1781,14 +2415,22 @@ function avCarregar() {
     const s = localStorage.getItem(AV_CHAVE);
     if (s) {
       const o = JSON.parse(s);
-      if (o && o.v === 1 && Array.isArray(o.fases) && o.fases.length === FASES.length) return Object.assign(avNovoEstado(), o);
+      if (o && o.v === 1 && Array.isArray(o.fases)) {
+        /* progresso salvo antes dos portões (7 fases): encaixa a fase nova sem perder nada */
+        const ip = FASES.findIndex((F) => F.id === "portoes");
+        if (o.fases.length === FASES.length - 1 && ip >= 0) {
+          o.fases.splice(ip, 0, { melhor: [0, 0, 0, 0, 0], atual: 0, completa: false });
+          o.medalhas = (o.medalhas || []).map((k) => (k >= ip ? k + 1 : k));
+        }
+        if (o.fases.length === FASES.length) return Object.assign(avNovoEstado(), o);
+      }
     }
   } catch (e) { /* sem armazenamento: joga sem salvar */ }
   return avNovoEstado();
 }
 let avEstado = avCarregar();
 function avSalvar() { try { localStorage.setItem(AV_CHAVE, JSON.stringify(avEstado)); } catch (e) { /* segue sem salvar */ } }
-const avLiberada = (k) => k === 0 || avEstado.fases[k - 1].completa;
+const avLiberada = (k) => k === 0 || avEstado.fases[k - 1].completa || avEstado.fases[k].completa || avEstado.fases[k].atual > 0;
 function avFaseAtual() { const i = avEstado.fases.findIndex((f) => !f.completa); return i < 0 ? FASES.length - 1 : i; }
 
 /* ---------- sons curtos (WebAudio, só depois do primeiro toque) ---------- */
@@ -1804,6 +2446,7 @@ function avSom(tipo) {
   try {
     const notas = {
       acerto: [[660, 0, 0.12], [880, 0.11, 0.2]], erro: [[330, 0, 0.16], [262, 0.14, 0.24]],
+      sobe: [[523, 0, 0.09], [784, 0.07, 0.13]], desce: [[523, 0, 0.09], [392, 0.07, 0.13]],
       estrela: [[1046, 0, 0.1], [1318, 0.08, 0.12], [1568, 0.16, 0.18]], vitoria: [[523, 0, 0.15], [659, 0.15, 0.15], [784, 0.3, 0.15], [1046, 0.45, 0.4]],
     }[tipo] || [];
     const t0 = avAudio.currentTime, vol = tipo === "erro" ? 0.07 : 0.16;
@@ -1847,7 +2490,7 @@ function avPlacar() {
 }
 function avTelaHeroi() {
   $("#avCorpo").innerHTML = `<h2 class="av-titulo">Quem vai jogar a aventura? Escolha seu herói!</h2>
-    <div class="av-herois">${NOMES.map((n) => `<button class="av-heroi-cartao" data-heroi="${n}">${avatar(n, 96)}${n}</button>`).join("")}</div>`;
+    <div class="av-herois">${NOMES.map((n) => `<button class="av-heroi-cartao" data-heroi="${n}" style="--hc:${PERSONAGENS[n].roupa};--hf:${PERSONAGENS[n].fundo}">${avatar(n, 96)}<span class="av-heroi-nome">${n}</span></button>`).join("")}</div>`;
   $$("#avCorpo [data-heroi]").forEach((b) => (b.onclick = () => {
     avEstado.heroi = b.dataset.heroi; avSalvar(); avSom("estrela"); av.vista = "mapa"; avDesenhar();
   }));
@@ -1858,7 +2501,7 @@ function avTelaMapa() {
   const nos = FASES.map((F, k) => {
     const f = avEstado.fases[k], lib = avLiberada(k), est = f.melhor.reduce((s, x) => s + x, 0);
     return `<div class="av-no">${k === atual ? `<span class="heroi-aqui">${avatar(avEstado.heroi, 40)}</span>` : ""}
-      <button class="av-ilha${f.completa ? " feita" : ""}${lib ? "" : " trancada"}${k === av.sel ? " escolhida" : ""}" data-fase="${k}" ${lib ? "" : "disabled"} aria-label="Fase ${k + 1}: ${F.nome}">${lib ? (f.completa ? "🏅" : F.emo) : "🔒"}</button>
+      <button class="av-ilha${f.completa ? " feita" : ""}${lib ? "" : " trancada"}${k === av.sel ? " escolhida" : ""}${k === atual && !f.completa ? " atual" : ""}" data-fase="${k}" ${lib ? "" : "disabled"} aria-label="Fase ${k + 1}: ${F.nome}">${lib ? (f.completa ? "🏅" : F.emo) : "🔒"}</button>
       <span class="nome">${k + 1}. ${F.curto}</span><span class="estr">${est ? "⭐ " + est : ""}</span></div>`;
   }).join("");
   const k = av.sel, F = FASES[k], f = avEstado.fases[k], feitas = Math.min(f.atual, F.missoes);
@@ -1882,7 +2525,7 @@ function avComecar(k) {
 function avNovaMissao() {
   const f = avEstado.fases[av.fase];
   av.missao = gerarMissao(av.fase, f.atual, Math.floor(Math.random() * 2147483647));
-  av.tent = 0; av.nivel = 0; av.resolvida = false; av.ultimoErro = null;
+  av.tent = 0; av.nivel = 0; av.resolvida = false; av.ultimoErro = null; av.caminho = []; av.salto = 0; av.travado = false;
   av.valor = av.missao.dados.inicio || 0;
   avPlacar();
   avTelaMissao();
@@ -1917,6 +2560,16 @@ function avControles() {
     $("#avMenos").onclick = () => mudar(-1);
     $("#avMais").onclick = () => mudar(1);
     $("#avPronto").onclick = () => avResponder(av.valor);
+  } else if (m.tipo === "portoes") {
+    const n = av.caminho.length;
+    const d = m.dados;
+    let v = d.inicio;
+    const passos = av.caminho.map((g, l) => { const x = d.linhas[l][g], a = v; v += x; return `${a} <span class="${x > 0 ? "mais" : "menos"}">${x > 0 ? "+" : "−"} ${Math.abs(x)}</span> = ${v}`; });
+    const contas = passos.length ? passos.map((p, i) => `<span class="pt-passo${i === passos.length - 1 ? " ultimo" : ""}">${p}</span>`).join("") : `<span class="pt-passo ultimo">Começa com ${d.inicio}</span>`;
+    el.innerHTML = `<div class="av-portoes-ctl"><div class="pt-contas" aria-live="polite">${contas}</div>
+      <div class="linha-botoes"><button class="btn" id="avVoltarUm" ${n ? "" : "disabled"}>↩️ Voltar um portão</button><button class="btn" id="avVoltarTudo" ${n > 1 ? "" : "disabled"}>🔄 Começar de novo</button></div></div>`;
+    $("#avVoltarUm").onclick = () => avPortaoVoltar(false);
+    $("#avVoltarTudo").onclick = () => avPortaoVoltar(true);
   } else if (m.tipo === "escolher") {
     const ops = [["juntar", "➕", "Junta"], ["tirar", "➖", "Tira"], ["comparar", "⚖️", "Compara"]];
     el.innerHTML = `<div class="av-escolhas">${ops.map(([v, emo, txt]) => `<button class="btn" data-esc="${v}"><b>${emo}</b>${txt}</button>`).join("")}</div>`;
@@ -1925,6 +2578,36 @@ function avControles() {
     el.innerHTML = `<div class="av-teclado">${m.dados.teclado.map((n) => `<button class="av-tecla" data-n="${n}">${n}</button>`).join("")}</div>`;
     $$("#avControles [data-n]").forEach((b) => (b.onclick = () => avResponder(+b.dataset.n, b)));
   }
+}
+/* portões: cada toque passa por um portão; na última fileira, confere */
+function avPortao(l, g) {
+  const m = av.missao;
+  if (!m || av.resolvida || av.travado || l !== av.caminho.length) return;
+  const d = m.dados, x = d.linhas[l][g];
+  av.caminho.push(g); av.valor += x; av.salto = x;
+  avSom(x > 0 ? "sobe" : "desce");
+  avControles(); avPintar(av.nivel);
+  if (av.caminho.length === d.linhas.length) {
+    av.travado = true;
+    setTimeout(() => {
+      av.travado = false;
+      if (av.missao !== m || av.resolvida) return;
+      avResponder(av.valor);
+      if (!av.resolvida) avControles();
+    }, 750);
+  }
+}
+function avPortaoVoltar(tudo) {
+  const m = av.missao;
+  if (!m || av.resolvida || av.travado) return;
+  const d = m.dados;
+  while (av.caminho.length) {
+    const g = av.caminho.pop();
+    av.valor -= d.linhas[av.caminho.length][g];
+    if (!tudo) break;
+  }
+  av.salto = 0;
+  avControles(); avPintar(av.nivel);
 }
 function avMostrarDica() {
   const m = av.missao, el = $("#avDica");
@@ -1992,6 +2675,23 @@ function avPintar(nivel) {
   const c0 = CORES[0], c1 = CORES[1];
   const base = { tema: d.tema, altura: H, prefixo: "av", tamAvatar: 24, maxLado: 40 };
   palco.style.gap = "";
+  if (op === "portoes") {
+    const n = d.linhas.length, cam = av.caminho || [];
+    const sinal = (x) => (x > 0 ? "+" + x : "−" + -x);
+    const heroi = `<div class="pt-heroi${av.salto ? " pulou" : ""}">${av.salto ? `<span class="pt-voa ${av.salto > 0 ? "mais" : "menos"}">${sinal(av.salto)}</span>` : ""}<span class="pt-cont">${av.valor}</span>${avatar(avEstado.heroi || d.A, 40)}</div>`;
+    const itens = [];
+    for (let l = 0; l < n; l++) {
+      if (cam.length === l) itens.push(heroi);
+      const est = l < cam.length ? "passada" : l === cam.length && !av.resolvida ? "atual" : "futura";
+      itens.push(`<div class="pt-linha ${est}">${d.linhas[l].map((x, g) => `<button class="pt-portao ${x > 0 ? "mais" : "menos"}${cam[l] === g ? " escolhido" : ""}${nivel >= 2 && !av.resolvida && d.certo[l] === g ? " sugerido" : ""}" data-l="${l}" data-g="${g}" ${est === "atual" && !av.travado ? "" : "disabled"} aria-label="portão ${x > 0 ? "mais" : "menos"} ${Math.abs(x)}">${sinal(x)}</button>`).join("")}</div>`);
+    }
+    if (cam.length >= n) itens.push(heroi);
+    itens.push(`<div class="pt-meta">🏁 Chegar com <b>${d.alvo}</b></div>`);
+    palco.innerHTML = `<div class="av-portoes">${itens.join("")}</div>`;
+    palco.querySelectorAll(".pt-portao").forEach((b) => (b.onclick = () => avPortao(+b.dataset.l, +b.dataset.g)));
+    av.salto = 0;
+    return;
+  }
   if (m.tipo === "escolher" && nivel === 0) { palco.innerHTML = `<div class="av-centro"><span class="fagulha">${fagulhaSVG("idle", 80)}</span><div class="av-lupa">🔍</div></div>`; return; }
   if (op === "soma" || op === "montar_juntar") {
     const n = op === "soma" ? d.a + d.b : av.valor;
